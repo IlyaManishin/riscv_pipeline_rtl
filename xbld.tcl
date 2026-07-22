@@ -1,4 +1,4 @@
-puts "=================== create prj"
+puts "=================== create prj ==================="
 
 set enable_video 1
 # if zero, video will be in 640x480
@@ -155,8 +155,6 @@ if $build_pll_ip {
     puts "\n------------------- create PLL IP"
     set ip_pll_name   "pll"
     set ip_pll_clk    50.0
-    set ip_pll_phase2 45.0
-    set ip_pll_phase3 200.0
 
     if $enable_video {
         # lower frequency
@@ -184,7 +182,7 @@ if $build_pll_ip {
         set content [read $fp]
         close $fp
     
-        regsub -all {RV_TIME_BASE\s*=\s*\d+} $content \"RV_TIME_BASE = $time_base_ns\" content
+        regsub -all {RV_TIME_BASE\s*=\s*\d+} $content \"RV_TIME_BASE  = $time_base_ns\" content
     
         set fp [open $svh_file w]
         puts $fp $content
@@ -203,24 +201,18 @@ if $build_pll_ip {
     set_property -dict [ \
                         list CONFIG.Component_Name $ip_pll_name        \
                         CONFIG.PRIMITIVE {PLL}                         \
-                        CONFIG.CLKOUT2_USED {true}                     \
-                        CONFIG.CLKOUT3_USED {true}                     \
                         CONFIG.PRIMARY_PORT {clk_in}                   \
                         CONFIG.CLKOUT1_REQUESTED_OUT_FREQ $ip_pll_clk  \
-                        CONFIG.CLKOUT2_REQUESTED_OUT_FREQ $ip_pll_clk  \
-                        CONFIG.CLKOUT2_REQUESTED_PHASE $ip_pll_phase2  \
-                        CONFIG.CLKOUT3_REQUESTED_OUT_FREQ $ip_pll_clk  \
-                        CONFIG.CLKOUT3_REQUESTED_PHASE $ip_pll_phase3  \
                         CONFIG.USE_RESET {false}                       \
                         ] [get_ips $ip_pll_name]
 
     if $enable_video {
         set_property -dict [ \
                         list                                                 \
-                        CONFIG.CLKOUT4_USED {true}                           \
-                        CONFIG.CLKOUT4_REQUESTED_OUT_FREQ $ip_pll_video_clk  \
-                        CONFIG.CLKOUT4_REQUESTED_PHASE 0                     \
-                        CONFIG.CLK_OUT4_PORT {clk_video}                     \
+                        CONFIG.CLKOUT2_USED {true}                           \
+                        CONFIG.CLKOUT2_REQUESTED_OUT_FREQ $ip_pll_video_clk  \
+                        CONFIG.CLKOUT2_REQUESTED_PHASE 0                     \
+                        CONFIG.CLK_OUT2_PORT {clk_video}                     \
                         ] [get_ips $ip_pll_name]
     }
 
@@ -334,16 +326,9 @@ if $build_tdp_bram_ip {
 
     #---
     set_msg_config -suppress -id {Synth 8-3331}
-    #set_msg_config -suppress -id {Synth 8-3331} -string {blk_mem_output_block}
-    #set_msg_config -suppress -id {Synth 8-3331} -string {blk_mem_gen_prim_wrapper_init}
-    #set_msg_config -suppress -id {Synth 8-3331} -string {blk_mem_gen_generic_cstr}
-    #set_msg_config -suppress -id {Synth 8-3331} -string {blk_mem_input_block}
-
-    #---
     launch_runs ${ip_imem_name}_synth_1 -jobs 4
     wait_on_run ${ip_imem_name}_synth_1
 
-    #---
     reset_msg_config -suppress -id {Synth 8-3331}
 }    
 
@@ -372,7 +357,7 @@ if $build_video_bram_ip {
         CONFIG.Write_Depth_A $ip_video_bram_write_depth_a \
         CONFIG.Write_Width_A {32} \
         CONFIG.Write_Width_B {8} \
-         CONFIG.Operating_Mode_A {WRITE_FIRST} \
+        CONFIG.Operating_Mode_A {WRITE_FIRST} \
         CONFIG.Assume_Synchronous_Clk {true} \
     ] [get_ips $ip_video_bram_name]
     generate_target {instantiation_template} [get_files $ip_video_bram_xci]
@@ -381,7 +366,6 @@ if $build_video_bram_ip {
 
     catch { config_ip_cache -export [get_ips -all $ip_video_bram_name] }
     export_ip_user_files -of_objects [get_files $ip_video_bram_xci] -no_script -sync -force -quiet
-    # export_simulation -of_objects [get_files /home/ilya/work/fpga/rv_vga_dirs/riscv_vga/vivado_cfg/rv-vga.srcs/sources_1/ip/blk_mem_gen_0/blk_mem_gen_0.xci] -directory /home/ilya/work/fpga/rv_vga_dirs/riscv_vga/vivado_cfg/rv-vga.ip_user_files/sim_scripts -ip_user_files_dir /home/ilya/work/fpga/rv_vga_dirs/riscv_vga/vivado_cfg/rv-vga.ip_user_files -ipstatic_source_dir /home/ilya/work/fpga/rv_vga_dirs/riscv_vga/vivado_cfg/rv-vga.ip_user_files/ipstatic -lib_map_path [list {modelsim=/home/ilya/work/fpga/rv_vga_dirs/riscv_vga/vivado_cfg/rv-vga.cache/compile_simlib/modelsim} {questa=/home/ilya/work/fpga/rv_vga_dirs/riscv_vga/vivado_cfg/rv-vga.cache/compile_simlib/questa} {xcelium=/home/ilya/work/fpga/rv_vga_dirs/riscv_vga/vivado_cfg/rv-vga.cache/compile_simlib/xcelium} {vcs=/home/ilya/work/fpga/rv_vga_dirs/riscv_vga/vivado_cfg/rv-vga.cache/compile_simlib/vcs} {riviera=/home/ilya/work/fpga/rv_vga_dirs/riscv_vga/vivado_cfg/rv-vga.cache/compile_simlib/riviera}] -use_ip_compiled_libs -force -quiet
 
     create_ip_run [get_files -of_objects [get_fileset sources_1] $ip_video_bram_xci]
 

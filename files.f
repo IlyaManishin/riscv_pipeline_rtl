@@ -1,5 +1,13 @@
++incdir+cfg
 +incdir+src/rtl/include
-src/rtl/include/risc-v.svh
+
+lib/pf.sv
+lib/uart.sv
+lib/vga/sync_gen.sv
+lib/vga/syncer.sv
+lib/vga/vga.sv
+lib/vga/video_out.sv
+lib/vga/vram_reader.sv
 src/rtl/lib/dual_port_mem.sv
 src/rtl/memory/imem.sv
 src/rtl/memory/register_file.sv
@@ -12,3 +20,7 @@ src/rtl/modules/imm_gen.sv
 src/rtl/modules/pc.sv
 src/rtl/modules/reset.sv
 src/rtl/modules/shifter_alu.sv
+src/rtl/uart_wrapper.sv
+src/rtl/cpu_core.sv
+src/rtl/cpu_system.sv
+src/sim/rv_nsu_tb.sv
