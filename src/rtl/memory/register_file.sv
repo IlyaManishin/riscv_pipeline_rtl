@@ -24,16 +24,7 @@ module register_file #(
   timeunit      1ns;
   timeprecision 1ps;
 
-  //logic [XLEN-1:0] regFile[0:REG_CNT-1];
   logic [XLEN-1:0] regFile[0:REG_CNT-1] = '{ default: '0 };
-  
-  //initial begin
-  //  regFile[0] = 1'd0;
-  //end
-
-  function automatic logic [XLEN-1:0] rs(input [REG_BUS-1:0] rsi);
-    rs = regFile[rsi];
-  endfunction
 
   always_comb begin
     rs1 = regFile[rsi1];
