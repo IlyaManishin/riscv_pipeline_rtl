@@ -8,29 +8,35 @@ module program_counter
 (
     input  logic clk,
     input  logic rst, // active high
+    
+    //-----Branch-----
     input  logic br_taken,
     input  logic [WIDTH-1:0] pc_br,
-    output logic [WIDTH-1:0] pc
+
+    //-----Stall-----
+    input  logic pc_stall,
+
+    output logic [WIDTH-1:0] pc,
+    output logic [WIDTH-1:0] pc_next
 );
 
     timeunit      1ns;
     timeprecision 1ps;
 
-    logic [WIDTH-1:0] assign_pc;
-
     always_comb begin
-        if (br_taken) begin
-            assign_pc = pc_br;
+        if (rst) begin
+            pc_next = PC_START_ADDR;
+        end else if (pc_stall) begin
+            pc_next = pc;
+        end else if (br_taken) begin
+            pc_next = pc_br;
         end else begin
-            assign_pc = pc + 4;
+            pc_next = pc + 4;
         end
     end
 
     always_ff @(posedge clk) begin
-        if (rst) begin
-            pc <= PC_START_ADDR;
-        end else begin
-            pc <= assign_pc;
-        end
+        pc <= pc_next;
     end
-endmodule : program_counter
+
+endmodule : program_counter;

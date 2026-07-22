@@ -149,10 +149,13 @@ typedef logic [24:0] Imm_input_t;
  * There's only 9 significant bits that are mandatory to determine instruction:
  * funct7[5], funct3[2:0], opcode[4:0] = [[31], [14], [13], [12], [6], [5], [4], [3], [2]]
  */
+
+localparam int OPCODE_WIDTH = 5;
+
 typedef struct packed {
     logic        funct7;  // [30] bit
     logic [2:0]  funct3;  // [14], [13], [12] bits
-    logic [4:0]  opcode;  // [6], [5], [4], [3], [2] bits
+    logic [OPCODE_WIDTH:0]  opcode;  // [6], [5], [4], [3], [2] bits
     logic [1:0]  ones;    // [1], [0] bits (should be 'b11 for legal instructions)
 } Id_instr_t;
 

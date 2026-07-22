@@ -266,4 +266,4 @@ module cpu_system
     end
   end
 
-endmodule : cpu_system
+endmodule : cpu_system;
