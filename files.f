@@ -25,6 +25,7 @@ src/rtl/modules/pc.sv
 src/rtl/modules/shifter_alu.sv
 
 src/rtl/stages/fetch.sv
+src/rtl/stages/decode.sv
 
 src/rtl/uart_wrapper.sv
 src/rtl/cpu_core.sv
