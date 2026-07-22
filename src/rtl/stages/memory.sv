@@ -9,7 +9,7 @@ module memory_stage import risc_v_pkg::*;
     input  logic               flush_mem,
 
     input  Data_t              alu_res_M,
-    input  Data_t              rf_rd2_M,
+    input  Data_t              rd2_M,
     input  RegAddr_t           rd_M,
     input  Addr_t              pc4_M,
     input  Id_controls_out_t   id_controls_M,
@@ -40,7 +40,7 @@ module memory_stage import risc_v_pkg::*;
         .dmem_we   ( dmem_we                   ),
         .funct3    ( id_controls_M.dmem_funct3 ),
         .byte_addr ( dmem_byte_off             ),
-        .data_in   ( rf_rd2_M                  ),
+        .data_in   ( rd2_M                     ),
         .we        ( dmem_byte_we              ),
         .data_out  ( dmem_data_in              )
     );
