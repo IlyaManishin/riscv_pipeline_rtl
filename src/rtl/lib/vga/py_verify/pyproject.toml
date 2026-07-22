@@ -1,0 +1,17 @@
+[project]
+name = "py-verify"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "ipykernel>=7.2.0",
+    "ipympl>=0.10.0",
+    "ipywidgets>=8.1.8",
+    "matplotlib>=3.10.8",
+    "mpld3>=0.5.12",
+    "notebook>=7.5.5",
+    "numpy>=2.4.3",
+    "pandas>=3.0.1",
+    "pyside6>=6.11.0",
+]

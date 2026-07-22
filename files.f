@@ -9,6 +9,7 @@ lib/vga/vga.sv
 lib/vga/video_out.sv
 lib/vga/vram_reader.sv
 src/rtl/lib/dual_port_mem.sv
+src/rtl/lib/rst_m.sv
 src/rtl/memory/imem.sv
 src/rtl/memory/register_file.sv
 src/rtl/memory/risc_v_dmem_rd_port_m.sv
@@ -18,7 +19,6 @@ src/rtl/modules/branch_unit_m.sv
 src/rtl/modules/id.sv
 src/rtl/modules/imm_gen.sv
 src/rtl/modules/pc.sv
-src/rtl/modules/reset.sv
 src/rtl/modules/shifter_alu.sv
 src/rtl/uart_wrapper.sv
 src/rtl/cpu_core.sv

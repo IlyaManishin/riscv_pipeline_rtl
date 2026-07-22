@@ -1,0 +1,12 @@
+trace.csv
+.venv
+__pycache__
+.idea
+xsim.dir
+xvlog.log
+xvlog.pb
+vivado.log
+vivado.jou
+/vivado_cfg
+/ip
+/log

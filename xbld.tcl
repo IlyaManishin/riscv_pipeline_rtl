@@ -23,17 +23,15 @@ if $board_basys_3 {
 if $board_nexys_4 {
     set prjFPGA xc7a100tcsg324-1
 }
-#set prjFPGA xc7a35ticsg324-1L  ;# ARTY
 
 set current_dir [pwd]
-#puts "current_dir: $current_dir"
 
 set prjDir   "$current_dir"
 set cfgDir   "$prjDir/cfg"
 set constDir "$prjDir/src/constr"
 set ipDir    "$prjDir/ip"
-set libDir   "$prjDir/lib"
 set rtlDir   "$prjDir/src/rtl"
+set libDir   "$rtlDir/lib"
 set simDir   "$prjDir/src/sim"
 set vgaDir   "$libDir/vga/rtl"
 
@@ -97,19 +95,19 @@ close $fh
 add_files -fileset sources_1              \
          $rtlDir/cpu_system.sv            \
          $rtlDir/cpu_core.sv              \
-         $rtlDir/pc.sv                    \
-         $rtlDir/id.sv                    \
-         $rtlDir/branch_unit_m.sv         \
-         $rtlDir/imem.sv                  \
-         $rtlDir/risc_v_dmem_rd_port_m.sv \
-         $rtlDir/risc_v_dmem_wr_port_m.sv \
-         $rtlDir/imm_gen.sv               \
-         $rtlDir/register_file.sv         \
-         $rtlDir/alu.sv                   \
-         $rtlDir/shifter_alu.sv           \
+         $rtlDir/modules/pc.sv            \
+         $rtlDir/modules/id.sv            \
+         $rtlDir/modules/branch_unit_m.sv \
+         $rtlDir/memory/imem.sv           \
+         $rtlDir/memory/risc_v_dmem_rd_port_m.sv \
+         $rtlDir/memory/risc_v_dmem_wr_port_m.sv \
+         $rtlDir/modules/imm_gen.sv       \
+         $rtlDir/memory/register_file.sv  \
+         $rtlDir/modules/alu.sv           \
+         $rtlDir/modules/shifter_alu.sv   \
          $rtlDir/uart_wrapper.sv          \
-         $libDir/pf.sv                    \
-         $libDir/dual_port_mem.sv         \
+         $rtlDir/lib/dual_port_mem.sv     \
+         $libDir/rst_m.sv                    \
          $libDir/uart.sv                  \
          $vgaDir/sync_gen.sv              \
          $vgaDir/syncer.sv                \
@@ -117,6 +115,7 @@ add_files -fileset sources_1              \
          $vgaDir/video_out.sv             \
          $vgaDir/vram_reader.sv           \
          $init_def_file
+
 if $board_basys_3 {
     add_files -fileset constrs_1 \
             $constDir/rv_nsu_basys_3.xdc \
@@ -128,7 +127,6 @@ if $board_nexys_4 {
             $constDir/rv_nsu_nexys_4_ddr.xdc
 }
 
-
 add_files -fileset sim_1  \
          $simDir/rv_nsu_tb.sv
 
@@ -138,9 +136,10 @@ foreach f [glob -nocomplain $tempDir/*.wcfg] {
     add_files -fileset sim_1 $dest
 }
 
-file delete -force $tempDir  # file mkdir $tempDir
+file delete -force $tempDir
 
-set_property INCLUDE_DIRS "$rtlDir $cfgDir" [get_filesets sim_1]
+set_property INCLUDE_DIRS "$rtlDir $rtlDir/include $cfgDir" [get_filesets sources_1]
+set_property INCLUDE_DIRS "$rtlDir $rtlDir/include $cfgDir" [get_filesets sim_1]
 set_property used_in_synthesis      false [get_files  $simDir/rv_nsu_tb.sv]
 set_property used_in_implementation false [get_files  $simDir/rv_nsu_tb.sv]
 set_property top rv_nsu_tb [get_filesets sim_1]
@@ -176,7 +175,7 @@ if $build_pll_ip {
     puts "  PLL Clock: $ip_pll_clk MHz"
     puts "  TIME_BASE: $time_base_ns ns"
 
-    set svh_file "$rtlDir/risc-v.svh"
+    set svh_file "$rtlDir/include/risc-v.svh"
     if {[file exists $svh_file]} {
         set fp [open $svh_file r]
         set content [read $fp]
