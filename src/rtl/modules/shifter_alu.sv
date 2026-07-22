@@ -20,7 +20,7 @@ module risc_v_shifter_m
       SHIFT_SLL: res = data << shamt;
       SHIFT_SRL: res = data >> shamt;
       SHIFT_SRA: res = $signed(data) >>> shamt;
-      default: res = 'X;
+      default:   res = 'X;
     endcase
   end
 
@@ -32,6 +32,8 @@ module risc_v_shifter_m
   always_comb begin  // shifter_logic
 
     curData = data;
+    tmp = '0;
+    res = '0;
 
     if (sel == SHIFT_SLL) begin  // SHIFT_SLL
 
@@ -49,7 +51,7 @@ module risc_v_shifter_m
           if (shamt[i]) tmp[j] = 0;
           else tmp[j] = curData[j];
         end
-      
+
         curData = tmp;
       end
 
@@ -57,7 +59,7 @@ module risc_v_shifter_m
 
     else if (sel == SHIFT_SRA || sel == SHIFT_SRL) begin // SHIFT_SRA and SHIFT_SRL
 
-      logic fill;
+      automatic logic fill;
       for (int i = 0; i < $clog2(XLEN); i++) begin
         automatic int localOffset = 1 << i;
 
@@ -80,7 +82,7 @@ module risc_v_shifter_m
 
     else begin // default
       curData = 'X;
-    end  // default
+    end  // defaultu
 
     res = curData;
 

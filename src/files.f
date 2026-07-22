@@ -1,0 +1,14 @@
++incdir+src/rtl/include
+src/rtl/include/risc-v.svh
+src/rtl/lib/dual_port_mem.sv
+src/rtl/memory/imem.sv
+src/rtl/memory/register_file.sv
+src/rtl/memory/risc_v_dmem_rd_port_m.sv
+src/rtl/memory/risc_v_dmem_wr_port_m.sv
+src/rtl/modules/alu.sv
+src/rtl/modules/branch_unit_m.sv
+src/rtl/modules/id.sv
+src/rtl/modules/imm_gen.sv
+src/rtl/modules/pc.sv
+src/rtl/modules/reset.sv
+src/rtl/modules/shifter_alu.sv
