@@ -1,23 +1,22 @@
-//`timescale 1ns / 1ps
+`include "risc-v.svh"
 
-module program_counter
+module program_counter import risc_v_pkg::*;
 #(
-    parameter int  WIDTH = 32,
-    parameter logic [WIDTH-1:0] PC_START_ADDR = '0
+    parameter Addr_t PC_START_ADDR = '0
 )
 (
     input  logic clk,
     input  logic rst, // active high
     
     //-----Branch-----
-    input  logic br_taken,
-    input  logic [WIDTH-1:0] pc_br,
+    input  logic  br_taken,
+    input  Addr_t pc_br,
 
     //-----Stall-----
-    input  logic pc_stall,
+    input  logic  pc_stall,
 
-    output logic [WIDTH-1:0] pc,
-    output logic [WIDTH-1:0] pc_next
+    output Addr_t pc,
+    output Addr_t pc_next
 );
 
     timeunit      1ns;

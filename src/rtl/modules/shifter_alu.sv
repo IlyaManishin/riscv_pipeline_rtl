@@ -1,7 +1,6 @@
 `include "risc-v.svh"
 
-module risc_v_shifter_m
-  import risc_v_pkg::*;
+module risc_v_shifter_m import risc_v_pkg::*;
 #(
     parameter int XLEN = 32
 ) (

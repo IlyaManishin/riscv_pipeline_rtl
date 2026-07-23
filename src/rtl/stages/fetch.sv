@@ -22,11 +22,17 @@ module fetch_stage import risc_v_pkg::*;
     output logic        valid_D
 );
 
+    // =========================================================================
+    //  Internal Signals
+    // =========================================================================
     Addr_t pc;
     Addr_t pc_next;
     logic  br_taken;
     Addr_t pc_br;
 
+    // =========================================================================
+    //  Branch Target & Jump Multiplexing
+    // =========================================================================
     always_comb begin
         if (ex_jfexe) begin
             br_taken = 1'b1;
@@ -40,27 +46,33 @@ module fetch_stage import risc_v_pkg::*;
         end
     end
 
+    // =========================================================================
+    //  Submodules Instantiations
+    // =========================================================================
+
+    // --- Program Counter ---
     program_counter #(
         .WIDTH         ( $bits(Addr_t) ),
         .PC_START_ADDR ( PC_START_ADDR )
     ) pc_inst (
-        .clk      ( clk ),
-        .rst      ( rst ),
+        .clk      ( clk      ),
+        .rst      ( rst      ),
         .br_taken ( br_taken ),
-        .pc_br    ( pc_br ),
+        .pc_br    ( pc_br    ),
         .pc_stall ( stall_if ),
-        .pc       ( pc ),
-        .pc_next  ( pc_next )
+        .pc       ( pc       ),
+        .pc_next  ( pc_next  )
     );
 
+    // =========================================================================
+    //  IF / ID Pipeline Registers
+    // =========================================================================
     assign imem_addr = pc_next;
     assign pc_D      = pc;
     assign instr_D   = instr;
 
     always_ff @(posedge clk) begin
-        if (rst) begin
-            valid_D <= 1'b0;
-        end else if (flush_if) begin
+        if (rst || flush_if) begin
             valid_D <= 1'b0;
         end else if (!stall_if) begin
             valid_D <= 1'b1;
