@@ -5,24 +5,30 @@ module decode_stage import risc_v_pkg::*;
     input  logic               clk,
     input  logic               rst,
 
+//---------HAZARD UNIT WIRES----------
     input  logic               stall_id,
     input  logic               flush_id,
 
-    input  Addr_t              pc_D,
-    input  Instr_t             instr_D,
-    input  logic               valid_D,
-
     output logic               id_jfid,
     output Addr_t              id_imm_pc,
+    output logic [OPCODE_WIDTH-1:0] id_opcode,
+//------------------------------------
 
-//------REGISTER FILE ACCESS--------
+//-------REGISTER FILE ACCESS---------
     output RegAddr_t           rs1,
     output RegAddr_t           rs2,
 
     input  Data_t              rd1,
     input  Data_t              rd2,
-//----------------------------------
+//------------------------------------
 
+//----------INPUT REGISTERS-----------
+    input  Addr_t              pc_D,
+    input  Instr_t             instr_D,
+    input  logic               valid_D,
+//------------------------------------
+
+//----------INPUT REGISTERS-----------
     output Addr_t              pc_E,
     output Data_t              rd1_E,
     output Data_t              rd2_E,
@@ -32,10 +38,16 @@ module decode_stage import risc_v_pkg::*;
     output RegAddr_t           rd_E,
     output Id_controls_out_t   id_controls_E,
     output logic               valid_E
+//------------------------------------
+
 );
 
-    RegAddr_t rd;
-    Data_t imm;
+    // =========================================================================
+    //  Internal Signals & Structs
+    // =========================================================================
+
+    RegAddr_t         rd;
+    Data_t            imm;
 
     Id_instr_t        id_instr;
     Id_controls_in_t  id_controls_in;
@@ -44,6 +56,10 @@ module decode_stage import risc_v_pkg::*;
 
     Imm_input_t       ig_imm_input;
 
+
+    // =========================================================================
+    //  Instruction Decoding & Field Extraction
+    // =========================================================================
 
     assign rs1 = instr_D[19:15];
     assign rs2 = instr_D[24:20];
@@ -58,31 +74,42 @@ module decode_stage import risc_v_pkg::*;
 
     assign id_imm_pc = pc_D + imm;
     assign id_jfid   = valid_D & (~id_output_controls.pc_sel);
+    assign id_opcode = id_instr.opcode;
 
 
+    // =========================================================================
+    //  Submodules Instantiations
+    // =========================================================================
+
+    // --- Istruction Decoder UNIT  ---
     id id_inst (
         .instr           ( id_instr           ),
-        .input_controls  ( id_controls_in    ),
+        .input_controls  ( id_controls_in     ),
         .output_controls ( id_output_controls ),
         .illegal         ( id_illegal         )
     );
 
+    // --- Immediate Generator ---
     imm_gen imm_gen_inst (
         .Imm_in   ( ig_imm_input             ),
         .imm_type ( id_output_controls.imm_type ),
         .imm      ( imm                      )
     );
 
+    // --- Branch Unit ---
     branch_unit_m #(
         .XLEN ( XLEN )
     ) branch_unit_inst (
-        .rd1   ( rd1                 ),
-        .rd2   ( rd2                 ),
+        .rd1   ( rd1                  ),
+        .rd2   ( rd2                  ),
         .br_un ( id_output_controls.br_un ),
         .br_eq ( id_controls_in.br_eq ),
         .br_lt ( id_controls_in.br_lt )
     );
 
+    // =========================================================================
+    //  ID / EX Pipeline Registers
+    // =========================================================================
     always_ff @(posedge clk) begin
         if (rst || flush_id) begin
             pc_E          <= '0;
