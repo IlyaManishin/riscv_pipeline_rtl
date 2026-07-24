@@ -23,6 +23,7 @@ src/rtl/modules/id.sv
 src/rtl/modules/imm_gen.sv
 src/rtl/modules/pc.sv
 src/rtl/modules/shifter_alu.sv
+src/rtl/modules/hazard_detection_unit.sv
 
 src/rtl/stages/fetch.sv
 src/rtl/stages/decode.sv

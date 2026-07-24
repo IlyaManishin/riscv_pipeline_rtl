@@ -182,24 +182,41 @@ typedef enum logic [WB_SEL_LEN-1:0] {
 } WB_SEL_t;
 
 
+localparam int DMEM_SEL_LEN = 4;
+typedef enum logic [DMEM_SEL_LEN-1:0] {
+    DMEM_NONE = 4'b0000,
+    DMEM_LB   = 4'b0000,
+    DMEM_LH   = 4'b0001,
+    DMEM_LW   = 4'b0010,
+    DMEM_LBU  = 4'b0100,
+    DMEM_LHU  = 4'b0101,
+    DMEM_SB   = 4'b1000,
+    DMEM_SH   = 4'b1001,
+    DMEM_SW   = 4'b1010,
+    DMEM_ANY  = 4'bxxxx
+} dmem_sel_t;
+
+
 /*
  * Instruction decoder control OUTPUT signals.
  *
  * Output control signals:
- *   - reg_wr      write to RF - 0: disabled, 1: enabled
- *   - dmem_we     write to DMEM - 0: disabled, 1: enabled
- *   - a_sel       first operand for ALU - 0: PC, 1: rd1
- *   - b_sel       second operand for ALU - 0: imm, 1: rd2
- *   - sh_sel      type of shift - 3'b100: SLL, 3'b010: SRL, 3'b001: SRA
- *   - br_un       type of branch comparison - 0: signed, 1: unsigned
- *   - pc_sel      next PC is - 0: ALU output, 1: PC+4
- *   - alu_sel     ALU op code: 0: add, 1: sub, 2: and, 3: or, 4: xor, 5: slt, 6: sltu, 7: lui, 8: jalr
- *   - wb_sel      source for write to RF: 0: PC+4, 1: ALU out, 2: shifter out, 3: dmem out
- *   - imm_type    type of instruction: 0: R, 1: I, 2: S, 3: B, 4: U, 5: J
+ *   - reg_wr       write to RF - 0: disabled, 1: enabled
+ *   - dmem_sel     DMEM operation type: LB, LH, LW, LBU, LHU, SB, SH, SW, NONE
+ *   - a_sel        first operand for ALU - 0: PC, 1: rd1
+ *   - b_sel        second operand for ALU - 0: imm, 1: rd2
+ *   - sh_sel       type of shift - 3'b100: SLL, 3'b010: SRL, 3'b001: SRA
+ *   - br_un        type of branch comparison - 0: signed, 1: unsigned
+ *   - pc_sel       next PC is - 0: ALU output, 1: PC+4
+ *   - alu_sel      ALU op code: 0: add, 1: sub, 2: and, 3: or, 4: xor, 5: slt, 6: sltu, 7: lui, 8: jalr
+ *   - wb_sel       source for write to RF: 0: PC+4, 1: ALU out, 2: shifter out, 3: dmem out
+ *   - imm_type     type of instruction: 0: R, 1: I, 2: S, 3: B, 4: U, 5: J
+ *   - jf_exe       jump flag execution: 1 for JALR, 0 otherwise
+ *   - alushift_sel alu/shifter select: 1 for shift instructions, 0 otherwise
  */
 typedef struct packed {
     logic        reg_wr;
-    logic        dmem_we;
+    dmem_sel_t   dmem_sel;
     logic        a_sel;
     logic        b_sel;
     shift_sel_t  sh_sel;
@@ -208,6 +225,8 @@ typedef struct packed {
     ALU_SEL_t    alu_sel;
     WB_SEL_t     wb_sel;
     Imm_type_t   imm_type;
+    logic        jf_exe;
+    logic        alushift_sel;
 } Id_controls_out_t;
 
 
@@ -350,5 +369,3 @@ endfunction : disasm
 endpackage : risc_v_pkg
 
 `endif // RISC_V_SVH
-
-
