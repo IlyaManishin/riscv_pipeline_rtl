@@ -92,28 +92,34 @@ puts $fh "\`define VIDEO_HALF_RESOLUTION $video_320x240"
 puts $fh "\`endif"
 close $fh
 
-add_files -fileset sources_1              \
-         $rtlDir/cpu_system.sv            \
-         $rtlDir/cpu_core.sv              \
-         $rtlDir/modules/pc.sv            \
-         $rtlDir/modules/id.sv            \
-         $rtlDir/modules/branch_unit_m.sv \
-         $rtlDir/memory/imem.sv           \
+add_files -fileset sources_1                     \
+         $rtlDir/cpu_system.sv                   \
+         $rtlDir/cpu_core.sv                     \
+         $rtlDir/stages/fetch.sv                 \
+         $rtlDir/stages/decode.sv                \
+         $rtlDir/stages/execute.sv               \
+         $rtlDir/stages/memory.sv                \
+         $rtlDir/stages/writeback.sv             \
+         $rtlDir/modules/hazard_detection_unit.sv\
+         $rtlDir/modules/pc.sv                   \
+         $rtlDir/modules/id.sv                   \
+         $rtlDir/modules/branch_unit_m.sv        \
+         $rtlDir/memory/imem.sv                  \
          $rtlDir/memory/risc_v_dmem_rd_port_m.sv \
          $rtlDir/memory/risc_v_dmem_wr_port_m.sv \
-         $rtlDir/modules/imm_gen.sv       \
-         $rtlDir/memory/register_file.sv  \
-         $rtlDir/modules/alu.sv           \
-         $rtlDir/modules/shifter_alu.sv   \
-         $rtlDir/uart_wrapper.sv          \
-         $rtlDir/lib/dual_port_mem.sv     \
-         $libDir/rst_m.sv                    \
-         $libDir/uart.sv                  \
-         $vgaDir/sync_gen.sv              \
-         $vgaDir/syncer.sv                \
-         $vgaDir/vga.sv                   \
-         $vgaDir/video_out.sv             \
-         $vgaDir/vram_reader.sv           \
+         $rtlDir/modules/imm_gen.sv              \
+         $rtlDir/memory/register_file.sv         \
+         $rtlDir/modules/alu.sv                  \
+         $rtlDir/modules/shifter_alu.sv          \
+         $rtlDir/uart_wrapper.sv                 \
+         $rtlDir/lib/dual_port_mem.sv            \
+         $libDir/rst_m.sv                        \
+         $libDir/uart.sv                         \
+         $vgaDir/sync_gen.sv                     \
+         $vgaDir/syncer.sv                       \
+         $vgaDir/vga.sv                          \
+         $vgaDir/video_out.sv                    \
+         $vgaDir/vram_reader.sv                  \
          $init_def_file
 
 if $board_basys_3 {
@@ -181,7 +187,7 @@ if $build_pll_ip {
         set content [read $fp]
         close $fp
     
-        regsub -all {RV_TIME_BASE\s*=\s*\d+} $content \"RV_TIME_BASE  = $time_base_ns\" content
+        regsub -all {RV_TIME_BASE\s*=\s*\d+} $content "RV_TIME_BASE  = $time_base_ns" content
     
         set fp [open $svh_file w]
         puts $fp $content
