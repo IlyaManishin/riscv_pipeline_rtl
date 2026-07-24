@@ -176,8 +176,7 @@ localparam int WB_SEL_LEN = 2;
 typedef enum logic [WB_SEL_LEN-1:0] {
     WB_PC4_OUT     = 2'b00,
     WB_ALU_OUT     = 2'b01,
-    WB_SHIFTER_OUT = 2'b10,
-    WB_DMEM_OUT    = 2'b11,
+    WB_DMEM_OUT    = 2'b10,
     WB_ANY         = 2'bxx 
 } wb_sel_t;
 
