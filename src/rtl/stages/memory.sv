@@ -34,7 +34,7 @@ module memory_stage import risc_v_pkg::*;
 
     assign dmem_addr     = alu_res_M;
     assign dmem_byte_off = alu_res_M[1:0];
-    assign dmem_we       = valid_M & id_controls_M.dmem_we;
+    assign dmem_we       = id_controls_M.dmem_we;
 
     risc_v_dmem_wr_port_m dmem_wr_port_inst (
         .dmem_we   ( dmem_we                   ),

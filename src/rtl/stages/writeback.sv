@@ -11,11 +11,11 @@ module writeback_stage import risc_v_pkg::*;
 
     output RegAddr_t         wb_rd,
     output Data_t            wb_wd3,
-    output logic             wb_rf_we3
+    output logic             wb_we3
 );
 
-    assign wb_rd     = rd_W;
-    assign wb_rf_we3 = valid_W & id_controls_W.reg_wr;
+    assign wb_rd  = rd_W;
+    assign wb_we3 = id_controls_W.reg_wr;
 
     always_comb begin
         case (id_controls_W.wb_sel)

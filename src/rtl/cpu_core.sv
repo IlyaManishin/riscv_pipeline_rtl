@@ -1,239 +1,232 @@
-//------------------------------------------------------------------------------
-//  project:       RISC-V (SberLab Novosibirsk State University)
-//     
-//  modules:       cpu_core_m 
-//     
-//  description:   - RISC-V processor (RV32I ISA) single-cycle uArch
-//                 - processor core
-//------------------------------------------------------------------------------
-
 `include "risc-v.svh"
 
-//******************************************************************************
-//******************************************************************************
 module cpu_core_m import risc_v_pkg::*;
 (
-    //---
     input  logic         clk,
     input  logic         rst,
-    
-    //--- imem interface
+
+    // =========================================================================
+    //  Instruction Memory Interface
+    // =========================================================================
     output Addr_t        imem_addr,
-    input  Instr_t       instr,    
-    
-    //--- dmem interface 
+    input  Instr_t       instr,
+
+    // =========================================================================
+    //  Data Memory Interface
+    // =========================================================================
     output Addr_t        dmem_addr,
     output ByteDataEna_t dmem_byte_we,
     output Data_t        dmem_data_in,
     input  Data_t        dmem_data_out
-
-    //--- additional status info (i.e. for exceptions)
-    //output logic         illegal_instr
 );
 
-//timeunit      1ns;
-//timeprecision 1ps;
+    // =========================================================================
+    //  Hazard Detection Unit Signals & Instance
+    // =========================================================================
+    logic stall_pc;
+    logic stall_if_id;
+    logic flush_if_id;
+    logic flush_id_ex;
 
-//==============================================================================
+    logic ex_reg_wr;
+    logic mem_reg_wr;
 
-//---
-Addr_t pc;
+    assign ex_reg_wr  = valid_E & id_controls_E.reg_wr;
+    assign mem_reg_wr = valid_M & id_controls_M.reg_wr;
 
-//---
-RegAddr_t rs1;
-RegAddr_t rs2;
-RegAddr_t rd;
-logic we3;
-Data_t imm;
-logic b_sel;
+    hazard_detection_unit hazard_unit_inst (
+        .id_rs1      ( rs1                  ),
+        .id_rs2      ( rs2                  ),
+        .id_opcode   ( id_opcode            ),
+        .id_jf_exe   ( id_controls_E.jf_exe ),
+        .id_jfid     ( id_jfid              ),
+        .ex_reg_wr   ( ex_reg_wr            ),
+        .ex_rd       ( rd_E                 ),
+        .ex_jfexe    ( ex_jfexe             ),
+        .mem_reg_wr  ( mem_reg_wr           ),
+        .mem_rd      ( rd_M                 ),
+        .wb_reg_wr   ( wb_rf_we3            ),
+        .wb_rd       ( wb_rd                ),
+        .stall_pc    ( stall_pc             ),
+        .stall_if_id ( stall_if_id          ),
+        .flush_if_id ( flush_if_id          ),
+        .flush_id_ex ( flush_id_ex          )
+    );
 
-//---
-Data_t rf_rd1;
-Data_t rf_rd2;
-Data_t rf_wd3;
-logic  rf_we3;
+    // =========================================================================
+    //  Fetch Stage (IF) Signals & Instance
+    // =========================================================================
+    Addr_t  pc_D;
+    Instr_t instr_D;
+    logic   valid_D;
 
-//--- Shifter
-Data_t shifter_out;
-shift_shamt_t shift_shamt;
+    fetch_stage fetch_stage_inst (
+        .clk       ( clk         ),
+        .rst       ( rst         ),
+        .stall_if  ( stall_pc    ),
+        .flush_if  ( flush_if_id ),
+        .id_jfid   ( id_jfid     ),
+        .id_imm_pc ( id_imm_pc   ),
+        .ex_jfexe  ( ex_jfexe    ),
+        .ex_alures ( ex_alures   ),
+        .imem_addr ( imem_addr   ),
+        .instr     ( instr       ),
+        .pc_D      ( pc_D        ),
+        .instr_D   ( instr_D     ),
+        .valid_D   ( valid_D     )
+    );
 
-//--- ALU
-Data_t    alu_in_a;
-Data_t    alu_in_b;
-Data_t    alu_out;
+    // =========================================================================
+    //  Decode Stage (ID) Signals & Instance
+    // =========================================================================
+    logic                    id_jfid;
+    Addr_t                   id_imm_pc;
+    logic [OPCODE_WIDTH-1:0] id_opcode;
 
-//--- ID
-Id_instr_t id_instr;
-Id_controls_in_t id_controls_in;
-Id_controls_out_t id_output_controls;
-logic id_illegal;
+    RegAddr_t                rs1;
+    RegAddr_t                rs2;
+    Data_t                   rf_rd1;
+    Data_t                   rf_rd2;
 
-//--- IG
-Imm_input_t Ig_Imm_input;
+    Addr_t                   pc_E;
+    Data_t                   rd1_E;
+    Data_t                   rd2_E;
+    Data_t                   imm_E;
+    RegAddr_t                rs1_E;
+    RegAddr_t                rs2_E;
+    RegAddr_t                rd_E;
+    Id_controls_out_t        id_controls_E;
+    logic                    valid_E;
 
+    decode_stage decode_stage_inst (
+        .clk           ( clk           ),
+        .rst           ( rst           ),
+        .stall_id      ( stall_if_id   ),
+        .flush_id      ( flush_id_ex   ),
+        .id_jfid       ( id_jfid       ),
+        .id_imm_pc     ( id_imm_pc     ),
+        .id_opcode     ( id_opcode     ),
+        .rs1           ( rs1           ),
+        .rs2           ( rs2           ),
+        .rd1           ( rf_rd1        ),
+        .rd2           ( rf_rd2        ),
+        .pc_D          ( pc_D          ),
+        .instr_D       ( instr_D       ),
+        .valid_D       ( valid_D       ),
+        .pc_E          ( pc_E          ),
+        .rd1_E         ( rd1_E         ),
+        .rd2_E         ( rd2_E         ),
+        .imm_E         ( imm_E         ),
+        .rs1_E         ( rs1_E         ),
+        .rs2_E         ( rs2_E         ),
+        .rd_E          ( rd_E          ),
+        .id_controls_E ( id_controls_E ),
+        .valid_E       ( valid_E       )
+    );
 
-//--- DMEM
-logic       dmem_we;
-logic [2:0] dmem_funct3;
-logic [1:0] dmem_byte_off;
-Data_t      dmem_rdata_out;
-Data_t      dmem_wdata_in;
+    // =========================================================================
+    //  Register File Instance
+    // =========================================================================
+    register_file #(
+        .XLEN ( XLEN )
+    ) rf_inst (
+        .clk  ( clk       ),
+        .rsi1 ( rs1       ),
+        .rs1  ( rf_rd1    ),
+        .rsi2 ( rs2       ),
+        .rs2  ( rf_rd2    ),
+        .rdi  ( wb_rd     ),
+        .rd   ( wb_wd3    ),
+        .we   ( wb_rf_we3 )
+    );
 
-//==============================================================================
-assign imem_addr = pc;
+    // =========================================================================
+    //  Execute Stage (EX) Signals & Instance
+    // =========================================================================
+    logic             ex_jfexe;
+    Data_t            ex_alures;
 
-assign dmem_addr   = rf_rd1 + imm;  // TODO: +imm
-assign dmem_we     = id_output_controls.dmem_we;
-assign dmem_funct3 = instr[14:12];
-assign dmem_byte_off = dmem_addr[1:0];
-assign dmem_wdata_in  = rf_rd2;
+    Data_t            alu_res_M;
+    Data_t            rd2_M;
+    RegAddr_t         rd_M;
+    Addr_t            pc4_M;
+    Id_controls_out_t id_controls_M;
+    logic             valid_M;
 
-assign alu_in_a = id_output_controls.a_sel? rf_rd1 : pc;
-assign alu_in_b = id_output_controls.b_sel? rf_rd2 : imm;
+    execute_stage execute_stage_inst (
+        .clk           ( clk           ),
+        .rst           ( rst           ),
+        .stall_ex      ( 1'b0          ),
+        .flush_ex      ( 1'b0          ),
+        .pc_E          ( pc_E          ),
+        .rd1_E         ( rd1_E         ),
+        .rd2_E         ( rd2_E         ),
+        .imm_E         ( imm_E         ),
+        .rs1_E         ( rs1_E         ),
+        .rs2_E         ( rs2_E         ),
+        .rd_E          ( rd_E          ),
+        .id_controls_E ( id_controls_E ),
+        .valid_E       ( valid_E       ),
+        .ex_jfexe      ( ex_jfexe      ),
+        .ex_alures     ( ex_alures     ),
+        .alu_res_M     ( alu_res_M     ),
+        .rd2_M         ( rd2_M         ),
+        .rd_M          ( rd_M          ),
+        .pc4_M         ( pc4_M         ),
+        .id_controls_M ( id_controls_M ),
+        .valid_M       ( valid_M       )
+    );
 
-assign shift_shamt = id_output_controls.b_sel? rf_rd2[4:0] : instr[24:20];
+    // =========================================================================
+    //  Memory Stage (MEM) Signals & Instance
+    // =========================================================================
+    Data_t            alu_res_W;
+    Data_t            dmem_data_W;
+    RegAddr_t         rd_W;
+    Addr_t            pc4_W;
+    Id_controls_out_t id_controls_W;
+    logic             valid_W;
 
-assign rf_we3 = id_output_controls.reg_wr & !rst;
+    memory_stage memory_stage_inst (
+        .clk           ( clk           ),
+        .rst           ( rst           ),
+        .stall_mem     ( 1'b0          ),
+        .flush_mem     ( 1'b0          ),
+        .alu_res_M     ( alu_res_M     ),
+        .rd2_M         ( rd2_M         ),
+        .rd_M          ( rd_M          ),
+        .pc4_M         ( pc4_M         ),
+        .id_controls_M ( id_controls_M ),
+        .valid_M       ( valid_M       ),
+        .dmem_addr     ( dmem_addr     ),
+        .dmem_byte_we  ( dmem_byte_we  ),
+        .dmem_data_in  ( dmem_data_in  ),
+        .dmem_data_out ( dmem_data_out ),
+        .alu_res_W     ( alu_res_W     ),
+        .dmem_data_W   ( dmem_data_W   ),
+        .rd_W          ( rd_W          ),
+        .pc4_W         ( pc4_W         ),
+        .id_controls_W ( id_controls_W ),
+        .valid_W       ( valid_W       )
+    );
 
-//source for write to RF: 0: PC+4, 1: ALU out, 2: shifter out, 3: dmem out
-always_comb begin
-    case (id_output_controls.wb_sel)
-        WB_PC4_OUT     : rf_wd3 = pc+4;
-        WB_ALU_OUT     : rf_wd3 = alu_out;
-        WB_SHIFTER_OUT : rf_wd3 = shifter_out;
-        WB_DMEM_OUT    : rf_wd3 = dmem_rdata_out;
-        default: rf_wd3 = 'X;
-    endcase
-end
+    // =========================================================================
+    //  Writeback Stage (WB) Signals & Instance
+    // =========================================================================
+    RegAddr_t wb_rd;
+    Data_t    wb_wd3;
+    logic     wb_rf_we3;
 
-assign Ig_Imm_input = instr[31:7];
+    writeback_stage writeback_stage_inst (
+        .alu_res_W     ( alu_res_W     ),
+        .dmem_data_W   ( dmem_data_W   ),
+        .rd_W          ( rd_W          ),
+        .pc4_W         ( pc4_W         ),
+        .id_controls_W ( id_controls_W ),
+        .valid_W       ( valid_W       ),
+        .wb_rd         ( wb_rd         ),
+        .wb_wd3        ( wb_wd3        ),
+        .wb_we3        ( wb_rf_we3     )
+    );
 
-assign id_instr.funct7 = instr[30];
-assign id_instr.funct3 = instr[14:12];
-assign id_instr.opcode = instr[6:2];
-assign id_instr.ones   = instr[1:0];
-assign rs1 = instr[19:15];
-assign rs2 = instr[24:20];
-assign rd = instr[11:7];
-//==============================================================================
-
-//--------------------- PROGRAM COUNTER -----------------------------------------------
-(* keep_hierarchy = `PRJ_KEEP_HIEARARCHY *)
-program_counter
-#(
-    .WIDTH         ( $bits(Addr_t) ),
-    .PC_START_ADDR ( PC_START_ADDR)
-)
-pc_inst
-(
-    .clk      ( clk ),
-    .rst      ( rst ),
-    .br_taken ( ~id_output_controls.pc_sel ),
-    .pc_br    ( alu_out  ),
-    .pc       ( pc       )
-);
-
-//--------------------- INSTRUCTION DECODER -------------------------------------------
-(* keep_hierarchy = `PRJ_KEEP_HIEARARCHY *)
-id id_inst
-(
-    .instr ( id_instr ),
-    .input_controls ( id_controls_in ),
-    .output_controls (id_output_controls),
-    .illegal (id_illegal)
-);
-//--------------------- REGISTER FILE -------------------------------------------------
-(* keep_hierarchy = `PRJ_KEEP_HIEARARCHY *)
-register_file
-#(
-    .XLEN ( XLEN )
-)
-rf_inst
-(
-    .clk  ( clk    ),
-
-    .rsi1 ( rs1    ),
-    .rs1  ( rf_rd1 ),
-
-    .rsi2 ( rs2    ),
-    .rs2  ( rf_rd2 ),
-
-    .rdi  ( rd     ),
-    .rd   ( rf_wd3 ),
-
-    .we   ( rf_we3 )
-);
-
-//--------------------- ALU -----------------------------------------------------
-(* keep_hierarchy = `PRJ_KEEP_HIEARARCHY *)
-alu_m
-#(
-    .XLEN ( XLEN )
-)
-alu_inst
-(
-    .sel ( id_output_controls.alu_sel  ),   
-    .a   ( alu_in_a ),
-    .b   ( alu_in_b ),
-    .res ( alu_out  )
-);
-
-//--------------------- Shifter ------------------------
-risc_v_shifter_m
-#(
-    .XLEN ( XLEN )
-)
-shifter_inst
-(
-   .data (rf_rd1),
-   .shamt (shift_shamt),
-   .sel(id_output_controls.sh_sel),
-   .res (shifter_out)
-);
-
-//--------------------- IMM_GEN ------------------------
-imm_gen imm_gen_inst
-(
-    .Imm_in (Ig_Imm_input),
-    .imm_type (id_output_controls.imm_type),
-    .imm (imm)
-);
-
-//--------------------- DMEM ------------------------
-risc_v_dmem_wr_port_m dmem_wr_port_inst
-(
-    // -- in
-    .dmem_we (dmem_we),
-    .funct3 (dmem_funct3),
-    .byte_addr (dmem_byte_off),
-    .data_in (dmem_wdata_in),
-    // -- out
-    .we (dmem_byte_we),
-    .data_out (dmem_data_in)
-);
-
-risc_v_dmem_rd_port_m dmem_rd_port_inst
-(
-    // -- in
-    .funct3 (dmem_funct3),
-    .byte_addr (dmem_byte_off),
-    .data_in(dmem_data_out),
-    // -- out
-    .data_out(dmem_rdata_out)
-);
-
-//--------------------- Branch unit --------------------
-branch_unit_m
-#(
-    .XLEN ( XLEN )
-)
-branch_unit_inst
-(
-    .rd1(rf_rd1),
-    .rd2(rf_rd2),
-    .br_un(id_output_controls.br_un),
-    .br_eq(id_controls_in.br_eq),
-    .br_lt(id_controls_in.br_lt)
-);
-
-endmodule : cpu_core_m
+endmodule : cpu_core_m 
