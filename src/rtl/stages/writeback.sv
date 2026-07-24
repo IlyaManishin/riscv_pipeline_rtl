@@ -19,11 +19,10 @@ module writeback_stage import risc_v_pkg::*;
 
     always_comb begin
         case (id_controls_W.wb_sel)
-            WB_PC4_OUT     : wb_wd3 = pc4_W;
-            WB_ALU_OUT     : wb_wd3 = alu_out_W;
-            WB_SHIFTER_OUT : wb_wd3 = alu_out_W;
-            WB_DMEM_OUT    : wb_wd3 = dmem_data_W;
-            default        : wb_wd3 = '0;
+            WB_PC4_OUT : wb_wd3 = pc4_W;
+            WB_ALU_OUT : wb_wd3 = alu_out_W;
+            WB_DMEM_OUT: wb_wd3 = dmem_data_W;
+            default    : wb_wd3 = '0;
         endcase
     end
 

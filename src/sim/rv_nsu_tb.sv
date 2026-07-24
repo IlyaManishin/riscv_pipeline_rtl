@@ -12,7 +12,7 @@
 `include "risc-v.svh"
 `include "video_config.svh"
 
-//`define TRACE_LOGGER_ENA
+`define TRACE_LOGGER_ENA
 
 
 //******************************************************************************

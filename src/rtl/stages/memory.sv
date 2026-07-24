@@ -34,11 +34,11 @@ module memory_stage import risc_v_pkg::*;
 
     assign dmem_addr     = alu_out_M;
     assign dmem_byte_off = alu_out_M[1:0];
-    assign dmem_we       = id_controls_M.dmem_we;
+    assign dmem_we       = id_controls_M.dmem_sel.dmem_we;
 
     risc_v_dmem_wr_port_m dmem_wr_port_inst (
         .dmem_we   ( dmem_we                   ),
-        .funct3    ( id_controls_M.dmem_funct3 ),
+        .funct3    ( id_controls_M.dmem_sel.funct3 ),
         .byte_addr ( dmem_byte_off             ),
         .data_in   ( rd2_M                     ),
         .we        ( dmem_byte_we              ),
@@ -46,7 +46,7 @@ module memory_stage import risc_v_pkg::*;
     );
 
     risc_v_dmem_rd_port_m dmem_rd_port_inst (
-        .funct3    ( id_controls_M.dmem_funct3 ),
+        .funct3    ( id_controls_M.dmem_sel.funct3 ),
         .byte_addr ( dmem_byte_off             ),
         .data_in   ( dmem_data_out             ),
         .data_out  ( dmem_rdata                )
