@@ -12,7 +12,7 @@ module program_counter import risc_v_pkg::*;
     input  logic  br_taken,
     input  Addr_t pc_br,
 
-    //-----Stall-----
+    //-----Stall------
     input  logic  pc_stall,
 
     output Addr_t pc,
@@ -38,4 +38,4 @@ module program_counter import risc_v_pkg::*;
         pc <= pc_next;
     end
 
-endmodule : program_counter;
+endmodule : program_counter

@@ -184,15 +184,15 @@ typedef enum logic [WB_SEL_LEN-1:0] {
 
 localparam int DMEM_SEL_LEN = 4;
 typedef enum logic [DMEM_SEL_LEN-1:0] {
-    DMEM_NONE = 4'b0000,
     DMEM_LB   = 4'b0000,
     DMEM_LH   = 4'b0001,
-    DMEM_LW   = 4'b0010,
-    DMEM_LBU  = 4'b0100,
-    DMEM_LHU  = 4'b0101,
+    DMEM_LW   = 4'b0100,
+    DMEM_LBU  = 4'b0101,
+    DMEM_LHU  = 4'b0110,
     DMEM_SB   = 4'b1000,
     DMEM_SH   = 4'b1001,
     DMEM_SW   = 4'b1010,
+    DMEM_NONE = 4'b1111,
     DMEM_ANY  = 4'bxxxx
 } dmem_sel_t;
 

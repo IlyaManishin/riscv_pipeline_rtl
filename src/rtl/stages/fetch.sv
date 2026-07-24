@@ -52,7 +52,6 @@ module fetch_stage import risc_v_pkg::*;
 
     // --- Program Counter ---
     program_counter #(
-        .WIDTH         ( $bits(Addr_t) ),
         .PC_START_ADDR ( PC_START_ADDR )
     ) pc_inst (
         .clk      ( clk      ),

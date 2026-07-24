@@ -29,4 +29,4 @@ always_comb begin
   endcase
 end
 
-endmodule : alu_m;
+endmodule : alu_m

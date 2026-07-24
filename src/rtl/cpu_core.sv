@@ -31,8 +31,8 @@ module cpu_core_m import risc_v_pkg::*;
     logic ex_reg_wr;
     logic mem_reg_wr;
 
-    assign ex_reg_wr  = valid_E & id_controls_E.reg_wr;
-    assign mem_reg_wr = valid_M & id_controls_M.reg_wr;
+    assign ex_reg_wr  = id_controls_E.reg_wr;
+    assign mem_reg_wr = id_controls_M.reg_wr;
 
     hazard_detection_unit hazard_unit_inst (
         .id_rs1      ( rs1                  ),
@@ -51,6 +51,31 @@ module cpu_core_m import risc_v_pkg::*;
         .stall_if_id ( stall_if_id          ),
         .flush_if_id ( flush_if_id          ),
         .flush_id_ex ( flush_id_ex          )
+    );
+
+    // =========================================================================
+    //  Register File Signals & Instance
+    // =========================================================================
+    RegAddr_t rs1;
+    RegAddr_t rs2;
+    Data_t    rf_rd1;
+    Data_t    rf_rd2;
+
+    RegAddr_t wb_rd;
+    Data_t    wb_wd3;
+    logic     wb_rf_we3;
+
+    register_file #(
+        .XLEN ( XLEN )
+    ) rf_inst (
+        .clk  ( clk       ),
+        .rsi1 ( rs1       ),
+        .rs1  ( rf_rd1    ),
+        .rsi2 ( rs2       ),
+        .rs2  ( rf_rd2    ),
+        .rdi  ( wb_rd     ),
+        .rd   ( wb_wd3    ),
+        .we   ( wb_rf_we3 )
     );
 
     // =========================================================================
@@ -82,11 +107,6 @@ module cpu_core_m import risc_v_pkg::*;
     logic                    id_jfid;
     Addr_t                   id_imm_pc;
     logic [OPCODE_WIDTH-1:0] id_opcode;
-
-    RegAddr_t                rs1;
-    RegAddr_t                rs2;
-    Data_t                   rf_rd1;
-    Data_t                   rf_rd2;
 
     Addr_t                   pc_E;
     Data_t                   rd1_E;
@@ -122,22 +142,6 @@ module cpu_core_m import risc_v_pkg::*;
         .rd_E          ( rd_E          ),
         .id_controls_E ( id_controls_E ),
         .valid_E       ( valid_E       )
-    );
-
-    // =========================================================================
-    //  Register File Instance
-    // =========================================================================
-    register_file #(
-        .XLEN ( XLEN )
-    ) rf_inst (
-        .clk  ( clk       ),
-        .rsi1 ( rs1       ),
-        .rs1  ( rf_rd1    ),
-        .rsi2 ( rs2       ),
-        .rs2  ( rf_rd2    ),
-        .rdi  ( wb_rd     ),
-        .rd   ( wb_wd3    ),
-        .we   ( wb_rf_we3 )
     );
 
     // =========================================================================
@@ -213,10 +217,6 @@ module cpu_core_m import risc_v_pkg::*;
     // =========================================================================
     //  Writeback Stage (WB) Signals & Instance
     // =========================================================================
-    RegAddr_t wb_rd;
-    Data_t    wb_wd3;
-    logic     wb_rf_we3;
-
     writeback_stage writeback_stage_inst (
         .alu_res_W     ( alu_res_W     ),
         .dmem_data_W   ( dmem_data_W   ),
@@ -229,4 +229,4 @@ module cpu_core_m import risc_v_pkg::*;
         .wb_we3        ( wb_rf_we3     )
     );
 
-endmodule : cpu_core_m 
+endmodule : cpu_core_m
