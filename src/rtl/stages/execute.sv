@@ -21,7 +21,7 @@ module execute_stage import risc_v_pkg::*;
     output logic               ex_jfexe,
     output Data_t              ex_alures,
 
-    output Data_t              alu_res_M,
+    output Data_t              alu_out_M,
     output Data_t              rd2_M,
     output RegAddr_t           rd_M,
     output Addr_t              pc4_M,
@@ -31,9 +31,9 @@ module execute_stage import risc_v_pkg::*;
 
     Data_t        alu_in_a;
     Data_t        alu_in_b;
-    Data_t        alu_out;
+    Data_t        alu_res;
     Data_t        shifter_out;
-    Data_t        alu_out_final;
+    Data_t        alu_out;
     shift_shamt_t shift_shamt;
     Addr_t        pc4_E;
 
@@ -42,10 +42,10 @@ module execute_stage import risc_v_pkg::*;
     assign shift_shamt = id_controls_E.b_sel ? rd2_E[4:0] : rs2_E[4:0];
 
     assign pc4_E       = pc_E + 32'd4;
-    assign ex_alures   = alu_out;
+    assign ex_alures   = alu_res;
     assign ex_jfexe    = valid_E & id_controls_E.jf_exe;
 
-    assign alu_out_final = id_controls_E.alushift_sel ? shifter_out : alu_out;
+    assign alu_out = id_controls_E.alushift_sel ? shifter_out : alu_res;
 
     alu_m #(
         .XLEN ( XLEN )
@@ -53,7 +53,7 @@ module execute_stage import risc_v_pkg::*;
         .sel ( id_controls_E.alu_sel ),
         .a   ( alu_in_a ),
         .b   ( alu_in_b ),
-        .res ( alu_out )
+        .res ( alu_res )
     );
 
     risc_v_shifter_m #(
@@ -67,14 +67,14 @@ module execute_stage import risc_v_pkg::*;
 
     always_ff @(posedge clk) begin
         if (rst || flush_ex) begin
-            alu_res_M     <= '0;
+            alu_out_M     <= '0;
             rd2_M         <= '0;
             rd_M          <= '0;
             pc4_M         <= '0;
             id_controls_M <= '0;
             valid_M       <= 1'b0;
         end else if (!stall_ex) begin
-            alu_res_M     <= alu_out_final;
+            alu_out_M     <= alu_out;
             rd2_M         <= rd2_E;
             rd_M          <= rd_E;
             pc4_M         <= pc4_E;

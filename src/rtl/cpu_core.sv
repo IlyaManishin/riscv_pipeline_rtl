@@ -150,7 +150,7 @@ module cpu_core_m import risc_v_pkg::*;
     logic             ex_jfexe;
     Data_t            ex_alures;
 
-    Data_t            alu_res_M;
+    Data_t            alu_out_M;
     Data_t            rd2_M;
     RegAddr_t         rd_M;
     Addr_t            pc4_M;
@@ -173,7 +173,7 @@ module cpu_core_m import risc_v_pkg::*;
         .valid_E       ( valid_E       ),
         .ex_jfexe      ( ex_jfexe      ),
         .ex_alures     ( ex_alures     ),
-        .alu_res_M     ( alu_res_M     ),
+        .alu_out_M     ( alu_out_M     ),
         .rd2_M         ( rd2_M         ),
         .rd_M          ( rd_M          ),
         .pc4_M         ( pc4_M         ),
@@ -184,7 +184,7 @@ module cpu_core_m import risc_v_pkg::*;
     // =========================================================================
     //  Memory Stage (MEM) Signals & Instance
     // =========================================================================
-    Data_t            alu_res_W;
+    Data_t            alu_out_W;
     Data_t            dmem_data_W;
     RegAddr_t         rd_W;
     Addr_t            pc4_W;
@@ -196,7 +196,7 @@ module cpu_core_m import risc_v_pkg::*;
         .rst           ( rst           ),
         .stall_mem     ( 1'b0          ),
         .flush_mem     ( 1'b0          ),
-        .alu_res_M     ( alu_res_M     ),
+        .alu_out_M     ( alu_out_M     ),
         .rd2_M         ( rd2_M         ),
         .rd_M          ( rd_M          ),
         .pc4_M         ( pc4_M         ),
@@ -206,7 +206,7 @@ module cpu_core_m import risc_v_pkg::*;
         .dmem_byte_we  ( dmem_byte_we  ),
         .dmem_data_in  ( dmem_data_in  ),
         .dmem_data_out ( dmem_data_out ),
-        .alu_res_W     ( alu_res_W     ),
+        .alu_out_W     ( alu_out_W     ),
         .dmem_data_W   ( dmem_data_W   ),
         .rd_W          ( rd_W          ),
         .pc4_W         ( pc4_W         ),
@@ -218,7 +218,7 @@ module cpu_core_m import risc_v_pkg::*;
     //  Writeback Stage (WB) Signals & Instance
     // =========================================================================
     writeback_stage writeback_stage_inst (
-        .alu_res_W     ( alu_res_W     ),
+        .alu_out_W     ( alu_out_W     ),
         .dmem_data_W   ( dmem_data_W   ),
         .rd_W          ( rd_W          ),
         .pc4_W         ( pc4_W         ),

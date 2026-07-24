@@ -8,7 +8,7 @@ module memory_stage import risc_v_pkg::*;
     input  logic               stall_mem,
     input  logic               flush_mem,
 
-    input  Data_t              alu_res_M,
+    input  Data_t              alu_out_M,
     input  Data_t              rd2_M,
     input  RegAddr_t           rd_M,
     input  Addr_t              pc4_M,
@@ -20,7 +20,7 @@ module memory_stage import risc_v_pkg::*;
     output Data_t              dmem_data_in,
     input  Data_t              dmem_data_out,
 
-    output Data_t              alu_res_W,
+    output Data_t              alu_out_W,
     output Data_t              dmem_data_W,
     output RegAddr_t           rd_W,
     output Addr_t              pc4_W,
@@ -32,8 +32,8 @@ module memory_stage import risc_v_pkg::*;
     logic      dmem_we;
     Data_t     dmem_rdata;
 
-    assign dmem_addr     = alu_res_M;
-    assign dmem_byte_off = alu_res_M[1:0];
+    assign dmem_addr     = alu_out_M;
+    assign dmem_byte_off = alu_out_M[1:0];
     assign dmem_we       = id_controls_M.dmem_we;
 
     risc_v_dmem_wr_port_m dmem_wr_port_inst (
@@ -54,14 +54,14 @@ module memory_stage import risc_v_pkg::*;
 
     always_ff @(posedge clk) begin
         if (rst || flush_mem) begin
-            alu_res_W     <= '0;
+            alu_out_W     <= '0;
             dmem_data_W   <= '0;
             rd_W          <= '0;
             pc4_W         <= '0;
             id_controls_W <= '0;
             valid_W       <= 1'b0;
         end else if (!stall_mem) begin
-            alu_res_W     <= alu_res_M;
+            alu_out_W     <= alu_out_M;
             dmem_data_W   <= dmem_rdata;
             rd_W          <= rd_M;
             pc4_W         <= pc4_M;
