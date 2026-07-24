@@ -1,6 +1,6 @@
 puts "=================== create prj ==================="
 
-set enable_video 1
+set enable_video 0
 # if zero, video will be in 640x480
 set video_320x240 1
 
@@ -159,7 +159,7 @@ set_msg_config -suppress -id {Common 17-576}
 if $build_pll_ip {
     puts "\n------------------- create PLL IP"
     set ip_pll_name   "pll"
-    set ip_pll_clk    50.0
+    set ip_pll_clk    95
 
     if $enable_video {
         # lower frequency
