@@ -61,24 +61,16 @@ module decode_stage import risc_v_pkg::*;
     //  Instruction Decoding & Field Extraction
     // =========================================================================
 
-    Instr_t instr_D_val;
-    always_comb begin
-        if (valid_D)
-            instr_D_val = instr_D;
-        else
-            instr_D_val = 32'h00000013;
-    end
+    assign rs1 = instr_D[19:15];
+    assign rs2 = instr_D[24:20];
+    assign rd  = instr_D[11:7];
 
-    assign rs1 = instr_D_val[19:15];
-    assign rs2 = instr_D_val[24:20];
-    assign rd  = instr_D_val[11:7];
+    assign ig_imm_input = instr_D[31:7];
 
-    assign ig_imm_input = instr_D_val[31:7];
-
-    assign id_instr.funct7 = instr_D_val[30];
-    assign id_instr.funct3 = instr_D_val[14:12];
-    assign id_instr.opcode = instr_D_val[6:2];
-    assign id_instr.ones   = instr_D_val[1:0];
+    assign id_instr.funct7 = instr_D[30];
+    assign id_instr.funct3 = instr_D[14:12];
+    assign id_instr.opcode = instr_D[6:2];
+    assign id_instr.ones   = instr_D[1:0];
 
     assign id_imm_pc = pc_D + imm;
     assign id_jfid   = valid_D & (!id_output_controls.pc_sel) & (!id_output_controls.jf_exe);
