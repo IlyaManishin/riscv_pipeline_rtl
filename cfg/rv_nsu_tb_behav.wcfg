@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="rv_nsu_tb_behav.wdb" id="1">
+         <top_modules>
+            <top_module name="\$unit_alu_sv_1881686394 " />
+            <top_module name="glbl" />
+            <top_module name="risc_v_pkg" />
+            <top_module name="rv_nsu_tb" />
+            <top_module name="tb_pkg" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="112,130.594 ns"></ZoomStartTime>
+      <ZoomEndTime time="112,190.195 ns"></ZoomEndTime>
+      <Cursor1Time time="112,180.261 ns"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="276"></NameColumnWidth>
+      <ValueColumnWidth column_width="112"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="9" />
+   <wave_markers>
+      <marker label="" time="2169736" />
+      <marker label="" time="19696051" />
+   </wave_markers>
+   <wvobject type="logic" fp_name="/rv_nsu_tb/cpu_system_duv/cpu_clk">
+      <obj_property name="ElementShortName">cpu_clk</obj_property>
+      <obj_property name="ObjectShortName">cpu_clk</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/rv_nsu_tb/cpu_system_duv/cpu_rst">
+      <obj_property name="ElementShortName">cpu_rst</obj_property>
+      <obj_property name="ObjectShortName">cpu_rst</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/rv_nsu_tb/cpu_system_duv/cpu/fetch_stage_inst/instr">
+      <obj_property name="ElementShortName">instr[31:0]</obj_property>
+      <obj_property name="ObjectShortName">instr[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/rv_nsu_tb/str_test_name">
+      <obj_property name="ElementShortName">str_test_name[0:239]</obj_property>
+      <obj_property name="ObjectShortName">str_test_name[0:239]</obj_property>
+      <obj_property name="Radix">ASCIIRADIX</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/rv_nsu_tb/cpu_system_duv/cpu/fetch_stage_inst/pc_next">
+      <obj_property name="ElementShortName">pc_next[31:0]</obj_property>
+      <obj_property name="ObjectShortName">pc_next[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/rv_nsu_tb/cpu_system_duv/cpu/decode_stage_inst/id_inst/output_controls">
+      <obj_property name="ElementShortName">output_controls</obj_property>
+      <obj_property name="ObjectShortName">output_controls</obj_property>
+      <obj_property name="isExpanded"></obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/rv_nsu_tb/cpu_system_duv/cpu/decode_stage_inst/rd1">
+      <obj_property name="ElementShortName">rd1[31:0]</obj_property>
+      <obj_property name="ObjectShortName">rd1[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/rv_nsu_tb/cpu_system_duv/cpu/decode_stage_inst/rd2">
+      <obj_property name="ElementShortName">rd2[31:0]</obj_property>
+      <obj_property name="ObjectShortName">rd2[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/rv_nsu_tb/cpu_system_duv/cpu/rf_inst/regFile">
+      <obj_property name="ElementShortName">regFile[0:31][31:0]</obj_property>
+      <obj_property name="ObjectShortName">regFile[0:31][31:0]</obj_property>
+      <obj_property name="isExpanded"></obj_property>
+   </wvobject>
+</wave_config>

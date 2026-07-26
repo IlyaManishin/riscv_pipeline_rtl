@@ -46,23 +46,23 @@ module memory_stage import risc_v_pkg::*;
     );
 
     risc_v_dmem_rd_port_m dmem_rd_port_inst (
-        .funct3    ( id_controls_M.dmem_sel.funct3 ),
-        .byte_addr ( dmem_byte_off             ),
-        .data_in   ( dmem_data_out             ),
-        .data_out  ( dmem_rdata                )
+        .funct3    ( id_controls_W.dmem_sel.funct3 ),
+        .byte_addr ( alu_out_W[1:0]                ),
+        .data_in   ( dmem_data_out                 ),
+        .data_out  ( dmem_rdata                    )
     );
+
+    assign dmem_data_W = dmem_rdata;
 
     always_ff @(posedge clk) begin
         if (rst || flush_mem_wb) begin
             alu_out_W     <= '0;
-            dmem_data_W   <= '0;
             rd_W          <= '0;
             pc4_W         <= '0;
             id_controls_W <= '0;
             valid_W       <= 1'b0;
         end else if (!stall_mem_wb) begin
             alu_out_W     <= alu_out_M;
-            dmem_data_W   <= dmem_rdata;
             rd_W          <= rd_M;
             pc4_W         <= pc4_M;
             id_controls_W <= id_controls_M;
