@@ -78,7 +78,7 @@ module id import risc_v_pkg::*;
                 /* SRAI  */  'b1_101_00100_x_x: output_controls = { 1'b1,   {1'b0, 3'b000},  1'bx,  1'b0,  SHIFT_SRA,  1'bx,  1'b1,   ALU_ANY,   WB_ALU_OUT,      INSTR_TYPE_ANY, 1'b0,   1'b1 };
                 /* ADD   */  'b0_000_01100_x_x: output_controls = { 1'b1,   {1'b0, 3'b000},  1'b1,  1'b1,  SHIFT_ANY,  1'bx,  1'b1,   ALU_ADD,   WB_ALU_OUT,      INSTR_TYPE_ANY, 1'b0,   1'b0 };
                 /* SUB   */  'b1_000_01100_x_x: output_controls = { 1'b1,   {1'b0, 3'b000},  1'b1,  1'b1,  SHIFT_ANY,  1'bx,  1'b1,   ALU_SUB,   WB_ALU_OUT,      INSTR_TYPE_ANY, 1'b0,   1'b0 };
-                /* SLL   */  'b0_001_01100_x_x: output_controls = { 1'b1,   {1'b0, 3'b000},  1'bx,  1'b1,  SHIFT_SLL,  1'bx,  1'b1,   ALU_ANY,   WB_ALU_OUT,      INSTR_TYPE_ANY, 1'b0,   1'b0 };
+                /* SLL   */  'b0_001_01100_x_x: output_controls = { 1'b1,   {1'b0, 3'b000},  1'bx,  1'b1,  SHIFT_SLL,  1'bx,  1'b1,   ALU_ANY,   WB_ALU_OUT,      INSTR_TYPE_ANY, 1'b0,   1'b1 };
                 /* SLT   */  'b0_010_01100_x_x: output_controls = { 1'b1,   {1'b0, 3'b000},  1'bx,  1'b1,  SHIFT_ANY,  1'bx,  1'b1,   ALU_SLT,   WB_ALU_OUT,      INSTR_TYPE_ANY, 1'b0,   1'b0 };
                 /* SLTU  */  'b0_011_01100_x_x: output_controls = { 1'b1,   {1'b0, 3'b000},  1'bx,  1'b1,  SHIFT_ANY,  1'bx,  1'b1,   ALU_SLTU,  WB_ALU_OUT,      INSTR_TYPE_ANY, 1'b0,   1'b0 };
                 /* XOR   */  'b0_100_01100_x_x: output_controls = { 1'b1,   {1'b0, 3'b000},  1'b1,  1'b1,  SHIFT_ANY,  1'bx,  1'b1,   ALU_XOR,   WB_ALU_OUT,      INSTR_TYPE_ANY, 1'b0,   1'b0 };
