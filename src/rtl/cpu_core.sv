@@ -21,12 +21,40 @@ module cpu_core_m import risc_v_pkg::*;
 );
 
     // =========================================================================
+    //  Register File Signals & Instance
+    // =========================================================================
+    RegAddr_t rs1;
+    RegAddr_t rs2;
+    Data_t    rf_rd1;
+    Data_t    rf_rd2;
+
+    RegAddr_t wb_rd;
+    Data_t    wb_wd3;
+    logic     wb_rf_we3;
+
+    register_file #(
+        .XLEN ( XLEN )
+    ) rf_inst (
+        .clk  ( clk       ),
+        .rsi1 ( rs1       ),
+        .rs1  ( rf_rd1    ),
+        .rsi2 ( rs2       ),
+        .rs2  ( rf_rd2    ),
+        .rdi  ( wb_rd     ),
+        .rd   ( wb_wd3    ),
+        .we   ( wb_rf_we3 )
+    );
+
+
+    // =========================================================================
     //  Hazard Detection Unit Signals & Instance
     // =========================================================================
     logic stall_pc;
     logic stall_if_id;
     logic flush_if_id;
     logic flush_id_ex;
+
+    logic id_jfid;
 
     logic ex_reg_wr;
     logic mem_reg_wr;
@@ -53,30 +81,6 @@ module cpu_core_m import risc_v_pkg::*;
         .flush_id_ex ( flush_id_ex          )
     );
 
-    // =========================================================================
-    //  Register File Signals & Instance
-    // =========================================================================
-    RegAddr_t rs1;
-    RegAddr_t rs2;
-    Data_t    rf_rd1;
-    Data_t    rf_rd2;
-
-    RegAddr_t wb_rd;
-    Data_t    wb_wd3;
-    logic     wb_rf_we3;
-
-    register_file #(
-        .XLEN ( XLEN )
-    ) rf_inst (
-        .clk  ( clk       ),
-        .rsi1 ( rs1       ),
-        .rs1  ( rf_rd1    ),
-        .rsi2 ( rs2       ),
-        .rs2  ( rf_rd2    ),
-        .rdi  ( wb_rd     ),
-        .rd   ( wb_wd3    ),
-        .we   ( wb_rf_we3 )
-    );
 
     // =========================================================================
     //  Fetch Stage (IF) Signals & Instance
@@ -86,26 +90,25 @@ module cpu_core_m import risc_v_pkg::*;
     logic   valid_D;
 
     fetch_stage fetch_stage_inst (
-        .clk       ( clk         ),
-        .rst       ( rst         ),
-        .stall_pc  ( stall_pc    ),
+        .clk          ( clk         ),
+        .rst          ( rst         ),
+        .stall_pc     ( stall_pc    ),
         .stall_if_id  ( stall_if_id ),
         .flush_if_id  ( flush_if_id ),
-        .id_jfid   ( id_jfid     ),
-        .id_imm_pc ( id_imm_pc   ),
-        .ex_jfexe  ( ex_jfexe    ),
-        .ex_alures ( ex_alures   ),
-        .imem_addr ( imem_addr   ),
-        .instr     ( instr       ),
-        .pc_D      ( pc_D        ),
-        .instr_D   ( instr_D     ),
-        .valid_D   ( valid_D     )
+        .id_jfid      ( id_jfid     ),
+        .id_imm_pc    ( id_imm_pc   ),
+        .ex_jfexe     ( ex_jfexe    ),
+        .ex_alures    ( ex_alures   ),
+        .imem_addr    ( imem_addr   ),
+        .instr        ( instr       ),
+        .pc_D         ( pc_D        ),
+        .instr_D      ( instr_D     ),
+        .valid_D      ( valid_D     )
     );
 
     // =========================================================================
     //  Decode Stage (ID) Signals & Instance
     // =========================================================================
-    logic                    id_jfid;
     Addr_t                   id_imm_pc;
     logic [OPCODE_WIDTH-1:0] id_opcode;
 
@@ -122,8 +125,8 @@ module cpu_core_m import risc_v_pkg::*;
     decode_stage decode_stage_inst (
         .clk           ( clk           ),
         .rst           ( rst           ),
-        .stall_id_ex      ( 1'b0          ),
-        .flush_id_ex      ( flush_id_ex   ),
+        .stall_id_ex   ( 1'b0          ),
+        .flush_id_ex   ( flush_id_ex   ),
         .id_jfid       ( id_jfid       ),
         .id_imm_pc     ( id_imm_pc     ),
         .id_opcode     ( id_opcode     ),
@@ -161,8 +164,8 @@ module cpu_core_m import risc_v_pkg::*;
     execute_stage execute_stage_inst (
         .clk           ( clk           ),
         .rst           ( rst           ),
-        .stall_ex_mem      ( 1'b0          ),
-        .flush_ex_mem      ( 1'b0          ),
+        .stall_ex_mem  ( 1'b0          ),
+        .flush_ex_mem  ( 1'b0          ),
         .pc_E          ( pc_E          ),
         .rd1_E         ( rd1_E         ),
         .rd2_E         ( rd2_E         ),
@@ -195,8 +198,8 @@ module cpu_core_m import risc_v_pkg::*;
     memory_stage memory_stage_inst (
         .clk           ( clk           ),
         .rst           ( rst           ),
-        .stall_mem_wb     ( 1'b0          ),
-        .flush_mem_wb     ( 1'b0          ),
+        .stall_mem_wb  ( 1'b0          ),
+        .flush_mem_wb  ( 1'b0          ),
         .alu_out_M     ( alu_out_M     ),
         .rd2_M         ( rd2_M         ),
         .rd_M          ( rd_M          ),

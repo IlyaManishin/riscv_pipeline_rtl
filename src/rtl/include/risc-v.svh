@@ -83,10 +83,10 @@ typedef Data_t                           Addr_t;
 
 
 `ifdef VIDEO_ENABLED
-localparam Addr_t PC_START_ADDR = 32'H_2000_0000;
+localparam Addr_t PC_START_ADDR = 32'h2000_0000;
 `else
 //localparam Addr_t PC_START_ADDR = 32'H_0040_0000;
-localparam Addr_t PC_START_ADDR = 32'H_0000_0000;
+localparam Addr_t PC_START_ADDR = 32'h0000_0000;
 `endif
 
 //=== common section (end)
