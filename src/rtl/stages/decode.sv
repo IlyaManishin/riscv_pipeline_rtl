@@ -6,8 +6,8 @@ module decode_stage import risc_v_pkg::*;
     input  logic               rst,
 
 //---------HAZARD UNIT WIRES----------
-    input  logic               stall_id,
-    input  logic               flush_id,
+    input  logic               stall_id_ex,
+    input  logic               flush_id_ex,
 
     output logic               id_jfid,
     output Addr_t              id_imm_pc,
@@ -61,19 +61,27 @@ module decode_stage import risc_v_pkg::*;
     //  Instruction Decoding & Field Extraction
     // =========================================================================
 
-    assign rs1 = instr_D[19:15];
-    assign rs2 = instr_D[24:20];
-    assign rd  = instr_D[11:7];
+    Instr_t instr_D_val;
+    always_comb begin
+        if (valid_D)
+            instr_D_val = instr_D;
+        else
+            instr_D_val = 32'h00000013;
+    end
 
-    assign ig_imm_input = instr_D[31:7];
+    assign rs1 = instr_D_val[19:15];
+    assign rs2 = instr_D_val[24:20];
+    assign rd  = instr_D_val[11:7];
 
-    assign id_instr.funct7 = instr_D[30];
-    assign id_instr.funct3 = instr_D[14:12];
-    assign id_instr.opcode = instr_D[6:2];
-    assign id_instr.ones   = instr_D[1:0];
+    assign ig_imm_input = instr_D_val[31:7];
+
+    assign id_instr.funct7 = instr_D_val[30];
+    assign id_instr.funct3 = instr_D_val[14:12];
+    assign id_instr.opcode = instr_D_val[6:2];
+    assign id_instr.ones   = instr_D_val[1:0];
 
     assign id_imm_pc = pc_D + imm;
-    assign id_jfid   = valid_D & (~id_output_controls.pc_sel);
+    assign id_jfid   = valid_D & (!id_output_controls.pc_sel) & (!id_output_controls.jf_exe);
     assign id_opcode = id_instr.opcode;
 
 
@@ -111,7 +119,7 @@ module decode_stage import risc_v_pkg::*;
     //  ID / EX Pipeline Registers
     // =========================================================================
     always_ff @(posedge clk) begin
-        if (rst || flush_id) begin
+        if (rst || flush_id_ex || !valid_D) begin
             pc_E          <= '0;
             rd1_E         <= '0;
             rd2_E         <= '0;
@@ -121,7 +129,7 @@ module decode_stage import risc_v_pkg::*;
             rd_E          <= '0;
             id_controls_E <= '0;
             valid_E       <= 1'b0;
-        end else if (!stall_id) begin
+        end else if (!stall_id_ex) begin
             pc_E          <= pc_D;
             rd1_E         <= rd1;
             rd2_E         <= rd2;

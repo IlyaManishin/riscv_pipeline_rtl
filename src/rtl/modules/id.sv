@@ -39,7 +39,7 @@ module id import risc_v_pkg::*;
         end else begin
             casex (case_key)
                 // MNEMONIC  funct7_funct3_opcode_breq_brlt         reg_wr   dmem_sel         a_sel  b_sel  sh_sel      br_un  pc_sel  alu_sel    wb_sel           imm_type        jf_exe  alushift_sel
-                /* LUI   */  'bx_xxx_01101_x_x: output_controls = { 1'b1,   {1'b0, 3'b000},  1'bx,  1'bx,  SHIFT_ANY,  1'bx,  1'b1,   ALU_LUI,   WB_ALU_OUT,      INSTR_TYPE_U,   1'b0,   1'b0 };
+                /* LUI   */  'bx_xxx_01101_x_x: output_controls = { 1'b1,   {1'b0, 3'b000},  1'bx,  1'b0,  SHIFT_ANY,  1'bx,  1'b1,   ALU_LUI,   WB_ALU_OUT,      INSTR_TYPE_U,   1'b0,   1'b0 };
                 /* AUIPC */  'bx_xxx_00101_x_x: output_controls = { 1'b1,   {1'b0, 3'b000},  1'b0,  1'b0,  SHIFT_ANY,  1'bx,  1'b1,   ALU_ADD,   WB_ALU_OUT,      INSTR_TYPE_U,   1'b0,   1'b0 };
                 /* JAL   */  'bx_xxx_11011_x_x: output_controls = { 1'b1,   {1'b0, 3'b000},  1'b0,  1'b0,  SHIFT_ANY,  1'bx,  1'b0,   ALU_ADD,   WB_PC4_OUT,      INSTR_TYPE_J,   1'b0,   1'b0 };
                 /* JALR  */  'b0_000_11001_x_x: output_controls = { 1'b1,   {1'b0, 3'b000},  1'b1,  1'b0,  SHIFT_ANY,  1'bx,  1'b0,   ALU_JALR,  WB_PC4_OUT,      INSTR_TYPE_I,   1'b1,   1'b0 };
@@ -73,9 +73,9 @@ module id import risc_v_pkg::*;
                 /* XORI  */  'bx_100_00100_x_x: output_controls = { 1'b1,   {1'b0, 3'b000},  1'b1,  1'b0,  SHIFT_ANY,  1'bx,  1'b1,   ALU_XOR,   WB_ALU_OUT,      INSTR_TYPE_I,   1'b0,   1'b0 };
                 /* ORI   */  'bx_110_00100_x_x: output_controls = { 1'b1,   {1'b0, 3'b000},  1'b1,  1'b0,  SHIFT_ANY,  1'bx,  1'b1,   ALU_OR,    WB_ALU_OUT,      INSTR_TYPE_I,   1'b0,   1'b0 };
                 /* ANDI  */  'bx_111_00100_x_x: output_controls = { 1'b1,   {1'b0, 3'b000},  1'b1,  1'b0,  SHIFT_ANY,  1'bx,  1'b1,   ALU_AND,   WB_ALU_OUT,      INSTR_TYPE_I,   1'b0,   1'b0 };
-                /* SLLI  */  'b0_001_00100_x_x: output_controls = { 1'b1,   {1'b0, 3'b000},  1'bx,  1'bx,  SHIFT_SLL,  1'bx,  1'b1,   ALU_ANY,   WB_ALU_OUT,      INSTR_TYPE_ANY, 1'b0,   1'b1 };
-                /* SRLI  */  'b0_101_00100_x_x: output_controls = { 1'b1,   {1'b0, 3'b000},  1'bx,  1'bx,  SHIFT_SRL,  1'bx,  1'b1,   ALU_ANY,   WB_ALU_OUT,      INSTR_TYPE_ANY, 1'b0,   1'b1 };
-                /* SRAI  */  'b1_101_00100_x_x: output_controls = { 1'b1,   {1'b0, 3'b000},  1'bx,  1'bx,  SHIFT_SRA,  1'bx,  1'b1,   ALU_ANY,   WB_ALU_OUT,      INSTR_TYPE_ANY, 1'b0,   1'b1 };
+                /* SLLI  */  'b0_001_00100_x_x: output_controls = { 1'b1,   {1'b0, 3'b000},  1'bx,  1'b0,  SHIFT_SLL,  1'bx,  1'b1,   ALU_ANY,   WB_ALU_OUT,      INSTR_TYPE_ANY, 1'b0,   1'b1 };
+                /* SRLI  */  'b0_101_00100_x_x: output_controls = { 1'b1,   {1'b0, 3'b000},  1'bx,  1'b0,  SHIFT_SRL,  1'bx,  1'b1,   ALU_ANY,   WB_ALU_OUT,      INSTR_TYPE_ANY, 1'b0,   1'b1 };
+                /* SRAI  */  'b1_101_00100_x_x: output_controls = { 1'b1,   {1'b0, 3'b000},  1'bx,  1'b0,  SHIFT_SRA,  1'bx,  1'b1,   ALU_ANY,   WB_ALU_OUT,      INSTR_TYPE_ANY, 1'b0,   1'b1 };
                 /* ADD   */  'b0_000_01100_x_x: output_controls = { 1'b1,   {1'b0, 3'b000},  1'b1,  1'b1,  SHIFT_ANY,  1'bx,  1'b1,   ALU_ADD,   WB_ALU_OUT,      INSTR_TYPE_ANY, 1'b0,   1'b0 };
                 /* SUB   */  'b1_000_01100_x_x: output_controls = { 1'b1,   {1'b0, 3'b000},  1'b1,  1'b1,  SHIFT_ANY,  1'bx,  1'b1,   ALU_SUB,   WB_ALU_OUT,      INSTR_TYPE_ANY, 1'b0,   1'b0 };
                 /* SLL   */  'b0_001_01100_x_x: output_controls = { 1'b1,   {1'b0, 3'b000},  1'b1,  1'b1,  SHIFT_SLL,  1'bx,  1'b1,   ALU_ANY,   WB_ALU_OUT,      INSTR_TYPE_ANY, 1'b0,   1'b1 };

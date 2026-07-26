@@ -5,8 +5,9 @@ module fetch_stage import risc_v_pkg::*;
     input  logic        clk,
     input  logic        rst,
 
-    input  logic        stall_if,
-    input  logic        flush_if,
+    input  logic        stall_pc,
+    input  logic        stall_if_id,
+    input  logic        flush_if_id,
 
     input  logic        id_jfid,
     input  Addr_t       id_imm_pc,
@@ -58,7 +59,7 @@ module fetch_stage import risc_v_pkg::*;
         .rst      ( rst      ),
         .br_taken ( br_taken ),
         .pc_br    ( pc_br    ),
-        .pc_stall ( stall_if ),
+        .pc_stall ( stall_pc ),
         .pc       ( pc       ),
         .pc_next  ( pc_next  )
     );
@@ -66,15 +67,20 @@ module fetch_stage import risc_v_pkg::*;
     // =========================================================================
     //  IF / ID Pipeline Registers
     // =========================================================================
-    assign imem_addr = pc_next;
-    assign pc_D      = pc;
+
+    assign imem_addr = pc_next; // set imem address
     assign instr_D   = instr;
 
     always_ff @(posedge clk) begin
-        if (rst || flush_if) begin
+        if (flush_if_id) begin
             valid_D <= 1'b0;
-        end else if (!stall_if) begin
+            pc_D <= 1'b0;
+        end else if (rst) begin 
             valid_D <= 1'b1;
+            pc_D <= PC_START_ADDR;
+        end else if (!stall_if_id) begin
+            valid_D <= 1'b1;
+            pc_D <= pc_next;
         end
     end
 

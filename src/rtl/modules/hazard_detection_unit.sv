@@ -53,18 +53,16 @@ module hazard_detection_unit import risc_v_pkg::*;
         flush_id_ex = 1'b0;
 
         if (id_jf_exe) begin
-            stall_pc    = 1'b1;
-            stall_if_id = 1'b1;
-            flush_if_id = 1'b1;
+            // flush_if_id = 1'b1;
         end
 
         if (ex_jfexe) begin
-            flush_if_id = 1'b1;
+            // flush_if_id = 1'b1;
             flush_id_ex = 1'b1;
         end
 
         if (id_jfid) begin
-            flush_if_id = 1'b1;
+            // flush_if_id = 1'b1;
         end
 
         if (is_ex_hazard || is_mem_hazard || is_wb_hazard) begin

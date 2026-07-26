@@ -5,8 +5,8 @@ module memory_stage import risc_v_pkg::*;
     input  logic               clk,
     input  logic               rst,
 
-    input  logic               stall_mem,
-    input  logic               flush_mem,
+    input  logic               stall_mem_wb,
+    input  logic               flush_mem_wb,
 
     input  Data_t              alu_out_M,
     input  Data_t              rd2_M,
@@ -53,14 +53,14 @@ module memory_stage import risc_v_pkg::*;
     );
 
     always_ff @(posedge clk) begin
-        if (rst || flush_mem) begin
+        if (rst || flush_mem_wb) begin
             alu_out_W     <= '0;
             dmem_data_W   <= '0;
             rd_W          <= '0;
             pc4_W         <= '0;
             id_controls_W <= '0;
             valid_W       <= 1'b0;
-        end else if (!stall_mem) begin
+        end else if (!stall_mem_wb) begin
             alu_out_W     <= alu_out_M;
             dmem_data_W   <= dmem_rdata;
             rd_W          <= rd_M;

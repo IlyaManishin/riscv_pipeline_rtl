@@ -1,12 +1,22 @@
 `include "risc-v.svh"
 
+/*
+ * Module: program_counter
+ * Description: Updates the Program Counter (PC) for the RISC-V pipeline.
+ *
+ * Control Priority:
+ *   1. Reset (rst) - active high
+ *   2. Stall (pc_stall) - Priority is higher than any branch or jump
+ *   3. Branch Taken (br_taken)
+ *   4. Sequential Execution (pc + 4)
+ */
 module program_counter import risc_v_pkg::*;
 #(
     parameter Addr_t PC_START_ADDR = '0
 )
 (
     input  logic clk,
-    input  logic rst, // active high
+    input  logic rst,
     
     //-----Branch-----
     input  logic  br_taken,

@@ -5,8 +5,8 @@ module execute_stage import risc_v_pkg::*;
     input  logic               clk,
     input  logic               rst,
 
-    input  logic               stall_ex,
-    input  logic               flush_ex,
+    input  logic               stall_ex_mem,
+    input  logic               flush_ex_mem,
 
     input  Addr_t              pc_E,
     input  Data_t              rd1_E,
@@ -59,21 +59,21 @@ module execute_stage import risc_v_pkg::*;
     risc_v_shifter_m #(
         .XLEN ( XLEN )
     ) shifter_inst (
-        .data  ( alu_in_a ),
+        .data  ( rd1_E ),
         .shamt ( shift_shamt ),
         .sel   ( id_controls_E.sh_sel ),
         .res   ( shifter_out )
     );
 
     always_ff @(posedge clk) begin
-        if (rst || flush_ex) begin
+        if (rst || flush_ex_mem) begin
             alu_out_M     <= '0;
             rd2_M         <= '0;
             rd_M          <= '0;
             pc4_M         <= '0;
             id_controls_M <= '0;
             valid_M       <= 1'b0;
-        end else if (!stall_ex) begin
+        end else if (!stall_ex_mem) begin
             alu_out_M     <= alu_out;
             rd2_M         <= rd2_E;
             rd_M          <= rd_E;
