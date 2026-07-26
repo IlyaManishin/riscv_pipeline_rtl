@@ -1,6 +1,6 @@
-puts "=================== create prj"
+puts "=================== create prj ==================="
 
-set enable_video 1
+set enable_video 0
 # if zero, video will be in 640x480
 set video_320x240 1
 
@@ -23,17 +23,15 @@ if $board_basys_3 {
 if $board_nexys_4 {
     set prjFPGA xc7a100tcsg324-1
 }
-#set prjFPGA xc7a35ticsg324-1L  ;# ARTY
 
 set current_dir [pwd]
-#puts "current_dir: $current_dir"
 
 set prjDir   "$current_dir"
 set cfgDir   "$prjDir/cfg"
 set constDir "$prjDir/src/constr"
 set ipDir    "$prjDir/ip"
-set libDir   "$prjDir/lib"
 set rtlDir   "$prjDir/src/rtl"
+set libDir   "$rtlDir/lib"
 set simDir   "$prjDir/src/sim"
 set vgaDir   "$libDir/vga/rtl"
 
@@ -94,29 +92,36 @@ puts $fh "\`define VIDEO_HALF_RESOLUTION $video_320x240"
 puts $fh "\`endif"
 close $fh
 
-add_files -fileset sources_1              \
-         $rtlDir/cpu_system.sv            \
-         $rtlDir/cpu_core.sv              \
-         $rtlDir/pc.sv                    \
-         $rtlDir/id.sv                    \
-         $rtlDir/branch_unit_m.sv         \
-         $rtlDir/imem.sv                  \
-         $rtlDir/risc_v_dmem_rd_port_m.sv \
-         $rtlDir/risc_v_dmem_wr_port_m.sv \
-         $rtlDir/imm_gen.sv               \
-         $rtlDir/register_file.sv         \
-         $rtlDir/alu.sv                   \
-         $rtlDir/shifter_alu.sv           \
-         $rtlDir/uart_wrapper.sv          \
-         $libDir/pf.sv                    \
-         $libDir/dual_port_mem.sv         \
-         $libDir/uart.sv                  \
-         $vgaDir/sync_gen.sv              \
-         $vgaDir/syncer.sv                \
-         $vgaDir/vga.sv                   \
-         $vgaDir/video_out.sv             \
-         $vgaDir/vram_reader.sv           \
+add_files -fileset sources_1                     \
+         $rtlDir/cpu_system.sv                   \
+         $rtlDir/cpu_core.sv                     \
+         $rtlDir/stages/fetch.sv                 \
+         $rtlDir/stages/decode.sv                \
+         $rtlDir/stages/execute.sv               \
+         $rtlDir/stages/memory.sv                \
+         $rtlDir/stages/writeback.sv             \
+         $rtlDir/modules/hazard_detection_unit.sv\
+         $rtlDir/modules/pc.sv                   \
+         $rtlDir/modules/id.sv                   \
+         $rtlDir/modules/branch_unit_m.sv        \
+         $rtlDir/memory/imem.sv                  \
+         $rtlDir/memory/risc_v_dmem_rd_port_m.sv \
+         $rtlDir/memory/risc_v_dmem_wr_port_m.sv \
+         $rtlDir/modules/imm_gen.sv              \
+         $rtlDir/memory/register_file.sv         \
+         $rtlDir/modules/alu.sv                  \
+         $rtlDir/modules/shifter_alu.sv          \
+         $rtlDir/uart_wrapper.sv                 \
+         $rtlDir/lib/dual_port_mem.sv            \
+         $libDir/rst_m.sv                        \
+         $libDir/uart.sv                         \
+         $vgaDir/sync_gen.sv                     \
+         $vgaDir/syncer.sv                       \
+         $vgaDir/vga.sv                          \
+         $vgaDir/video_out.sv                    \
+         $vgaDir/vram_reader.sv                  \
          $init_def_file
+
 if $board_basys_3 {
     add_files -fileset constrs_1 \
             $constDir/rv_nsu_basys_3.xdc \
@@ -128,7 +133,6 @@ if $board_nexys_4 {
             $constDir/rv_nsu_nexys_4_ddr.xdc
 }
 
-
 add_files -fileset sim_1  \
          $simDir/rv_nsu_tb.sv
 
@@ -138,9 +142,10 @@ foreach f [glob -nocomplain $tempDir/*.wcfg] {
     add_files -fileset sim_1 $dest
 }
 
-file delete -force $tempDir  # file mkdir $tempDir
+file delete -force $tempDir
 
-set_property INCLUDE_DIRS "$rtlDir $cfgDir" [get_filesets sim_1]
+set_property INCLUDE_DIRS "$rtlDir $rtlDir/include $cfgDir" [get_filesets sources_1]
+set_property INCLUDE_DIRS "$rtlDir $rtlDir/include $cfgDir" [get_filesets sim_1]
 set_property used_in_synthesis      false [get_files  $simDir/rv_nsu_tb.sv]
 set_property used_in_implementation false [get_files  $simDir/rv_nsu_tb.sv]
 set_property top rv_nsu_tb [get_filesets sim_1]
@@ -154,9 +159,7 @@ set_msg_config -suppress -id {Common 17-576}
 if $build_pll_ip {
     puts "\n------------------- create PLL IP"
     set ip_pll_name   "pll"
-    set ip_pll_clk    50.0
-    set ip_pll_phase2 45.0
-    set ip_pll_phase3 200.0
+    set ip_pll_clk    90
 
     if $enable_video {
         # lower frequency
@@ -178,13 +181,13 @@ if $build_pll_ip {
     puts "  PLL Clock: $ip_pll_clk MHz"
     puts "  TIME_BASE: $time_base_ns ns"
 
-    set svh_file "$rtlDir/risc-v.svh"
+    set svh_file "$rtlDir/include/risc-v.svh"
     if {[file exists $svh_file]} {
         set fp [open $svh_file r]
         set content [read $fp]
         close $fp
     
-        regsub -all {RV_TIME_BASE\s*=\s*\d+} $content \"RV_TIME_BASE = $time_base_ns\" content
+        regsub -all {RV_TIME_BASE\s*=\s*\d+} $content "RV_TIME_BASE  = $time_base_ns" content
     
         set fp [open $svh_file w]
         puts $fp $content
@@ -203,24 +206,18 @@ if $build_pll_ip {
     set_property -dict [ \
                         list CONFIG.Component_Name $ip_pll_name        \
                         CONFIG.PRIMITIVE {PLL}                         \
-                        CONFIG.CLKOUT2_USED {true}                     \
-                        CONFIG.CLKOUT3_USED {true}                     \
                         CONFIG.PRIMARY_PORT {clk_in}                   \
                         CONFIG.CLKOUT1_REQUESTED_OUT_FREQ $ip_pll_clk  \
-                        CONFIG.CLKOUT2_REQUESTED_OUT_FREQ $ip_pll_clk  \
-                        CONFIG.CLKOUT2_REQUESTED_PHASE $ip_pll_phase2  \
-                        CONFIG.CLKOUT3_REQUESTED_OUT_FREQ $ip_pll_clk  \
-                        CONFIG.CLKOUT3_REQUESTED_PHASE $ip_pll_phase3  \
                         CONFIG.USE_RESET {false}                       \
                         ] [get_ips $ip_pll_name]
 
     if $enable_video {
         set_property -dict [ \
                         list                                                 \
-                        CONFIG.CLKOUT4_USED {true}                           \
-                        CONFIG.CLKOUT4_REQUESTED_OUT_FREQ $ip_pll_video_clk  \
-                        CONFIG.CLKOUT4_REQUESTED_PHASE 0                     \
-                        CONFIG.CLK_OUT4_PORT {clk_video}                     \
+                        CONFIG.CLKOUT2_USED {true}                           \
+                        CONFIG.CLKOUT2_REQUESTED_OUT_FREQ $ip_pll_video_clk  \
+                        CONFIG.CLKOUT2_REQUESTED_PHASE 0                     \
+                        CONFIG.CLK_OUT2_PORT {clk_video}                     \
                         ] [get_ips $ip_pll_name]
     }
 
@@ -334,16 +331,9 @@ if $build_tdp_bram_ip {
 
     #---
     set_msg_config -suppress -id {Synth 8-3331}
-    #set_msg_config -suppress -id {Synth 8-3331} -string {blk_mem_output_block}
-    #set_msg_config -suppress -id {Synth 8-3331} -string {blk_mem_gen_prim_wrapper_init}
-    #set_msg_config -suppress -id {Synth 8-3331} -string {blk_mem_gen_generic_cstr}
-    #set_msg_config -suppress -id {Synth 8-3331} -string {blk_mem_input_block}
-
-    #---
     launch_runs ${ip_imem_name}_synth_1 -jobs 4
     wait_on_run ${ip_imem_name}_synth_1
 
-    #---
     reset_msg_config -suppress -id {Synth 8-3331}
 }    
 
@@ -372,7 +362,7 @@ if $build_video_bram_ip {
         CONFIG.Write_Depth_A $ip_video_bram_write_depth_a \
         CONFIG.Write_Width_A {32} \
         CONFIG.Write_Width_B {8} \
-         CONFIG.Operating_Mode_A {WRITE_FIRST} \
+        CONFIG.Operating_Mode_A {WRITE_FIRST} \
         CONFIG.Assume_Synchronous_Clk {true} \
     ] [get_ips $ip_video_bram_name]
     generate_target {instantiation_template} [get_files $ip_video_bram_xci]
@@ -381,7 +371,6 @@ if $build_video_bram_ip {
 
     catch { config_ip_cache -export [get_ips -all $ip_video_bram_name] }
     export_ip_user_files -of_objects [get_files $ip_video_bram_xci] -no_script -sync -force -quiet
-    # export_simulation -of_objects [get_files /home/ilya/work/fpga/rv_vga_dirs/riscv_vga/vivado_cfg/rv-vga.srcs/sources_1/ip/blk_mem_gen_0/blk_mem_gen_0.xci] -directory /home/ilya/work/fpga/rv_vga_dirs/riscv_vga/vivado_cfg/rv-vga.ip_user_files/sim_scripts -ip_user_files_dir /home/ilya/work/fpga/rv_vga_dirs/riscv_vga/vivado_cfg/rv-vga.ip_user_files -ipstatic_source_dir /home/ilya/work/fpga/rv_vga_dirs/riscv_vga/vivado_cfg/rv-vga.ip_user_files/ipstatic -lib_map_path [list {modelsim=/home/ilya/work/fpga/rv_vga_dirs/riscv_vga/vivado_cfg/rv-vga.cache/compile_simlib/modelsim} {questa=/home/ilya/work/fpga/rv_vga_dirs/riscv_vga/vivado_cfg/rv-vga.cache/compile_simlib/questa} {xcelium=/home/ilya/work/fpga/rv_vga_dirs/riscv_vga/vivado_cfg/rv-vga.cache/compile_simlib/xcelium} {vcs=/home/ilya/work/fpga/rv_vga_dirs/riscv_vga/vivado_cfg/rv-vga.cache/compile_simlib/vcs} {riviera=/home/ilya/work/fpga/rv_vga_dirs/riscv_vga/vivado_cfg/rv-vga.cache/compile_simlib/riviera}] -use_ip_compiled_libs -force -quiet
 
     create_ip_run [get_files -of_objects [get_fileset sources_1] $ip_video_bram_xci]
 

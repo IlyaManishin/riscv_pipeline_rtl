@@ -83,10 +83,10 @@ typedef Data_t                           Addr_t;
 
 
 `ifdef VIDEO_ENABLED
-localparam Addr_t PC_START_ADDR = 32'H_2000_0000;
+localparam Addr_t PC_START_ADDR = 32'h2000_0000;
 `else
 //localparam Addr_t PC_START_ADDR = 32'H_0040_0000;
-localparam Addr_t PC_START_ADDR = 32'H_0000_0000;
+localparam Addr_t PC_START_ADDR = 32'h0000_0000;
 `endif
 
 //=== common section (end)
@@ -149,11 +149,14 @@ typedef logic [24:0] Imm_input_t;
  * There's only 9 significant bits that are mandatory to determine instruction:
  * funct7[5], funct3[2:0], opcode[4:0] = [[31], [14], [13], [12], [6], [5], [4], [3], [2]]
  */
+
+localparam int OPCODE_WIDTH = 5;
+
 typedef struct packed {
-    logic        funct7;  // [30] bit
-    logic [2:0]  funct3;  // [14], [13], [12] bits
-    logic [4:0]  opcode;  // [6], [5], [4], [3], [2] bits
-    logic [1:0]  ones;    // [1], [0] bits (should be 'b11 for legal instructions)
+    logic        funct7;               // [30] bit
+    logic [2:0]  funct3;               // [14], [13], [12] bits
+    logic [OPCODE_WIDTH-1:0]  opcode;  // [6], [5], [4], [3], [2] bits
+    logic [1:0]  ones;                 // [1], [0] bits (should be 'b11 for legal instructions)
 } Id_instr_t;
 
 /*
@@ -173,38 +176,47 @@ localparam int WB_SEL_LEN = 2;
 typedef enum logic [WB_SEL_LEN-1:0] {
     WB_PC4_OUT     = 2'b00,
     WB_ALU_OUT     = 2'b01,
-    WB_SHIFTER_OUT = 2'b10,
-    WB_DMEM_OUT    = 2'b11,
+    WB_DMEM_OUT    = 2'b10,
     WB_ANY         = 2'bxx 
-} WB_SEL_t;
+} wb_sel_t;
+
+
+typedef struct packed {
+    logic       dmem_we;
+    logic [2:0] funct3;
+} dmem_sel_t;
 
 
 /*
  * Instruction decoder control OUTPUT signals.
  *
  * Output control signals:
- *   - reg_wr      write to RF - 0: disabled, 1: enabled
- *   - dmem_we     write to DMEM - 0: disabled, 1: enabled
- *   - a_sel       first operand for ALU - 0: PC, 1: rd1
- *   - b_sel       second operand for ALU - 0: imm, 1: rd2
- *   - sh_sel      type of shift - 3'b100: SLL, 3'b010: SRL, 3'b001: SRA
- *   - br_un       type of branch comparison - 0: signed, 1: unsigned
- *   - pc_sel      next PC is - 0: ALU output, 1: PC+4
- *   - alu_sel     ALU op code: 0: add, 1: sub, 2: and, 3: or, 4: xor, 5: slt, 6: sltu, 7: lui, 8: jalr
- *   - wb_sel      source for write to RF: 0: PC+4, 1: ALU out, 2: shifter out, 3: dmem out
- *   - imm_type    type of instruction: 0: R, 1: I, 2: S, 3: B, 4: U, 5: J
+ *   - reg_wr       write to RF - 0: disabled, 1: enabled
+ *   - dmem_sel     DMEM operation type: dmem_we (1 bit) + funct3 (3 bits)
+ *   - a_sel        first operand for ALU - 0: PC, 1: rd1
+ *   - b_sel        second operand for ALU - 0: imm, 1: rd2
+ *   - sh_sel       type of shift - 3'b100: SLL, 3'b010: SRL, 3'b001: SRA
+ *   - br_un        type of branch comparison - 0: signed, 1: unsigned
+ *   - pc_sel       next PC is - 0: ALU output, 1: PC+4
+ *   - alu_sel      ALU op code: 0: add, 1: sub, 2: and, 3: or, 4: xor, 5: slt, 6: sltu, 7: lui, 8: jalr
+ *   - wb_sel       source for write to RF: 0: PC+4, 1: ALU out, 2: shifter out, 3: dmem out
+ *   - imm_type     type of instruction: 0: R, 1: I, 2: S, 3: B, 4: U, 5: J
+ *   - jf_exe       jump flag execution: 1 for JALR, 0 otherwise
+ *   - alushift_sel alu/shifter select: 1 for shift instructions, 0 otherwise
  */
 typedef struct packed {
     logic        reg_wr;
-    logic        dmem_we;
+    dmem_sel_t   dmem_sel;
     logic        a_sel;
     logic        b_sel;
     shift_sel_t  sh_sel;
     logic        br_un;
     logic        pc_sel;
     ALU_SEL_t    alu_sel;
-    WB_SEL_t     wb_sel;
+    wb_sel_t     wb_sel;
     Imm_type_t   imm_type;
+    logic        jf_exe;
+    logic        alushift_sel;
 } Id_controls_out_t;
 
 
@@ -236,7 +248,7 @@ typedef enum logic [2:0] {
 
 //===UART section
 localparam RV_BAUD_RATE  = 115200;
-localparam RV_TIME_BASE  = 33;  // ns per system clock period
+localparam RV_TIME_BASE  = 11;  // ns per system clock period
 localparam RV_DATA_WIDTH = 8;
 
 
@@ -347,4 +359,6 @@ endfunction : disasm
 endpackage : risc_v_pkg
 
 `endif // RISC_V_SVH
+
+
 

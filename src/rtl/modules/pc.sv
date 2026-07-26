@@ -1,36 +1,51 @@
-//`timescale 1ns / 1ps
+`include "risc-v.svh"
 
-module program_counter
+/*
+ * Module: program_counter
+ * Description: Updates the Program Counter (PC) for the RISC-V pipeline.
+ *
+ * Control Priority:
+ *   1. Reset (rst) - active high
+ *   2. Stall (pc_stall) - Priority is higher than any branch or jump
+ *   3. Branch Taken (br_taken)
+ *   4. Sequential Execution (pc + 4)
+ */
+module program_counter import risc_v_pkg::*;
 #(
-    parameter int  WIDTH = 32,
-    parameter logic [WIDTH-1:0] PC_START_ADDR = '0
+    parameter Addr_t PC_START_ADDR = '0
 )
 (
     input  logic clk,
-    input  logic rst, // active high
-    input  logic br_taken,
-    input  logic [WIDTH-1:0] pc_br,
-    output logic [WIDTH-1:0] pc
+    input  logic rst,
+    
+    //-----Branch-----
+    input  logic  br_taken,
+    input  Addr_t pc_br,
+
+    //-----Stall------
+    input  logic  pc_stall,
+
+    output Addr_t pc,
+    output Addr_t pc_next
 );
 
     timeunit      1ns;
     timeprecision 1ps;
 
-    logic [WIDTH-1:0] assign_pc;
-
     always_comb begin
-        if (br_taken) begin
-            assign_pc = pc_br;
+        if (rst) begin
+            pc_next = PC_START_ADDR;
+        end else if (pc_stall) begin
+            pc_next = pc;
+        end else if (br_taken) begin
+            pc_next = pc_br;
         end else begin
-            assign_pc = pc + 4;
+            pc_next = pc + 4;
         end
     end
 
     always_ff @(posedge clk) begin
-        if (rst) begin
-            pc <= PC_START_ADDR;
-        end else begin
-            pc <= assign_pc;
-        end
+        pc <= pc_next;
     end
+
 endmodule : program_counter
