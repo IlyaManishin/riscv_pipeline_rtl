@@ -5,9 +5,12 @@ module execute_stage import risc_v_pkg::*;
     input  logic               clk,
     input  logic               rst,
 
+//---------HAZARD UNIT WIRES----------
     input  logic               stall_ex_mem,
     input  logic               flush_ex_mem,
+//------------------------------------
 
+//----------INPUT REGISTERS-----------
     input  Addr_t              pc_E,
     input  Data_t              rd1_E,
     input  Data_t              rd2_E,
@@ -17,17 +20,26 @@ module execute_stage import risc_v_pkg::*;
     input  RegAddr_t           rd_E,
     input  Id_controls_out_t   id_controls_E,
     input  logic               valid_E,
+//------------------------------------
 
+//---------HAZARD / JUMP OUT----------
     output logic               ex_jfexe,
     output Data_t              ex_alures,
+//------------------------------------
 
+//---------OUTPUT REGISTERS-----------
     output Data_t              alu_out_M,
     output Data_t              rd2_M,
     output RegAddr_t           rd_M,
     output Addr_t              pc4_M,
     output Id_controls_out_t   id_controls_M,
     output logic               valid_M
+//------------------------------------
 );
+
+    // =========================================================================
+    //  Internal Signals
+    // =========================================================================
 
     Data_t        alu_in_a;
     Data_t        alu_in_b;
@@ -37,6 +49,11 @@ module execute_stage import risc_v_pkg::*;
     shift_shamt_t shift_shamt;
     Addr_t        pc4_E;
 
+
+    // =========================================================================
+    //  ALU Operand Multiplexing & Control
+    // =========================================================================
+
     assign alu_in_a    = id_controls_E.a_sel ? rd1_E : pc_E;
     assign alu_in_b    = id_controls_E.b_sel ? rd2_E : imm_E;
     assign shift_shamt = id_controls_E.b_sel ? rd2_E[4:0] : rs2_E[4:0];
@@ -45,8 +62,14 @@ module execute_stage import risc_v_pkg::*;
     assign ex_alures   = alu_res;
     assign ex_jfexe    = valid_E & id_controls_E.jf_exe;
 
-    assign alu_out = id_controls_E.alushift_sel ? shifter_out : alu_res;
+    assign alu_out     = id_controls_E.alushift_sel ? shifter_out : alu_res;
 
+
+    // =========================================================================
+    //  Submodules Instantiations
+    // =========================================================================
+
+    // --- Arithmetic Logic Unit ---
     alu_m #(
         .XLEN ( XLEN )
     ) alu_inst (
@@ -56,6 +79,7 @@ module execute_stage import risc_v_pkg::*;
         .res ( alu_res )
     );
 
+    // --- Shifter Unit ---
     risc_v_shifter_m #(
         .XLEN ( XLEN )
     ) shifter_inst (
@@ -64,6 +88,11 @@ module execute_stage import risc_v_pkg::*;
         .sel   ( id_controls_E.sh_sel ),
         .res   ( shifter_out )
     );
+
+
+    // =========================================================================
+    //  EX / MEM Pipeline Registers
+    // =========================================================================
 
     always_ff @(posedge clk) begin
         if (rst || flush_ex_mem) begin

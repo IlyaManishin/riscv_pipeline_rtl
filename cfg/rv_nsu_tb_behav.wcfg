@@ -14,18 +14,17 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="112,130.594 ns"></ZoomStartTime>
-      <ZoomEndTime time="112,190.195 ns"></ZoomEndTime>
-      <Cursor1Time time="112,180.261 ns"></Cursor1Time>
+      <ZoomStartTime time="35,630.484 ns"></ZoomStartTime>
+      <ZoomEndTime time="35,670.135 ns"></ZoomEndTime>
+      <Cursor1Time time="35,685.526 ns"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="276"></NameColumnWidth>
-      <ValueColumnWidth column_width="112"></ValueColumnWidth>
+      <NameColumnWidth column_width="166"></NameColumnWidth>
+      <ValueColumnWidth column_width="93"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="9" />
+   <WVObjectSize size="14" />
    <wave_markers>
       <marker label="" time="2169736" />
-      <marker label="" time="19696051" />
    </wave_markers>
    <wvobject type="logic" fp_name="/rv_nsu_tb/cpu_system_duv/cpu_clk">
       <obj_property name="ElementShortName">cpu_clk</obj_property>
@@ -48,10 +47,81 @@
       <obj_property name="ElementShortName">pc_next[31:0]</obj_property>
       <obj_property name="ObjectShortName">pc_next[31:0]</obj_property>
    </wvobject>
+   <wvobject type="logic" fp_name="/rv_nsu_tb/cpu_system_duv/cpu/memory_stage_inst/dmem_we">
+      <obj_property name="ElementShortName">dmem_we</obj_property>
+      <obj_property name="ObjectShortName">dmem_we</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/rv_nsu_tb/cpu_system_duv/cpu/memory_stage_inst/dmem_addr">
+      <obj_property name="ElementShortName">dmem_addr[31:0]</obj_property>
+      <obj_property name="ObjectShortName">dmem_addr[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/rv_nsu_tb/cpu_system_duv/cpu/memory_stage_inst/dmem_data_in">
+      <obj_property name="ElementShortName">dmem_data_in[31:0]</obj_property>
+      <obj_property name="ObjectShortName">dmem_data_in[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/rv_nsu_tb/cpu_system_duv/cpu/memory_stage_inst/dmem_byte_we">
+      <obj_property name="ElementShortName">dmem_byte_we[3:0]</obj_property>
+      <obj_property name="ObjectShortName">dmem_byte_we[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/rv_nsu_tb/cpu_system_duv/cpu/memory_stage_inst/dmem_data_W">
+      <obj_property name="ElementShortName">dmem_data_W[31:0]</obj_property>
+      <obj_property name="ObjectShortName">dmem_data_W[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/rv_nsu_tb/cpu_system_duv/cpu/rf_inst/regFile">
+      <obj_property name="ElementShortName">regFile[0:31][31:0]</obj_property>
+      <obj_property name="ObjectShortName">regFile[0:31][31:0]</obj_property>
+   </wvobject>
    <wvobject type="array" fp_name="/rv_nsu_tb/cpu_system_duv/cpu/decode_stage_inst/id_inst/output_controls">
       <obj_property name="ElementShortName">output_controls</obj_property>
       <obj_property name="ObjectShortName">output_controls</obj_property>
-      <obj_property name="isExpanded"></obj_property>
+      <wvobject type="logic" fp_name="/rv_nsu_tb/cpu_system_duv/cpu/decode_stage_inst/id_inst/output_controls.reg_wr">
+         <obj_property name="ElementShortName">.reg_wr</obj_property>
+         <obj_property name="ObjectShortName">.reg_wr</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/rv_nsu_tb/cpu_system_duv/cpu/decode_stage_inst/id_inst/output_controls.dmem_sel">
+         <obj_property name="ElementShortName">.dmem_sel</obj_property>
+         <obj_property name="ObjectShortName">.dmem_sel</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/rv_nsu_tb/cpu_system_duv/cpu/decode_stage_inst/id_inst/output_controls.a_sel">
+         <obj_property name="ElementShortName">.a_sel</obj_property>
+         <obj_property name="ObjectShortName">.a_sel</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/rv_nsu_tb/cpu_system_duv/cpu/decode_stage_inst/id_inst/output_controls.b_sel">
+         <obj_property name="ElementShortName">.b_sel</obj_property>
+         <obj_property name="ObjectShortName">.b_sel</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/rv_nsu_tb/cpu_system_duv/cpu/decode_stage_inst/id_inst/output_controls.sh_sel">
+         <obj_property name="ElementShortName">.sh_sel[2:0]</obj_property>
+         <obj_property name="ObjectShortName">.sh_sel[2:0]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/rv_nsu_tb/cpu_system_duv/cpu/decode_stage_inst/id_inst/output_controls.br_un">
+         <obj_property name="ElementShortName">.br_un</obj_property>
+         <obj_property name="ObjectShortName">.br_un</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/rv_nsu_tb/cpu_system_duv/cpu/decode_stage_inst/id_inst/output_controls.pc_sel">
+         <obj_property name="ElementShortName">.pc_sel</obj_property>
+         <obj_property name="ObjectShortName">.pc_sel</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/rv_nsu_tb/cpu_system_duv/cpu/decode_stage_inst/id_inst/output_controls.alu_sel">
+         <obj_property name="ElementShortName">.alu_sel[3:0]</obj_property>
+         <obj_property name="ObjectShortName">.alu_sel[3:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/rv_nsu_tb/cpu_system_duv/cpu/decode_stage_inst/id_inst/output_controls.wb_sel">
+         <obj_property name="ElementShortName">.wb_sel[1:0]</obj_property>
+         <obj_property name="ObjectShortName">.wb_sel[1:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/rv_nsu_tb/cpu_system_duv/cpu/decode_stage_inst/id_inst/output_controls.imm_type">
+         <obj_property name="ElementShortName">.imm_type[2:0]</obj_property>
+         <obj_property name="ObjectShortName">.imm_type[2:0]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/rv_nsu_tb/cpu_system_duv/cpu/decode_stage_inst/id_inst/output_controls.jf_exe">
+         <obj_property name="ElementShortName">.jf_exe</obj_property>
+         <obj_property name="ObjectShortName">.jf_exe</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/rv_nsu_tb/cpu_system_duv/cpu/decode_stage_inst/id_inst/output_controls.alushift_sel">
+         <obj_property name="ElementShortName">.alushift_sel</obj_property>
+         <obj_property name="ObjectShortName">.alushift_sel</obj_property>
+      </wvobject>
    </wvobject>
    <wvobject type="array" fp_name="/rv_nsu_tb/cpu_system_duv/cpu/decode_stage_inst/rd1">
       <obj_property name="ElementShortName">rd1[31:0]</obj_property>
@@ -60,10 +130,5 @@
    <wvobject type="array" fp_name="/rv_nsu_tb/cpu_system_duv/cpu/decode_stage_inst/rd2">
       <obj_property name="ElementShortName">rd2[31:0]</obj_property>
       <obj_property name="ObjectShortName">rd2[31:0]</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/rv_nsu_tb/cpu_system_duv/cpu/rf_inst/regFile">
-      <obj_property name="ElementShortName">regFile[0:31][31:0]</obj_property>
-      <obj_property name="ObjectShortName">regFile[0:31][31:0]</obj_property>
-      <obj_property name="isExpanded"></obj_property>
    </wvobject>
 </wave_config>

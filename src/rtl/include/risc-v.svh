@@ -248,7 +248,7 @@ typedef enum logic [2:0] {
 
 //===UART section
 localparam RV_BAUD_RATE  = 115200;
-localparam RV_TIME_BASE  = 10;  // ns per system clock period
+localparam RV_TIME_BASE  = 11;  // ns per system clock period
 localparam RV_DATA_WIDTH = 8;
 
 
@@ -359,5 +359,6 @@ endfunction : disasm
 endpackage : risc_v_pkg
 
 `endif // RISC_V_SVH
+
 
 

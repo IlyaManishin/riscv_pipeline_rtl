@@ -2,17 +2,25 @@
 
 module writeback_stage import risc_v_pkg::*;
 (
+//----------INPUT REGISTERS-----------
     input  Data_t            alu_out_W,
     input  Data_t            dmem_data_W,
     input  RegAddr_t         rd_W,
     input  Addr_t            pc4_W,
     input  Id_controls_out_t id_controls_W,
     input  logic             valid_W,
+//------------------------------------
 
+//---------REGISTER FILE WRITE BACK---
     output RegAddr_t         wb_rd,
     output Data_t            wb_wd3,
     output logic             wb_we3
+//------------------------------------
 );
+
+    // =========================================================================
+    //  Writeback Control & Multiplexing
+    // =========================================================================
 
     assign wb_rd  = rd_W;
     assign wb_we3 = id_controls_W.reg_wr;

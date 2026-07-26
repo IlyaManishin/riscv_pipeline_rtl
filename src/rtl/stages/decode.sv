@@ -28,7 +28,7 @@ module decode_stage import risc_v_pkg::*;
     input  logic               valid_D,
 //------------------------------------
 
-//----------INPUT REGISTERS-----------
+//---------OUTPUT REGISTERS-----------
     output Addr_t              pc_E,
     output Data_t              rd1_E,
     output Data_t              rd2_E,
