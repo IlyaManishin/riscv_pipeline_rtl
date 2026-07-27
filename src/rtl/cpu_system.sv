@@ -153,7 +153,7 @@ module cpu_system
   ) dmem_inst (
       //--- port A
       .clka (cpu_clk),
-      .ena  (1),
+      .ena  (1'b1),
 `ifdef VIDEO_ENABLED
       .wea  (dmem_byte_we & {4{dmem_ena}}),
 `else

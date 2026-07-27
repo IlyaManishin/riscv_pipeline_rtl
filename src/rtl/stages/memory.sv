@@ -42,7 +42,6 @@ module memory_stage import risc_v_pkg::*;
 
     ByteAddr_t dmem_byte_off;
     logic      dmem_we;
-    Data_t     cpu_port_rdata;
 
     assign dmem_addr     = alu_out_M;
     assign dmem_byte_off = alu_out_M[1:0];
@@ -63,20 +62,12 @@ module memory_stage import risc_v_pkg::*;
         .data_out  ( dmem_wdata                )
     );
 
-    // --- Data Memory Read Port ---
-    risc_v_dmem_rd_port_m dmem_rd_port_inst (
-        .funct3    ( id_controls_W.dmem_sel.funct3 ),
-        .byte_addr ( alu_out_W[1:0]                ),
-        .data_in   ( cpu_rdata                     ),
-        .data_out  ( cpu_port_rdata                )
-    );
-
 
     // =========================================================================
     //  MEM / WB Pipeline Registers
     // =========================================================================
 
-    assign cpu_rdata_W = cpu_port_rdata;
+    assign cpu_rdata_W = cpu_rdata;
 
     always_ff @(posedge clk) begin
         if (rst || flush_mem_wb) begin
