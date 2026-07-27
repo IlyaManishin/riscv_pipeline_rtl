@@ -16,8 +16,8 @@ module cpu_core_m import risc_v_pkg::*;
     // =========================================================================
     output Addr_t        dmem_addr,
     output ByteDataEna_t dmem_byte_we,
-    output Data_t        dmem_data_in,
-    input  Data_t        dmem_data_out
+    output Data_t        dmem_wdata,
+    input  Data_t        cpu_rdata
 );
 
     // =========================================================================
@@ -189,7 +189,7 @@ module cpu_core_m import risc_v_pkg::*;
     //  Memory Stage (MEM) Signals & Instance
     // =========================================================================
     Data_t            alu_out_W;
-    Data_t            dmem_data_W;
+    Data_t            cpu_rdata_W;
     RegAddr_t         rd_W;
     Addr_t            pc4_W;
     Id_controls_out_t id_controls_W;
@@ -208,10 +208,10 @@ module cpu_core_m import risc_v_pkg::*;
         .valid_M       ( valid_M       ),
         .dmem_addr     ( dmem_addr     ),
         .dmem_byte_we  ( dmem_byte_we  ),
-        .dmem_data_in  ( dmem_data_in  ),
-        .dmem_data_out ( dmem_data_out ),
+        .dmem_wdata    ( dmem_wdata    ),
+        .cpu_rdata     ( cpu_rdata     ),
         .alu_out_W     ( alu_out_W     ),
-        .dmem_data_W   ( dmem_data_W   ),
+        .cpu_rdata_W   ( cpu_rdata_W   ),
         .rd_W          ( rd_W          ),
         .pc4_W         ( pc4_W         ),
         .id_controls_W ( id_controls_W ),
@@ -223,7 +223,7 @@ module cpu_core_m import risc_v_pkg::*;
     // =========================================================================
     writeback_stage writeback_stage_inst (
         .alu_out_W     ( alu_out_W     ),
-        .dmem_data_W   ( dmem_data_W   ),
+        .cpu_rdata_W   ( cpu_rdata_W   ),
         .rd_W          ( rd_W          ),
         .pc4_W         ( pc4_W         ),
         .id_controls_W ( id_controls_W ),

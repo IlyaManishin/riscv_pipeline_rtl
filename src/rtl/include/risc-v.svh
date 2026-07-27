@@ -127,6 +127,7 @@ typedef enum logic [2:0] {
 `define IMM_GEN_DEFS_ENA
 `ifdef IMM_GEN_DEFS_ENA
 typedef logic [31:0] Imm_t;
+
 typedef enum logic [2:0] {
         IMM_I_TYPE = 3'b001,
         IMM_S_TYPE = 3'b010,
