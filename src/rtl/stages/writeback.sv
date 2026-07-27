@@ -4,7 +4,7 @@ module writeback_stage import risc_v_pkg::*;
 (
 //----------INPUT REGISTERS-----------
     input  Data_t            alu_out_W,
-    input  Data_t            dmem_data_W,
+    input  Data_t            cpu_rdata_W,
     input  RegAddr_t         rd_W,
     input  Addr_t            pc4_W,
     input  Id_controls_out_t id_controls_W,
@@ -29,7 +29,7 @@ module writeback_stage import risc_v_pkg::*;
         case (id_controls_W.wb_sel)
             WB_PC4_OUT : wb_wd3 = pc4_W;
             WB_ALU_OUT : wb_wd3 = alu_out_W;
-            WB_DMEM_OUT: wb_wd3 = dmem_data_W;
+            WB_DMEM_OUT: wb_wd3 = cpu_rdata_W;
             default    : wb_wd3 = '0;
         endcase
     end

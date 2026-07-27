@@ -28,7 +28,7 @@ module memory_stage import risc_v_pkg::*;
 
 //---------OUTPUT REGISTERS---------------
     output Data_t              alu_out_W,
-    output Data_t              dmem_data_W,
+    output Data_t              cpu_rdata_W,
     output RegAddr_t           rd_W,
     output Addr_t              pc4_W,
     output Id_controls_out_t   id_controls_W,
@@ -42,7 +42,7 @@ module memory_stage import risc_v_pkg::*;
 
     ByteAddr_t dmem_byte_off;
     logic      dmem_we;
-    Data_t     dmem_rdata;
+    Data_t     cpu_port_rdata;
 
     assign dmem_addr     = alu_out_M;
     assign dmem_byte_off = alu_out_M[1:0];
@@ -68,7 +68,7 @@ module memory_stage import risc_v_pkg::*;
         .funct3    ( id_controls_W.dmem_sel.funct3 ),
         .byte_addr ( alu_out_W[1:0]                ),
         .data_in   ( cpu_rdata                     ),
-        .data_out  ( dmem_rdata                    )
+        .data_out  ( cpu_port_rdata                )
     );
 
 
@@ -76,7 +76,7 @@ module memory_stage import risc_v_pkg::*;
     //  MEM / WB Pipeline Registers
     // =========================================================================
 
-    assign dmem_data_W = dmem_rdata;
+    assign cpu_rdata_W = cpu_port_rdata;
 
     always_ff @(posedge clk) begin
         if (rst || flush_mem_wb) begin
