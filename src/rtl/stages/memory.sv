@@ -22,8 +22,8 @@ module memory_stage import risc_v_pkg::*;
 //---------DMEM ACCESS--------------------
     output Addr_t              dmem_addr,
     output ByteDataEna_t       dmem_byte_we,
-    output Data_t              dmem_data_in,
-    input  Data_t              dmem_data_out,
+    output Data_t              dmem_wdata,
+    input  Data_t              cpu_rdata,
 //----------------------------------------
 
 //---------OUTPUT REGISTERS---------------
@@ -60,14 +60,14 @@ module memory_stage import risc_v_pkg::*;
         .byte_addr ( dmem_byte_off             ),
         .data_in   ( rd2_M                     ),
         .we        ( dmem_byte_we              ),
-        .data_out  ( dmem_data_in              )
+        .data_out  ( dmem_wdata                )
     );
 
     // --- Data Memory Read Port ---
     risc_v_dmem_rd_port_m dmem_rd_port_inst (
         .funct3    ( id_controls_W.dmem_sel.funct3 ),
         .byte_addr ( alu_out_W[1:0]                ),
-        .data_in   ( dmem_data_out                 ),
+        .data_in   ( cpu_rdata                     ),
         .data_out  ( dmem_rdata                    )
     );
 

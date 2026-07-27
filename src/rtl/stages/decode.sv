@@ -5,30 +5,30 @@ module decode_stage import risc_v_pkg::*;
     input  logic               clk,
     input  logic               rst,
 
-//---------HAZARD UNIT WIRES----------
+//---------HAZARD UNIT WIRES------------
     input  logic               stall_id_ex,
     input  logic               flush_id_ex,
 
-    output logic               id_jfid,
-    output Addr_t              id_imm_pc,
+    output logic                    id_jfid,
+    output Addr_t                   id_imm_pc,
     output logic [OPCODE_WIDTH-1:0] id_opcode,
-//------------------------------------
+//--------------------------------------
 
-//-------REGISTER FILE ACCESS---------
+//--------REGISTER FILE ACCESS----------
     output RegAddr_t           rs1,
     output RegAddr_t           rs2,
 
     input  Data_t              rd1,
     input  Data_t              rd2,
-//------------------------------------
+//--------------------------------------
 
-//----------INPUT REGISTERS-----------
+//---------INPUT REGISTERS--------------
     input  Addr_t              pc_D,
     input  Instr_t             instr_D,
     input  logic               valid_D,
-//------------------------------------
+//--------------------------------------
 
-//---------OUTPUT REGISTERS-----------
+//---------OUTPUT REGISTERS-------------
     output Addr_t              pc_E,
     output Data_t              rd1_E,
     output Data_t              rd2_E,
@@ -38,7 +38,7 @@ module decode_stage import risc_v_pkg::*;
     output RegAddr_t           rd_E,
     output Id_controls_out_t   id_controls_E,
     output logic               valid_E
-//------------------------------------
+//--------------------------------------
 
 );
 

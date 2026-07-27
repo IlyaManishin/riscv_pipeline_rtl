@@ -62,7 +62,7 @@ module cpu_system
   Addr_t        dmem_addr;
   Data_t        dmem_wdata;
   Data_t        dmem_rdata;
-  Data_t        data_to_cpu;
+  Data_t        cpu_rdata;
 
   logic         rst_strobe = 1'b0;
   logic         cpu_rst;
@@ -116,8 +116,8 @@ module cpu_system
       //--- dmem interface
       .dmem_addr    (dmem_addr),
       .dmem_byte_we (dmem_byte_we),
-      .dmem_data_in (dmem_wdata),
-      .dmem_data_out(data_to_cpu)
+      .dmem_wdata   (dmem_wdata),
+      .cpu_rdata    (cpu_rdata)
   );
 
   //--------------------- instruction memory (IMEM) -------------------------
@@ -174,12 +174,12 @@ module cpu_system
 
   Data_t uart_rdata;
 `ifdef VIDEO_ENABLED
-  assign data_to_cpu = dmem_ena ? dmem_rdata :
+  assign cpu_rdata = dmem_ena ? dmem_rdata :
                        uart_ena ? uart_rdata : 
                        buttons_ena ? {{27'h0, BTNC, BTND, BTNL, BTNR, BTNU}} : 
                        32'h0;
 `else
-  assign data_to_cpu = uart_ena ? uart_rdata : dmem_rdata;
+  assign cpu_rdata = uart_ena ? uart_rdata : dmem_rdata;
 `endif
 
   // ------------------ uart subsystem -------------------------------------

@@ -16,8 +16,8 @@ module cpu_core_m import risc_v_pkg::*;
     // =========================================================================
     output Addr_t        dmem_addr,
     output ByteDataEna_t dmem_byte_we,
-    output Data_t        dmem_data_in,
-    input  Data_t        dmem_data_out
+    output Data_t        dmem_wdata,
+    input  Data_t        cpu_rdata
 );
 
     // =========================================================================
@@ -208,8 +208,8 @@ module cpu_core_m import risc_v_pkg::*;
         .valid_M       ( valid_M       ),
         .dmem_addr     ( dmem_addr     ),
         .dmem_byte_we  ( dmem_byte_we  ),
-        .dmem_data_in  ( dmem_data_in  ),
-        .dmem_data_out ( dmem_data_out ),
+        .dmem_wdata    ( dmem_wdata    ),
+        .cpu_rdata     ( cpu_rdata     ),
         .alu_out_W     ( alu_out_W     ),
         .dmem_data_W   ( dmem_data_W   ),
         .rd_W          ( rd_W          ),
