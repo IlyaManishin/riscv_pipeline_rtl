@@ -62,7 +62,7 @@ module execute_stage import risc_v_pkg::*;
 
     assign alu_out     = id_controls_E.alushift_sel ? shifter_out : alu_res;
 
-    logic ex_jfexe = valid_E & id_controls_E.jf_exe
+    logic ex_jfexe = valid_E & id_controls_E.jf_exe;
     Data_t ex_jfpc = alu_res;
 
     // =========================================================================
