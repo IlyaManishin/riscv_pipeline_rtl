@@ -5,12 +5,12 @@ module hazard_detection_unit import risc_v_pkg::*;
     input  logic [RF_ADDR_WIDTH-1:0] id_rs1,
     input  logic [RF_ADDR_WIDTH-1:0] id_rs2,
     input  logic [OPCODE_WIDTH-1:0] id_opcode,
-    input  logic       id_jf_exe,
-    input  logic       id_jfid,
+    input  logic       ex_jfexe,
+    input  logic       jfid_E,
 
     input  logic       ex_reg_wr,
     input  logic [RF_ADDR_WIDTH-1:0] ex_rd,
-    input  logic       ex_jfexe,
+    input  logic       jfexe_M,
 
     input  logic       mem_reg_wr,
     input  logic [RF_ADDR_WIDTH-1:0] mem_rd,
@@ -21,7 +21,8 @@ module hazard_detection_unit import risc_v_pkg::*;
     output logic       stall_pc,
     output logic       stall_if_id,
     output logic       flush_if_id,
-    output logic       flush_id_ex
+    output logic       flush_id_ex,
+    output logic       flush_ex_mem
 );
 
     logic uses_rs1;
@@ -47,22 +48,24 @@ module hazard_detection_unit import risc_v_pkg::*;
     assign is_wb_hazard  = wb_reg_wr  && (wb_rd != '0)  && ((uses_rs1 && (wb_rd == id_rs1))  || (uses_rs2 && (wb_rd == id_rs2)));
 
     always_comb begin
-        stall_pc    = 1'b0;
-        stall_if_id = 1'b0;
-        flush_if_id = 1'b0;
-        flush_id_ex = 1'b0;
+        stall_pc     = 1'b0;
+        stall_if_id  = 1'b0;
+        flush_if_id  = 1'b0;
+        flush_id_ex  = 1'b0;
+        flush_ex_mem = 1'b0;
 
-        if (id_jf_exe) begin
-            // flush_if_id = 1'b1;
-        end
+        // if (ex_jfexe) begin
+        //     flush_if_id = 1'b1;
+        //     flush_id_ex = 1'b1;
+        // end
 
-        if (ex_jfexe) begin
-            // flush_if_id = 1'b1;
+        if (jfexe_M) begin
             flush_id_ex = 1'b1;
+            // flush_ex_mem = 1'b1; maybe need this (check RAW stall dependency)
         end
 
-        if (id_jfid) begin
-            // flush_if_id = 1'b1;
+        if (jfid_E) begin
+            flush_id_ex = 1'b1;
         end
 
         if (is_ex_hazard || is_mem_hazard || is_wb_hazard) begin
