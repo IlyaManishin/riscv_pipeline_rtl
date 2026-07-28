@@ -95,7 +95,7 @@ module cpu_system
   );
 
   //--- reset (related to clk)
-  (* keep_hierarchy = `PRJ_KEEP_HIEARARCHY *)
+  // (* keep_hierarchy = `PRJ_KEEP_HIEARARCHY *)
   rst_m rst_inst (
       .clk(cpu_clk),
       .ena(pll_locked),
@@ -103,7 +103,7 @@ module cpu_system
   );
 
   //---    risc-v cpu core
-  (* keep_hierarchy = `PRJ_KEEP_HIEARARCHY *)
+  // (* keep_hierarchy = `PRJ_KEEP_HIEARARCHY *)
   cpu_core_m cpu (
       //---
       .clk(cpu_clk),
@@ -122,7 +122,7 @@ module cpu_system
 
   //--------------------- instruction memory (IMEM) -------------------------
 `ifndef IMEM_BRAM
-  (* keep_hierarchy = `PRJ_KEEP_HIEARARCHY *)
+  // (* keep_hierarchy = `PRJ_KEEP_HIEARARCHY *)
   imem_lutram #(
       .INIT_FILE (`IMEM_INIT_FILE),
       .ADDR_WIDTH(IMEM_ADDR_BYTE_WIDTH - BYTE_ADDR_WIDTH)
@@ -132,7 +132,7 @@ module cpu_system
   );
 
 `else
-  (* keep_hierarchy = `PRJ_KEEP_HIEARARCHY *)
+  // (* keep_hierarchy = `PRJ_KEEP_HIEARARCHY *)
   imem_bram #(
       .INIT_FILE (`IMEM_INIT_FILE),
       .ADDR_WIDTH(IMEM_ADDR_BYTE_WIDTH - BYTE_ADDR_WIDTH)
@@ -145,7 +145,7 @@ module cpu_system
 
 
   //--------------------- data memory (DMEM) --------------------------------
-  (* keep_hierarchy = `PRJ_KEEP_HIEARARCHY *)
+  // (* keep_hierarchy = `PRJ_KEEP_HIEARARCHY *)
   dual_port_mem_m #(
       .INIT_FILE       (`DMEM_INIT_FILE),
       .PORTA_ADDR_WIDTH(DMEM_PORT_ADDR_WIDTH),
