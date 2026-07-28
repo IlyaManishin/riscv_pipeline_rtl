@@ -47,12 +47,22 @@ module cpu_core_m import risc_v_pkg::*;
 
 
     // =========================================================================
+    //  Control & Jump Signals
+    // =========================================================================
+    logic  jfid_E;
+    Addr_t jfpc_E;
+    logic  jfexe_M;
+    Addr_t jfpc_M;
+
+
+    // =========================================================================
     //  Hazard Detection Unit Signals & Instance
     // =========================================================================
     logic stall_pc;
     logic stall_if_id;
     logic flush_if_id;
     logic flush_id_ex;
+    logic flush_ex_mem;
 
     logic id_jfid;
 
@@ -66,11 +76,11 @@ module cpu_core_m import risc_v_pkg::*;
         .id_rs1      ( rs1                  ),
         .id_rs2      ( rs2                  ),
         .id_opcode   ( id_opcode            ),
-        .id_jf_exe   ( id_controls_E.jf_exe ),
-        .id_jfid     ( id_jfid              ),
+        .ex_jfexe    ( id_controls_E.jf_exe ),
+        .jfid_E     ( jfid_E              ),
         .ex_reg_wr   ( ex_reg_wr            ),
         .ex_rd       ( rd_E                 ),
-        .ex_jfexe    ( ex_jfexe             ),
+        .jfexe_M    ( jfexe_M             ),
         .mem_reg_wr  ( mem_reg_wr           ),
         .mem_rd      ( rd_M                 ),
         .wb_reg_wr   ( wb_rf_we3            ),
@@ -78,7 +88,8 @@ module cpu_core_m import risc_v_pkg::*;
         .stall_pc    ( stall_pc             ),
         .stall_if_id ( stall_if_id          ),
         .flush_if_id ( flush_if_id          ),
-        .flush_id_ex ( flush_id_ex          )
+        .flush_id_ex ( flush_id_ex          ),
+        .flush_ex_mem( flush_ex_mem)
     );
 
 
@@ -95,10 +106,10 @@ module cpu_core_m import risc_v_pkg::*;
         .stall_pc     ( stall_pc    ),
         .stall_if_id  ( stall_if_id ),
         .flush_if_id  ( flush_if_id ),
-        .id_jfid      ( id_jfid     ),
-        .id_imm_pc    ( id_imm_pc   ),
-        .ex_jfexe     ( ex_jfexe    ),
-        .ex_alures    ( ex_alures   ),
+        .jfid_E       ( jfid_E      ),
+        .jfpc_E       ( jfpc_E      ),
+        .jfexe_M      ( jfexe_M     ),
+        .jfpc_M       ( jfpc_M      ),
         .imem_addr    ( imem_addr   ),
         .instr        ( instr       ),
         .pc_D         ( pc_D        ),
@@ -108,7 +119,7 @@ module cpu_core_m import risc_v_pkg::*;
 
     // =========================================================================
     //  Decode Stage (ID) Signals & Instance
-    // =========================================================================
+    // =========================================================================    
     Addr_t                   id_imm_pc;
     logic [OPCODE_WIDTH-1:0] id_opcode;
 
@@ -145,6 +156,8 @@ module cpu_core_m import risc_v_pkg::*;
         .rs2_E         ( rs2_E         ),
         .rd_E          ( rd_E          ),
         .id_controls_E ( id_controls_E ),
+        .jfpc_E        ( jfpc_E        ),
+        .jfid_E        ( jfid_E        ),
         .valid_E       ( valid_E       )
     );
 
@@ -152,8 +165,7 @@ module cpu_core_m import risc_v_pkg::*;
     //  Execute Stage (EX) Signals & Instance
     // =========================================================================
     logic             ex_jfexe;
-    Data_t            ex_alures;
-
+    
     Data_t            alu_out_M;
     Data_t            rd2_M;
     RegAddr_t         rd_M;
@@ -165,7 +177,7 @@ module cpu_core_m import risc_v_pkg::*;
         .clk           ( clk           ),
         .rst           ( rst           ),
         .stall_ex_mem  ( 1'b0          ),
-        .flush_ex_mem  ( 1'b0          ),
+        .flush_ex_mem  ( flush_ex_mem       ),
         .pc_E          ( pc_E          ),
         .rd1_E         ( rd1_E         ),
         .rd2_E         ( rd2_E         ),
@@ -176,7 +188,8 @@ module cpu_core_m import risc_v_pkg::*;
         .id_controls_E ( id_controls_E ),
         .valid_E       ( valid_E       ),
         .ex_jfexe      ( ex_jfexe      ),
-        .ex_alures     ( ex_alures     ),
+        .jfexe_M       ( jfexe_M       ),
+        .jfpc_M        ( jfpc_M        ),
         .alu_out_M     ( alu_out_M     ),
         .rd2_M         ( rd2_M         ),
         .rd_M          ( rd_M          ),

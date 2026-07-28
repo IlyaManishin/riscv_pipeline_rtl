@@ -12,11 +12,11 @@ module fetch_stage import risc_v_pkg::*;
 //------------------------------------
 
 //---------CONTROL & JUMP WIRES-------
-    input  logic        id_jfid,
-    input  Addr_t       id_imm_pc,
+    input  logic        jfid_E,
+    input  Addr_t       jfpc_E,
 
-    input  logic        ex_jfexe,
-    input  Addr_t       ex_alures,
+    input  logic        jfexe_M,
+    input  Addr_t       jfpc_M,
 //------------------------------------
 
 //---------IMEM ACCESS----------------
@@ -46,12 +46,12 @@ module fetch_stage import risc_v_pkg::*;
     // =========================================================================
 
     always_comb begin
-        if (ex_jfexe) begin
+        if (jfexe_M) begin
             br_taken = 1'b1;
-            pc_br    = ex_alures;
-        end else if (id_jfid) begin
+            pc_br    = jfpc_M;
+        end else if (jfid_E) begin
             br_taken = 1'b1;
-            pc_br    = id_imm_pc;
+            pc_br    = jfpc_E;
         end else begin
             br_taken = 1'b0;
             pc_br    = '0;
