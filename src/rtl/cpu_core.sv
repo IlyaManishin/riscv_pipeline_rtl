@@ -47,6 +47,15 @@ module cpu_core_m import risc_v_pkg::*;
 
 
     // =========================================================================
+    //  Control & Jump Signals
+    // =========================================================================
+    logic  jfid_E;
+    Addr_t jfpc_E;
+    logic  jfexe_M;
+    Data_t jfpc_M;
+
+
+    // =========================================================================
     //  Hazard Detection Unit Signals & Instance
     // =========================================================================
     logic stall_pc;
@@ -95,10 +104,10 @@ module cpu_core_m import risc_v_pkg::*;
         .stall_pc     ( stall_pc    ),
         .stall_if_id  ( stall_if_id ),
         .flush_if_id  ( flush_if_id ),
-        .id_jfid      ( id_jfid     ),
-        .id_imm_pc    ( id_imm_pc   ),
-        .ex_jfexe     ( ex_jfexe    ),
-        .ex_alures    ( ex_alures   ),
+        .jfid_E       ( jfid_E      ),
+        .jfpc_E       ( jfpc_E      ),
+        .jfexe_M      ( jfexe_M     ),
+        .jfpc_M       ( jfpc_M      ),
         .imem_addr    ( imem_addr   ),
         .instr        ( instr       ),
         .pc_D         ( pc_D        ),
@@ -145,15 +154,14 @@ module cpu_core_m import risc_v_pkg::*;
         .rs2_E         ( rs2_E         ),
         .rd_E          ( rd_E          ),
         .id_controls_E ( id_controls_E ),
+        .jfpc_E        ( jfpc_E        ),
+        .jfid_E        ( jfid_E        ),
         .valid_E       ( valid_E       )
     );
 
     // =========================================================================
     //  Execute Stage (EX) Signals & Instance
     // =========================================================================
-    logic             ex_jfexe;
-    Data_t            ex_alures;
-
     Data_t            alu_out_M;
     Data_t            rd2_M;
     RegAddr_t         rd_M;
@@ -175,8 +183,8 @@ module cpu_core_m import risc_v_pkg::*;
         .rd_E          ( rd_E          ),
         .id_controls_E ( id_controls_E ),
         .valid_E       ( valid_E       ),
-        .ex_jfexe      ( ex_jfexe      ),
-        .ex_alures     ( ex_alures     ),
+        .jfexe_M       ( jfexe_M       ),
+        .jfpc_M        ( jfpc_M        ),
         .alu_out_M     ( alu_out_M     ),
         .rd2_M         ( rd2_M         ),
         .rd_M          ( rd_M          ),

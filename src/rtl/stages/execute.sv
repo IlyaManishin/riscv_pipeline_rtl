@@ -23,8 +23,8 @@ module execute_stage import risc_v_pkg::*;
 //------------------------------------
 
 //---------HAZARD / JUMP OUT----------
-    output logic               ex_jfexe,
-    output Data_t              ex_alures,
+    output logic               jfexe_M,
+    output Data_t              jfpc_M,
 //------------------------------------
 
 //---------OUTPUT REGISTERS-----------
@@ -59,11 +59,11 @@ module execute_stage import risc_v_pkg::*;
     assign shift_shamt = id_controls_E.b_sel ? rd2_E[4:0] : rs2_E[4:0];
 
     assign pc4_E       = pc_E + 32'd4;
-    assign ex_alures   = alu_res;
-    assign ex_jfexe    = valid_E & id_controls_E.jf_exe;
 
     assign alu_out     = id_controls_E.alushift_sel ? shifter_out : alu_res;
 
+    logic ex_jfexe = valid_E & id_controls_E.jf_exe
+    Data_t ex_jfpc = alu_res;
 
     // =========================================================================
     //  Submodules Instantiations
@@ -102,6 +102,8 @@ module execute_stage import risc_v_pkg::*;
             pc4_M         <= '0;
             id_controls_M <= '0;
             valid_M       <= 1'b0;
+            jfexe_M       <= 1'b0;
+            jfpc_M        <= '0;
         end else if (!stall_ex_mem) begin
             alu_out_M     <= alu_out;
             rd2_M         <= rd2_E;
@@ -109,6 +111,8 @@ module execute_stage import risc_v_pkg::*;
             pc4_M         <= pc4_E;
             id_controls_M <= id_controls_E;
             valid_M       <= valid_E;
+            jfexe_M       <= ex_jfexe;
+            jfpc_M        <= ex_jfpc;
         end
     end
 

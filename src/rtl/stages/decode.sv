@@ -37,6 +37,8 @@ module decode_stage import risc_v_pkg::*;
     output RegAddr_t           rs2_E,
     output RegAddr_t           rd_E,
     output Id_controls_out_t   id_controls_E,
+    output logic               jfpc_E,
+    output logic               jfid_E,
     output logic               valid_E
 //--------------------------------------
 
@@ -120,6 +122,8 @@ module decode_stage import risc_v_pkg::*;
             rs2_E         <= '0;
             rd_E          <= '0;
             id_controls_E <= '0;
+            jfid_E        <= '0;
+            jfpc_E         <= '0;
             valid_E       <= 1'b0;
         end else if (!stall_id_ex) begin
             pc_E          <= pc_D;
@@ -130,6 +134,8 @@ module decode_stage import risc_v_pkg::*;
             rs2_E         <= rs2;
             rd_E          <= rd;
             id_controls_E <= id_output_controls;
+            jfid_E        <= id_jfid;
+            jfpc_E        <= id_imm_pc;
             valid_E       <= valid_D;
         end
     end

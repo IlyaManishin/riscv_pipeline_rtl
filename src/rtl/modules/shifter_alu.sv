@@ -10,7 +10,7 @@ module risc_v_shifter_m import risc_v_pkg::*;
 
     output logic [XLEN-1:0] res
 );
-
+`define SHIFTER_ABSTRACT
 
 `ifdef SHIFTER_ABSTRACT
 
