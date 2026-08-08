@@ -45,7 +45,6 @@ module cpu_core_m import risc_v_pkg::*;
         .we   ( wb_rf_we3 )
     );
 
-
     // =========================================================================
     //  Control & Jump Signals
     // =========================================================================
@@ -53,7 +52,6 @@ module cpu_core_m import risc_v_pkg::*;
     Addr_t jfpc_E;
     logic  jfexe_M;
     Addr_t jfpc_M;
-
 
     // =========================================================================
     //  Hazard Detection Unit Signals & Instance
@@ -65,23 +63,21 @@ module cpu_core_m import risc_v_pkg::*;
     logic flush_ex_mem;
 
     logic id_jfid;
-
     logic ex_reg_wr;
     logic mem_reg_wr;
 
     assign ex_reg_wr  = id_controls_E.reg_wr;
     assign mem_reg_wr = id_controls_M.reg_wr;
 
-
     hazard_detection_unit hazard_unit_inst (
         .id_rs1      ( rs1                  ),
         .id_rs2      ( rs2                  ),
         .id_opcode   ( id_opcode            ),
         .ex_jfexe    ( id_controls_E.jf_exe ),
-        .jfid_E     ( jfid_E              ),
+        .jfid_E      ( jfid_E               ),
         .ex_reg_wr   ( ex_reg_wr            ),
         .ex_rd       ( rd_E                 ),
-        .jfexe_M    ( jfexe_M             ),
+        .jfexe_M     ( jfexe_M              ),
         .mem_reg_wr  ( mem_reg_wr           ),
         .mem_rd      ( rd_M                 ),
         .wb_reg_wr   ( wb_rf_we3            ),
@@ -90,9 +86,8 @@ module cpu_core_m import risc_v_pkg::*;
         .stall_if_id ( stall_if_id          ),
         .flush_if_id ( flush_if_id          ),
         .flush_id_ex ( flush_id_ex          ),
-        .flush_ex_mem( flush_ex_mem)
+        .flush_ex_mem( flush_ex_mem         )
     );
-
 
     // =========================================================================
     //  Fetch Stage (IF) Signals & Instance
@@ -120,7 +115,7 @@ module cpu_core_m import risc_v_pkg::*;
 
     // =========================================================================
     //  Decode Stage (ID) Signals & Instance
-    // =========================================================================    
+    // =========================================================================
     Addr_t                   id_imm_pc;
     logic [OPCODE_WIDTH-1:0] id_opcode;
 
@@ -164,7 +159,7 @@ module cpu_core_m import risc_v_pkg::*;
     //  Execute Stage (EX) Signals & Instance
     // =========================================================================
     logic             ex_jfexe;
-    
+
     Data_t            alu_out_M;
     Data_t            rd2_M;
     RegAddr_t         rd_M;
@@ -176,7 +171,7 @@ module cpu_core_m import risc_v_pkg::*;
         .clk           ( clk           ),
         .rst           ( rst           ),
         .stall_ex_mem  ( 1'b0          ),
-        .flush_ex_mem  ( flush_ex_mem       ),
+        .flush_ex_mem  ( flush_ex_mem  ),
         .pc_E          ( pc_E          ),
         .rd1_E         ( rd1_E         ),
         .rd2_E         ( rd2_E         ),
