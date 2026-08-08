@@ -72,6 +72,7 @@ module cpu_core_m import risc_v_pkg::*;
     assign ex_reg_wr  = id_controls_E.reg_wr;
     assign mem_reg_wr = id_controls_M.reg_wr;
 
+
     hazard_detection_unit hazard_unit_inst (
         .id_rs1      ( rs1                  ),
         .id_rs2      ( rs2                  ),
@@ -127,7 +128,6 @@ module cpu_core_m import risc_v_pkg::*;
     Data_t                   rd1_E;
     Data_t                   rd2_E;
     Data_t                   imm_E;
-    RegAddr_t                rs1_E;
     RegAddr_t                rs2_E;
     RegAddr_t                rd_E;
     Id_controls_out_t        id_controls_E;
@@ -152,7 +152,6 @@ module cpu_core_m import risc_v_pkg::*;
         .rd1_E         ( rd1_E         ),
         .rd2_E         ( rd2_E         ),
         .imm_E         ( imm_E         ),
-        .rs1_E         ( rs1_E         ),
         .rs2_E         ( rs2_E         ),
         .rd_E          ( rd_E          ),
         .id_controls_E ( id_controls_E ),
@@ -182,7 +181,6 @@ module cpu_core_m import risc_v_pkg::*;
         .rd1_E         ( rd1_E         ),
         .rd2_E         ( rd2_E         ),
         .imm_E         ( imm_E         ),
-        .rs1_E         ( rs1_E         ),
         .rs2_E         ( rs2_E         ),
         .rd_E          ( rd_E          ),
         .id_controls_E ( id_controls_E ),

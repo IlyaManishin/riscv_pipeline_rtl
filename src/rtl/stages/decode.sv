@@ -33,7 +33,6 @@ module decode_stage import risc_v_pkg::*;
     output Data_t              rd1_E,
     output Data_t              rd2_E,
     output Data_t              imm_E,
-    output RegAddr_t           rs1_E,
     output RegAddr_t           rs2_E,
     output RegAddr_t           rd_E,
     output Id_controls_out_t   id_controls_E,
@@ -118,7 +117,6 @@ module decode_stage import risc_v_pkg::*;
             rd1_E         <= '0;
             rd2_E         <= '0;
             imm_E         <= '0;
-            rs1_E         <= '0;
             rs2_E         <= '0;
             rd_E          <= '0;
             id_controls_E <= '0;
@@ -130,7 +128,6 @@ module decode_stage import risc_v_pkg::*;
             rd1_E         <= rd1;
             rd2_E         <= rd2;
             imm_E         <= imm;
-            rs1_E         <= rs1;
             rs2_E         <= rs2;
             rd_E          <= rd;
             id_controls_E <= id_output_controls;

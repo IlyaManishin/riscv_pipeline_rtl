@@ -15,7 +15,6 @@ module execute_stage import risc_v_pkg::*;
     input  Data_t              rd1_E,
     input  Data_t              rd2_E,
     input  Data_t              imm_E,
-    input  RegAddr_t           rs1_E,
     input  RegAddr_t           rs2_E,
     input  RegAddr_t           rd_E,
     input  Id_controls_out_t   id_controls_E,
