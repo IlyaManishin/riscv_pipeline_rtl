@@ -69,6 +69,7 @@ module cpu_core_m import risc_v_pkg::*;
     assign ex_reg_wr  = id_controls_E.reg_wr;
     assign mem_reg_wr = id_controls_M.reg_wr;
 
+    (* keep_hierarchy = `HDU_KEEP_HIEARARCHY *)
     hazard_detection_unit hazard_unit_inst (
         .id_rs1      ( rs1                  ),
         .id_rs2      ( rs2                  ),
@@ -96,6 +97,7 @@ module cpu_core_m import risc_v_pkg::*;
     Instr_t instr_D;
     logic   valid_D;
 
+    (* keep_hierarchy = `STAGES_KEEP_HIEARARCHY *)
     fetch_stage fetch_stage_inst (
         .clk          ( clk         ),
         .rst          ( rst         ),
@@ -128,6 +130,7 @@ module cpu_core_m import risc_v_pkg::*;
     Id_controls_out_t        id_controls_E;
     logic                    valid_E;
 
+    (* keep_hierarchy = `STAGES_KEEP_HIEARARCHY *)
     decode_stage decode_stage_inst (
         .clk           ( clk           ),
         .rst           ( rst           ),
@@ -167,6 +170,7 @@ module cpu_core_m import risc_v_pkg::*;
     Id_controls_out_t id_controls_M;
     logic             valid_M;
 
+    (* keep_hierarchy = `STAGES_KEEP_HIEARARCHY *)
     execute_stage execute_stage_inst (
         .clk           ( clk           ),
         .rst           ( rst           ),
@@ -201,6 +205,7 @@ module cpu_core_m import risc_v_pkg::*;
     Id_controls_out_t id_controls_W;
     logic             valid_W;
 
+    (* keep_hierarchy = `STAGES_KEEP_HIEARARCHY *)
     memory_stage memory_stage_inst (
         .clk           ( clk           ),
         .rst           ( rst           ),
@@ -227,6 +232,7 @@ module cpu_core_m import risc_v_pkg::*;
     // =========================================================================
     //  Writeback Stage (WB) Signals & Instance
     // =========================================================================
+    (* keep_hierarchy = `STAGES_KEEP_HIEARARCHY *)
     writeback_stage writeback_stage_inst (
         .alu_out_W     ( alu_out_W     ),
         .cpu_rdata_W   ( cpu_rdata_W   ),

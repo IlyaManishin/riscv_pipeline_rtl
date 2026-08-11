@@ -1,4 +1,4 @@
-set all_failing [get_timing_paths -slack_lesser_than 0.0 -max_paths 50000 -nworst 1 -setup]
+set all_failing [get_timing_paths -slack_lesser_than 4.0 -max_paths 50000 -nworst 1 -setup]
 
 set non_decode_paths {}
 foreach path $all_failing {
@@ -35,3 +35,17 @@ if {[llength $target_paths] > 0} {
 } else {
     puts "Пути с указанными сигналами не найдены."
 }
+
+set target_paths {}
+foreach path $all_failing {
+    set path_str [string tolower [report_timing -of_objects $path -return_string]]
+    if {[string match "*imem_addr*" $path_str]} {
+        lappend target_paths $path
+    }
+}
+
+foreach path $all_failing {
+    set path_str [string tolower [report_timing -of_objects $path -return_string]]
+    lappend target_paths $path
+}
+

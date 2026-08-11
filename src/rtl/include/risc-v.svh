@@ -39,7 +39,10 @@
 //    wnen defined  "no"  - (* keep_hierarchy = "no" *)
 //    default - "no"
 //------------------------------------------------------------------------------
-`define PRJ_KEEP_HIEARARCHY "yes"
+`define SYSTEM_KEEP_HIERARCHY "no"
+`define STAGES_KEEP_HIEARARCHY "no"
+`define HDU_KEEP_HIEARARCHY "yes"
+
 
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
