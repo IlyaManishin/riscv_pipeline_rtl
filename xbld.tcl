@@ -92,7 +92,11 @@ puts $fh "\`define VIDEO_HALF_RESOLUTION $video_320x240"
 puts $fh "\`endif"
 close $fh
 
+set include_dir $rtlDir/include
+set include_files $include_dir/risc-v.svh        \
+
 add_files -fileset sources_1                     \
+         $include_files                          \
          $rtlDir/cpu_system.sv                   \
          $rtlDir/cpu_core.sv                     \
          $rtlDir/stages/fetch.sv                 \

@@ -41,7 +41,7 @@
 //------------------------------------------------------------------------------
 `define SYSTEM_KEEP_HIERARCHY "no"
 `define STAGES_KEEP_HIEARARCHY "no"
-`define HDU_KEEP_HIEARARCHY "yes"
+`define HDU_KEEP_HIEARARCHY "no"
 
 
 //------------------------------------------------------------------------------
@@ -65,9 +65,9 @@ localparam int INSTR_LEN       = 32;                 // fixed for all RISC-V ISA
 localparam int RF_ADDR_WIDTH   = 5;                  // RISC-V ISA dependent (?)
 
 //--------------------------------------------------------------------------
-parameter int DATA_BYTE_NUM   = XLEN / 8;
-parameter int BYTE_ADDR_WIDTH = $clog2(DATA_BYTE_NUM);
-parameter int DMEM_PORT_ADDR_WIDTH = DMEM_ADDR_BYTE_WIDTH - BYTE_ADDR_WIDTH;
+localparam int DATA_BYTE_NUM   = XLEN / 8;
+localparam int BYTE_ADDR_WIDTH = $clog2(DATA_BYTE_NUM);
+localparam int DMEM_PORT_ADDR_WIDTH = DMEM_ADDR_BYTE_WIDTH - BYTE_ADDR_WIDTH;
 
 //--------------------------------------------------------------------------
 typedef logic [RF_ADDR_WIDTH-1:0]        RegAddr_t;
@@ -363,6 +363,7 @@ endfunction : disasm
 endpackage : risc_v_pkg
 
 `endif // RISC_V_SVH
+
 
 
 
