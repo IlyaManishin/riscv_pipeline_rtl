@@ -79,10 +79,10 @@ Byte_t     sign;
 dmem_rd_port_sign_gen_m #(.ENDIANNESS(ENDIANNESS))
 sign_gen_inst
 (
-    .instr     ( LoadInstr_t'(funct3) ),
-    .byte_addr ( byte_addr            ),
-    .data      ( byte_data            ),
-    .sign      ( sign                 )
+    .load_instr ( LoadInstr_t'(funct3) ),
+    .byte_addr  ( byte_addr            ),
+    .data       ( byte_data            ),
+    .sign       ( sign                 )
 );
 
 //==============================================================================

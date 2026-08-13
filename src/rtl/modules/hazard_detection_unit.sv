@@ -31,17 +31,19 @@ module hazard_detection_unit import risc_v_pkg::*;
     logic is_mem_hazard;
     logic is_wb_hazard;
 
-    always_comb begin
-        case (id_opcode)
-            5'b11001: begin uses_rs1 = 1'b1; uses_rs2 = 1'b0; end
-            5'b11000: begin uses_rs1 = 1'b1; uses_rs2 = 1'b1; end
-            5'b00000: begin uses_rs1 = 1'b1; uses_rs2 = 1'b0; end
-            5'b01000: begin uses_rs1 = 1'b1; uses_rs2 = 1'b1; end
-            5'b00100: begin uses_rs1 = 1'b1; uses_rs2 = 1'b0; end
-            5'b01100: begin uses_rs1 = 1'b1; uses_rs2 = 1'b1; end
-            default:  begin uses_rs1 = 1'b0; uses_rs2 = 1'b0; end
-        endcase
-    end
+    // always_comb begin
+    //     case (id_opcode)
+    //         5'b11001: begin uses_rs1 = 1'b1; uses_rs2 = 1'b0; end
+    //         5'b11000: begin uses_rs1 = 1'b1; uses_rs2 = 1'b1; end
+    //         5'b00000: begin uses_rs1 = 1'b1; uses_rs2 = 1'b0; end
+    //         5'b01000: begin uses_rs1 = 1'b1; uses_rs2 = 1'b1; end
+    //         5'b00100: begin uses_rs1 = 1'b1; uses_rs2 = 1'b0; end
+    //         5'b01100: begin uses_rs1 = 1'b1; uses_rs2 = 1'b1; end
+    //         default:  begin uses_rs1 = 1'b0; uses_rs2 = 1'b0; end
+    //     endcase
+    // end
+    assign uses_rs1 = 1'b1;
+    assign uses_rs2 = 1'b1;
 
     assign is_ex_hazard  = ex_reg_wr  && (ex_rd != '0)  && ((uses_rs1 && (ex_rd == id_rs1))  || (uses_rs2 && (ex_rd == id_rs2)));
     assign is_mem_hazard = mem_reg_wr && (mem_rd != '0) && ((uses_rs1 && (mem_rd == id_rs1)) || (uses_rs2 && (mem_rd == id_rs2)));
