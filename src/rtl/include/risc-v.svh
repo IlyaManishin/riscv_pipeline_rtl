@@ -240,6 +240,19 @@ typedef enum logic [INSTR_TYPE_LEN-1:0] {
 `endif
 //=== ID section (end)
 
+
+//=== Memory ports section
+
+// precomputed in MEM before dmem data arrives.
+typedef struct packed {
+    ByteDataEna_t rd_lo_byte_sel;
+    ByteDataEna_t rd_hi_byte_sel;
+    logic         is_unsigned_read;
+} RdByteSel_t;
+ 
+//=== Memory ports section (end)
+
+
 //===DMEM section
 typedef enum logic [2:0] {
     LOAD_LB  = 3'b000,
@@ -363,6 +376,8 @@ endfunction : disasm
 endpackage : risc_v_pkg
 
 `endif // RISC_V_SVH
+
+
 
 
 

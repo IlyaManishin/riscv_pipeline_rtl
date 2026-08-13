@@ -14,8 +14,9 @@ src/rtl/lib/rst_m.sv
 
 src/rtl/memory/imem.sv
 src/rtl/memory/register_file.sv
-src/rtl/memory/risc_v_dmem_rd_port_m.sv
-src/rtl/memory/risc_v_dmem_wr_port_m.sv
+src/rtl/memory/dmem_rd_byte_sel_m.sv
+src/rtl/memory/dmem_rd_port_m.sv
+src/rtl/memory/dmem_wr_port_m.sv
 
 src/rtl/modules/alu.sv
 src/rtl/modules/branch_unit_m.sv

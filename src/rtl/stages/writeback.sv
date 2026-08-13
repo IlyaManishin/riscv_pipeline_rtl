@@ -9,6 +9,9 @@ module writeback_stage import risc_v_pkg::*;
     input  Addr_t            pc4_W,
     input  Id_controls_out_t id_controls_W,
     input  logic             valid_W,
+
+    // rd_port byte-select, precomputed in MEM
+    input  RdByteSel_t       rd_byte_sel_W,
 //-------------------------------------
 
 //---------REGISTER FILE WRITE---------
@@ -23,18 +26,18 @@ module writeback_stage import risc_v_pkg::*;
     // =========================================================================
 
     Data_t cpu_port_rdata;
-    assign dmem_byte_off = alu_out_W[1:0];
 
     // =========================================================================
     //  Submodules Instantiations
     // =========================================================================
 
     // --- Data Memory Read Port ---
-    risc_v_dmem_rd_port_m dmem_rd_port_inst (
-        .funct3    ( id_controls_W.dmem_sel.funct3 ),
-        .byte_addr ( alu_out_W[1:0]                ),
-        .data_in   ( cpu_rdata_W                   ),
-        .data_out  ( cpu_port_rdata                )
+    // byte_addr not needed here anymore - byte-select already computed in MEM
+    dmem_rd_port_m dmem_rd_port_inst (
+        .funct3      ( id_controls_W.dmem_sel.funct3),
+        .rd_byte_sel ( rd_byte_sel_W                ),
+        .data_in     ( cpu_rdata_W                  ),
+        .data_out    ( cpu_port_rdata               )
     );
 
 

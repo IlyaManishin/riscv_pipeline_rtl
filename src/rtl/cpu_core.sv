@@ -205,6 +205,8 @@ module cpu_core_m import risc_v_pkg::*;
     Id_controls_out_t id_controls_W;
     logic             valid_W;
 
+    RdByteSel_t       rd_byte_sel_W; // rd_port byte-select, precomputed in MEM
+
     (* keep_hierarchy = `STAGES_KEEP_HIEARARCHY *)
     memory_stage memory_stage_inst (
         .clk           ( clk           ),
@@ -226,6 +228,7 @@ module cpu_core_m import risc_v_pkg::*;
         .rd_W          ( rd_W          ),
         .pc4_W         ( pc4_W         ),
         .id_controls_W ( id_controls_W ),
+        .rd_byte_sel_W ( rd_byte_sel_W ),
         .valid_W       ( valid_W       )
     );
 
@@ -240,6 +243,7 @@ module cpu_core_m import risc_v_pkg::*;
         .pc4_W         ( pc4_W         ),
         .id_controls_W ( id_controls_W ),
         .valid_W       ( valid_W       ),
+        .rd_byte_sel_W ( rd_byte_sel_W ),
         .wb_rd         ( wb_rd         ),
         .wb_wd3        ( wb_wd3        ),
         .wb_we3        ( wb_rf_we3     )

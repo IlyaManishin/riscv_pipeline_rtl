@@ -109,8 +109,9 @@ add_files -fileset sources_1                     \
          $rtlDir/modules/id.sv                   \
          $rtlDir/modules/branch_unit_m.sv        \
          $rtlDir/memory/imem.sv                  \
-         $rtlDir/memory/risc_v_dmem_rd_port_m.sv \
-         $rtlDir/memory/risc_v_dmem_wr_port_m.sv \
+         $rtlDir/memory/dmem_wr_port_m.sv        \
+         $rtlDir/memory/dmem_rd_port_m.sv        \
+         $rtlDir/memory/dmem_rd_byte_sel_m.sv    \
          $rtlDir/modules/imm_gen.sv              \
          $rtlDir/memory/register_file.sv         \
          $rtlDir/modules/alu.sv                  \
