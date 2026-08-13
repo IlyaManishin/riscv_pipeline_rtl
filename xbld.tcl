@@ -164,7 +164,7 @@ set_msg_config -suppress -id {Common 17-576}
 if $build_pll_ip {
     puts "\n------------------- create PLL IP"
     set ip_pll_name   "pll"
-    set ip_pll_clk    125
+    set ip_pll_clk    130
 
     if $enable_video {
         # lower frequency
