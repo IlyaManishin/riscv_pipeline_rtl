@@ -23,7 +23,7 @@ module dmem_rd_port_sign_gen_m import risc_v_pkg::*;
                 )
 (
     //---
-    input  LoadInstr_t      instr,
+    input  LoadInstr_t      load_instr,
     input  ByteAddr_t       byte_addr,
 
     //---
@@ -38,7 +38,7 @@ module dmem_rd_port_sign_gen_m import risc_v_pkg::*;
 //==============================================================================
 
 always_comb begin
-    case (instr)
+    case (load_instr)
         LOAD_LB:  sign = {8{data[byte_addr][7]}};
         LOAD_LH:  sign = {8{data[{byte_addr[1], 1'b1}][7]}};
         default:  sign = '0;

@@ -1,4 +1,10 @@
-set all_failing [get_timing_paths -slack_lesser_than 4.0 -max_paths 50000 -nworst 1 -setup]
+
+#===========================================================
+#-----------------FAILED EXCEPT IMEM PATHS------------------
+#===========================================================
+
+
+set all_failing [get_timing_paths -slack_lesser_than 0.5 -max_paths 50000 -nworst 1 -setup]
 
 set non_decode_paths {}
 foreach path $all_failing {
@@ -18,6 +24,7 @@ if {[llength $non_decode_paths] > 0} {
     puts "Все пути с отрицательным слаком принадлежат исключительно стадии декодирования."
 }
 
+#===========================================================
 
 set all_failing [get_timing_paths -slack_lesser_than 0.0 -max_paths 50000 -nworst 1 -setup]
 set target_paths {}
