@@ -1,6 +1,9 @@
 `include "risc-v.svh"
 
-module branch_unit_m
+// =====================================================================
+// Branch Comparator Module
+// =====================================================================
+module br_comparator
 #(
     parameter int XLEN = 32
 )
@@ -13,11 +16,10 @@ module branch_unit_m
     output logic            br_lt
 );
 
-//timeunit      1ns;
-//timeprecision 1ps;
-
+// ---------------------------------------------------------------------
+// Comparison Logic
+// ---------------------------------------------------------------------
 always_comb begin
-    // comparator
     br_eq = (rd1 == rd2);
 
     if (br_un) begin
@@ -27,4 +29,4 @@ always_comb begin
     end
 end
 
-endmodule : branch_unit_m
+endmodule : br_comparator_m
