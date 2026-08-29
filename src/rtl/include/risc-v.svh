@@ -210,16 +210,16 @@ typedef struct packed {
  */
 typedef struct packed {
     logic        reg_wr;
-    dmem_sel_t   dmem_sel;
+    DMem_sel     dmem_sel;
     logic        a_sel;
     logic        b_sel;
-    shift_sel_t  sh_sel;
-    logic        br_un;
+    Shift_sel_t  sh_sel;
+    logic        br_un;       // branch unsigned    
     logic        pc_sel;
-    ALU_SEL_t    alu_sel;
-    wb_sel_t     wb_sel;
-    Imm_type_t   imm_type;
-    logic        jf_exe;
+    Alu_sel_t    alu_sel;
+    WB_sel       wb_sel;
+    Instr_type_t imm_type;
+    logic        br_unit_sel;    
     logic        alushift_sel;
 } Id_controls_out_t;
 
