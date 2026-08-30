@@ -3,17 +3,17 @@
 module writeback_stage import risc_v_pkg::*;
 (
 //----------INPUT REGISTERS------------
-    input  Data_t            alu_out_W,
-    input  Data_t            cpu_rdata_W,
-    input  RegAddr_t         rd_W,
-    input  Addr_t            pc4_W,
-    input  Id_controls_out_t id_controls_W,
+    input  data_t            alu_out_W,
+    input  data_t            cpu_rdata_W,
+    input  reg_addr_t        rd_W,
+    input  addr_t            pc4_W,
+    input  id_controls_out_t id_controls_W,
     input  logic             valid_W,
 //-------------------------------------
 
 //---------REGISTER FILE WRITE---------
-    output RegAddr_t         wb_rd,
-    output Data_t            wb_wd3,
+    output reg_addr_t        wb_rd,
+    output data_t            wb_wd3,
     output logic             wb_we3
 //-------------------------------------
 );
@@ -22,7 +22,7 @@ module writeback_stage import risc_v_pkg::*;
     //  Internal Signals & Logic
     // =========================================================================
 
-    Data_t cpu_port_rdata;
+    data_t cpu_port_rdata;
     assign dmem_byte_off = alu_out_W[1:0];
 
     // =========================================================================

@@ -11,28 +11,28 @@ module execute_stage import risc_v_pkg::*;
 //------------------------------------
 
 //----------INPUT REGISTERS-----------
-    input  Addr_t              pc_E,
-    input  Data_t              rd1_E,
-    input  Data_t              rd2_E,
-    input  Data_t              imm_E,
-    input  RegAddr_t           rs2_E,
-    input  RegAddr_t           rd_E,
-    input  Id_controls_out_t   id_controls_E,
+    input  addr_t              pc_E,
+    input  data_t              rd1_E,
+    input  data_t              rd2_E,
+    input  data_t              imm_E,
+    input  reg_addr_t          rs2_E,
+    input  reg_addr_t          rd_E,
+    input  logic [2:0]         funct3_E,
+    input  id_controls_out_t   id_controls_E,
     input  logic               valid_E,
 //------------------------------------
 
 //---------HAZARD / JUMP OUT----------
-    output logic               ex_jfexe,
     output logic               jfexe_M,
-    output Addr_t              jfpc_M,
+    output addr_t              jfpc_M,
 //------------------------------------
 
 //---------OUTPUT REGISTERS-----------
-    output Data_t              alu_out_M,
-    output Data_t              rd2_M,
-    output RegAddr_t           rd_M,
-    output Addr_t              pc4_M,
-    output Id_controls_out_t   id_controls_M,
+    output data_t              alu_out_M,
+    output data_t              rd2_M,
+    output reg_addr_t          rd_M,
+    output addr_t              pc4_M,
+    output id_controls_out_t   id_controls_M,
     output logic               valid_M
 //------------------------------------
 );
@@ -41,14 +41,18 @@ module execute_stage import risc_v_pkg::*;
     //  Internal Signals
     // =========================================================================
 
-    Data_t        alu_in_a;
-    Data_t        alu_in_b;
-    Data_t        alu_res;
-    Data_t        shifter_out;
-    Data_t        alu_out;
+    data_t        alu_in_a;
+    data_t        alu_in_b;
+    data_t        alu_res;
+    data_t        shifter_out;
+    data_t        alu_out;
     shift_shamt_t shift_shamt;
-    Addr_t        pc4_E;
-    Addr_t        ex_jfpc;
+    addr_t        pc4_E;
+
+    logic         br_unit_res;
+    logic         br_taken;
+    logic         ex_jfexe;
+    addr_t        ex_jfpc;
 
 
     // =========================================================================
@@ -62,9 +66,6 @@ module execute_stage import risc_v_pkg::*;
     assign pc4_E       = pc_E + 32'd4;
 
     assign alu_out     = id_controls_E.alushift_sel ? shifter_out : alu_res;
-
-    assign ex_jfexe = valid_E & id_controls_E.jf_exe;
-    assign ex_jfpc = alu_res;
 
     // =========================================================================
     //  Submodules Instantiations
@@ -89,6 +90,25 @@ module execute_stage import risc_v_pkg::*;
         .sel   ( id_controls_E.sh_sel ),
         .res   ( shifter_out )
     );
+
+    // --- Branch Unit ---
+    br_unit #(
+        .XLEN ( XLEN )
+    ) br_unit_inst (
+        .rd1      ( rd1_E               ),
+        .rd2      ( rd2_E               ),
+        .br_un    ( id_controls_E.br_un ),
+        .funct3   ( funct3_E            ),
+        .br_taken ( br_unit_res         )
+    );
+
+    // =========================================================================
+    //  Control-Hazard / Branch Resolution
+    // =========================================================================
+    assign br_taken = id_controls_E.br_unit_sel ? br_unit_res : 1'b1;
+    assign ex_jfexe = valid_E & (!id_controls_E.pc_sel) & br_taken;    
+    
+    assign ex_jfpc  = alu_res;
 
 
     // =========================================================================

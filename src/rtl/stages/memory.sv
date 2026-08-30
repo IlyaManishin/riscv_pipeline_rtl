@@ -11,27 +11,27 @@ module memory_stage import risc_v_pkg::*;
 //----------------------------------------
 
 //----------INPUT REGISTERS---------------
-    input  Data_t              alu_out_M,
-    input  Data_t              rd2_M,
-    input  RegAddr_t           rd_M,
-    input  Addr_t              pc4_M,
-    input  Id_controls_out_t   id_controls_M,
+    input  data_t              alu_out_M,
+    input  data_t              rd2_M,
+    input  reg_addr_t          rd_M,
+    input  addr_t              pc4_M,
+    input  id_controls_out_t   id_controls_M,
     input  logic               valid_M,
 //----------------------------------------
 
 //---------DMEM ACCESS--------------------
-    output Addr_t              dmem_addr,
-    output ByteDataEna_t       dmem_byte_we,
-    output Data_t              dmem_wdata,
-    input  Data_t              cpu_rdata,
+    output addr_t              dmem_addr,
+    output byte_data_ena_t     dmem_byte_we,
+    output data_t              dmem_wdata,
+    input  data_t              cpu_rdata,
 //----------------------------------------
 
 //---------OUTPUT REGISTERS---------------
-    output Data_t              alu_out_W,
-    output Data_t              cpu_rdata_W,
-    output RegAddr_t           rd_W,
-    output Addr_t              pc4_W,
-    output Id_controls_out_t   id_controls_W,
+    output data_t              alu_out_W,
+    output data_t              cpu_rdata_W,
+    output reg_addr_t          rd_W,
+    output addr_t              pc4_W,
+    output id_controls_out_t   id_controls_W,
     output logic               valid_W
 //----------------------------------------
 );
@@ -40,8 +40,8 @@ module memory_stage import risc_v_pkg::*;
     //  Internal Signals & Logic
     // =========================================================================
 
-    ByteAddr_t dmem_byte_off;
-    logic      dmem_we;
+    byte_addr_t dmem_byte_off;
+    logic       dmem_we;
 
     assign dmem_addr     = alu_out_M;
     assign dmem_byte_off = alu_out_M[1:0];

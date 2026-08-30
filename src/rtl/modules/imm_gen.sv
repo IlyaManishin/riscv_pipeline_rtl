@@ -30,9 +30,9 @@
  */
 module imm_gen import risc_v_pkg::*;
 (
-    input  Imm_input_t  Imm_in,
-    input  Imm_type_t   imm_type,
-    output Imm_t        imm
+    input  imm_input_t Imm_in,
+    input  imm_type_t  imm_type,
+    output imm_t        imm
 );
 
 

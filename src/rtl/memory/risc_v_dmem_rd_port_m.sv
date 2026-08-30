@@ -23,14 +23,14 @@ module dmem_rd_port_sign_gen_m import risc_v_pkg::*;
                 )
 (
     //---
-    input  LoadInstr_t      load_instr,
-    input  ByteAddr_t       byte_addr,
+    input  load_instr_t     load_instr,
+    input  byte_addr_t      byte_addr,
 
     //---
-    input  var ByteData_t   data,
+    input  var byte_data_t  data,
 
     //---
-    output Byte_t           sign
+    output byte_t           sign
 );
 
 //==============================================================================
@@ -56,21 +56,21 @@ module risc_v_dmem_rd_port_m import risc_v_pkg::*;
 (
     //---
     input  logic [2:0]  funct3,
-    input  ByteAddr_t   byte_addr,
+    input  byte_addr_t  byte_addr,
 
     //---
-    input  Data_t       data_in,
+    input  data_t       data_in,
 
     //---
-    output Data_t       data_out
+    output data_t       data_out
 );
 
 //==============================================================================
 //    Objects
 //==============================================================================
 
-ByteData_t byte_data;
-Byte_t     sign;
+byte_data_t byte_data;
+byte_t      sign;
 
 //==============================================================================
 //    Instances
@@ -79,10 +79,10 @@ Byte_t     sign;
 dmem_rd_port_sign_gen_m #(.ENDIANNESS(ENDIANNESS))
 sign_gen_inst
 (
-    .load_instr ( LoadInstr_t'(funct3) ),
-    .byte_addr  ( byte_addr            ),
-    .data       ( byte_data            ),
-    .sign       ( sign                 )
+    .load_instr ( load_instr_t'(funct3) ),
+    .byte_addr  ( byte_addr             ),
+    .data       ( byte_data             ),
+    .sign       ( sign                  )
 );
 
 //==============================================================================

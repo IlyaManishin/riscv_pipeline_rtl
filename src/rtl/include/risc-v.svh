@@ -56,6 +56,7 @@ package risc_v_pkg;
 //=== common section
 
 //--------------------------------------------------------------------------
+
 localparam int XLEN = 32;                            // RISC-V ISA dependent
 
 localparam int IMEM_ADDR_BYTE_WIDTH = 14;            // (byte addressed) CPU system implementation dependent
@@ -64,20 +65,21 @@ localparam int DMEM_ADDR_BYTE_WIDTH = 14;            // (byte addressed) CPU sys
 localparam int INSTR_LEN       = 32;                 // fixed for all RISC-V ISA except RVC
 localparam int RF_ADDR_WIDTH   = 5;                  // RISC-V ISA dependent (?)
 
+
 //--------------------------------------------------------------------------
 localparam int DATA_BYTE_NUM   = XLEN / 8;
 localparam int BYTE_ADDR_WIDTH = $clog2(DATA_BYTE_NUM);
 localparam int DMEM_PORT_ADDR_WIDTH = DMEM_ADDR_BYTE_WIDTH - BYTE_ADDR_WIDTH;
 
 //--------------------------------------------------------------------------
-typedef logic [RF_ADDR_WIDTH-1:0]        RegAddr_t;
-typedef logic [XLEN-1:0]                 Data_t;
-typedef logic [DATA_BYTE_NUM-1:0]        ByteDataEna_t;
-typedef logic [7:0]                      Byte_t;
-typedef logic [BYTE_ADDR_WIDTH-1:0]      ByteAddr_t;
-typedef logic [INSTR_LEN-1:0]            Instr_t;
-typedef Byte_t                           ByteData_t [DATA_BYTE_NUM];
-typedef Data_t                           Addr_t;
+typedef logic [RF_ADDR_WIDTH-1:0]        reg_addr_t;
+typedef logic [XLEN-1:0]                 data_t;
+typedef logic [DATA_BYTE_NUM-1:0]        byte_data_ena_t;
+typedef logic [7:0]                      byte_t;
+typedef logic [BYTE_ADDR_WIDTH-1:0]      byte_addr_t;
+typedef logic [INSTR_LEN-1:0]            instr_t;
+typedef byte_t                           byte_data_t [DATA_BYTE_NUM];
+typedef data_t                           addr_t;
 
 // (reserved) typedef logic [$clog2(XLEN)-1:0]        Shamt_t;        // shift amount
 
@@ -86,10 +88,10 @@ typedef Data_t                           Addr_t;
 
 
 `ifdef VIDEO_ENABLED
-localparam Addr_t PC_START_ADDR = 32'h2000_0000;
+localparam addr_t PC_START_ADDR = 32'h2000_0000;
 `else
 //localparam Addr_t PC_START_ADDR = 32'H_0040_0000;
-localparam Addr_t PC_START_ADDR = 32'h0000_0000;
+localparam addr_t PC_START_ADDR = 32'h0000_0000;
 `endif
 
 //=== common section (end)
@@ -111,7 +113,7 @@ typedef enum logic [ALU_SEL_LEN-1:0] {
     ALU_LUI  = 4'b0111,
     ALU_JALR = 4'b1000,
     ALU_ANY  = 4'bxxxx   
-} ALU_SEL_t;
+} alu_sel_t;
 //=== ALU section (end)
 
 //=== SHIFTER section
@@ -129,7 +131,7 @@ typedef enum logic [2:0] {
 //=== IMM_GEN section
 `define IMM_GEN_DEFS_ENA
 `ifdef IMM_GEN_DEFS_ENA
-typedef logic [31:0] Imm_t;
+typedef logic [31:0] imm_t;
 
 typedef enum logic [2:0] {
         IMM_I_TYPE = 3'b001,
@@ -138,8 +140,8 @@ typedef enum logic [2:0] {
         IMM_U_TYPE = 3'b100,
         IMM_J_TYPE = 3'b101,
         IMM_NC = 3'bxxx
-    } Imm_type_t;
-typedef logic [24:0] Imm_input_t;
+    } imm_type_t;
+typedef logic [24:0] imm_input_t;
 `endif
 //=== IMM_GEN section (end)
 
@@ -161,7 +163,7 @@ typedef struct packed {
     logic [2:0]  funct3;               // [14], [13], [12] bits
     logic [OPCODE_WIDTH-1:0]  opcode;  // [6], [5], [4], [3], [2] bits
     logic [1:0]  ones;                 // [1], [0] bits (should be 'b11 for legal instructions)
-} Id_instr_t;
+} id_instr_t;
 
 /*
  * Instruction decoder control INPUT signals.
@@ -171,9 +173,9 @@ typedef struct packed {
  *   - br_lt : (rd1 < rd2) ? 1 : 0     [from branch comparator]
  */
 typedef struct packed {
-    logic  br_eq;
-    logic  br_lt;
-} Id_controls_in_t;
+    logic br_eq;
+    logic br_lt;
+} id_controls_in_t;
 
 
 localparam int WB_SEL_LEN = 2;
@@ -210,18 +212,18 @@ typedef struct packed {
  */
 typedef struct packed {
     logic        reg_wr;
-    DMem_sel     dmem_sel;
+    dmem_sel_t   dmem_sel;
     logic        a_sel;
     logic        b_sel;
-    Shift_sel_t  sh_sel;
+    shift_sel_t  sh_sel;
     logic        br_un;       // branch unsigned    
     logic        pc_sel;
-    Alu_sel_t    alu_sel;
-    WB_sel       wb_sel;
-    Instr_type_t imm_type;
+    alu_sel_t    alu_sel;
+    wb_sel_t     wb_sel;
+    imm_type_t imm_type;
     logic        br_unit_sel;    
     logic        alushift_sel;
-} Id_controls_out_t;
+} id_controls_out_t;
 
 
 // instruction type
@@ -234,7 +236,7 @@ typedef enum logic [INSTR_TYPE_LEN-1:0] {
     INSTR_TYPE_U     = 3'b100,
     INSTR_TYPE_J     = 3'b101,
     INSTR_TYPE_ANY   = 3'bxxx
-} INSTR_TYPE_t;
+} instr_type_t; // similar to imm_type_t, remove this
 
 `ifdef ID_DEFS_ENA
 `endif
@@ -247,7 +249,7 @@ typedef enum logic [2:0] {
     LOAD_LW  = 3'b010,
     LOAD_LBU = 3'b100,
     LOAD_LHU = 3'b101
-} LoadInstr_t;
+} load_instr_t;
 //===DMEM section (end)
 
 //===UART section
@@ -261,7 +263,7 @@ typedef enum logic[1:0] {
     TXDATA_ADDR   = 2'h1,
     RXSTATUS_ADDR = 2'h2,
     RXDATA_ADDR   = 2'h3
-} UARTMapAddrs;
+} uart_map_addr_t;
 //===UART section (end)
 
 //=== DEBUG
@@ -280,7 +282,7 @@ function automatic str_t string2str(input string in, input int N = NN);
 endfunction : string2str
 
 //---
-function automatic str_t disasm(input Instr_t instr);
+function automatic str_t disasm(input instr_t instr);
     //opcode = instr[6:0];
     //funct3 = instr[14:12];
     //funct7 = instr[31:25];
@@ -363,18 +365,3 @@ endfunction : disasm
 endpackage : risc_v_pkg
 
 `endif // RISC_V_SVH
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

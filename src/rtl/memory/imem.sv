@@ -11,12 +11,12 @@ module imem_lutram import risc_v_pkg::*;
         )
 (
     input  logic [ADDR_WIDTH-1:0] addr,
-    output Instr_t    instr
+    output instr_t    instr
 );
     
     localparam MEM_DEPTH = 2 ** ADDR_WIDTH;
 
-    Instr_t mem[0:MEM_DEPTH-1];
+    instr_t mem[0:MEM_DEPTH-1];
     initial begin
         mem = '{default: '0};
         if (INIT_FILE != "") begin
@@ -37,7 +37,7 @@ module imem_bram import risc_v_pkg::*;
 (
     input  logic                  clk,
     input  logic [ADDR_WIDTH-1:0] addr,
-    output Instr_t                instr
+    output instr_t                instr
 );
 
 dual_port_mem_m

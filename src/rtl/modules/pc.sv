@@ -12,7 +12,7 @@
  */
 module program_counter import risc_v_pkg::*;
 #(
-    parameter Addr_t PC_START_ADDR = '0
+    parameter addr_t PC_START_ADDR = '0
 )
 (
     input  logic clk,
@@ -20,13 +20,13 @@ module program_counter import risc_v_pkg::*;
     
     //-----Branch-----
     input  logic  br_taken,
-    input  Addr_t pc_br,
+    input  addr_t pc_br,
 
     //-----Stall------
     input  logic  pc_stall,
 
-    output Addr_t pc,
-    output Addr_t pc_next
+    output addr_t pc,
+    output addr_t pc_next
 );
 
     timeunit      1ns;

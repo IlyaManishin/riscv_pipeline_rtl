@@ -12,21 +12,18 @@ module fetch_stage import risc_v_pkg::*;
 //------------------------------------
 
 //---------CONTROL & JUMP WIRES-------
-    input  logic        jfid_E,
-    input  Addr_t       jfpc_E,
-
     input  logic        jfexe_M,
-    input  Addr_t       jfpc_M,
+    input  addr_t       jfpc_M,
 //------------------------------------
 
 //---------IMEM ACCESS----------------
-    output Addr_t       imem_addr,
-    input  Instr_t      instr,
+    output addr_t       imem_addr,
+    input  instr_t      instr,
 //------------------------------------
 
 //---------OUTPUT REGISTERS-----------
-    output Addr_t       pc_D,
-    output Instr_t      instr_D,
+    output addr_t       pc_D,
+    output instr_t      instr_D,
     output logic        valid_D
 //------------------------------------
 );
@@ -35,13 +32,13 @@ module fetch_stage import risc_v_pkg::*;
     //  Internal Signals
     // =========================================================================
 
-    Addr_t pc;
-    Addr_t pc_next;
+    addr_t pc;
+    addr_t pc_next;
     logic  br_taken;
-    Addr_t pc_br;
+    addr_t pc_br;
 
 
-    // =========================================================================
+// =========================================================================
     //  Branch Target & Jump Multiplexing
     // =========================================================================
 
@@ -49,9 +46,6 @@ module fetch_stage import risc_v_pkg::*;
         if (jfexe_M) begin
             br_taken = 1'b1;
             pc_br    = jfpc_M;
-        end else if (jfid_E) begin
-            br_taken = 1'b1;
-            pc_br    = jfpc_E;
         end else begin
             br_taken = 1'b0;
             pc_br    = '0;

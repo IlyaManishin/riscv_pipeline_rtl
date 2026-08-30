@@ -29,4 +29,4 @@ always_comb begin
     end
 end
 
-endmodule : br_comparator_m
+endmodule : br_comparator

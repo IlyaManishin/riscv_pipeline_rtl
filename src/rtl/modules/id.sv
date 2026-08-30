@@ -10,18 +10,18 @@
  *   Decodes all RV32I instructions
  *
  *   Inputs:
- *     - instr:  Id_instr_t   necessary instruction bits
+ *     - instr:  id_instr_t   necessary instruction bits
  *   Outputs:
- *     - output_controls:  Id_controls_out_t    output signals
+ *     - output_controls:  id_controls_out_t    output signals
  *     -         illegal:  logic                instruction is - 0: legal, 1: illegal
  */
 module id import risc_v_pkg::*;
 (
-    input  Id_instr_t         instr,
-    output Id_controls_out_t  output_controls,
-    output logic              illegal
+    input  id_instr_t        instr,
+    output id_controls_out_t output_controls,
+    output logic             illegal
 );
-    parameter int CASE_SIZE = $bits(Id_instr_t);
+    parameter int CASE_SIZE = $bits(id_instr_t);
 
     logic [2:0] funct3;
     assign funct3 = instr.funct3;

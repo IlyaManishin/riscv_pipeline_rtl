@@ -5,7 +5,7 @@ module alu_m import risc_v_pkg::*;
                     parameter int XLEN = 32
                 )
 (
-    input  ALU_SEL_t        sel,
+    input  alu_sel_t        sel,
     input  logic [XLEN-1:0] a,
     input  logic [XLEN-1:0] b,
     output logic [XLEN-1:0] res

@@ -114,4 +114,3 @@ module rv_nsu_tb
 `endif
 
 endmodule : rv_nsu_tb
-

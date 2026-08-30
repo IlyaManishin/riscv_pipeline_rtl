@@ -14,12 +14,12 @@ module uart_mmio_wrapper import risc_v_pkg::*;
 
     output wire  TXD,
     
-    input  ByteDataEna_t byte_we,
+    input  byte_data_ena_t byte_we,
 
-    input  UARTMapAddrs reg_addr,
+    input  uart_map_addr_t reg_addr,
 
-    input  Data_t wdata,
-    output Data_t rdata
+    input  data_t wdata,
+    output data_t rdata
 );
     // MMIO registers
     logic [DATA_WIDTH-1:0] tx_data_reg;

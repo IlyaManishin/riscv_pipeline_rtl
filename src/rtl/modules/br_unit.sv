@@ -47,4 +47,4 @@ always_comb begin
     endcase
 end
 
-endmodule : br_unit_m
+endmodule : br_unit

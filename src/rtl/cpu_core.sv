@@ -8,29 +8,29 @@ module cpu_core_m import risc_v_pkg::*;
     // =========================================================================
     //  Instruction Memory Interface
     // =========================================================================
-    output Addr_t        imem_addr,
-    input  Instr_t       instr,
+    output addr_t        imem_addr,
+    input  instr_t       instr,
 
     // =========================================================================
     //  Data Memory Interface
     // =========================================================================
-    output Addr_t        dmem_addr,
-    output ByteDataEna_t dmem_byte_we,
-    output Data_t        dmem_wdata,
-    input  Data_t        cpu_rdata
+    output addr_t        dmem_addr,
+    output byte_data_ena_t dmem_byte_we,
+    output data_t        dmem_wdata,
+    input  data_t        cpu_rdata
 );
 
     // =========================================================================
     //  Register File Signals & Instance
     // =========================================================================
-    RegAddr_t rs1;
-    RegAddr_t rs2;
-    Data_t    rf_rd1;
-    Data_t    rf_rd2;
+    reg_addr_t rs1;
+    reg_addr_t rs2;
+    data_t     rf_rd1;
+    data_t     rf_rd2;
 
-    RegAddr_t wb_rd;
-    Data_t    wb_wd3;
-    logic     wb_rf_we3;
+    reg_addr_t wb_rd;
+    data_t     wb_wd3;
+    logic      wb_rf_we3;
 
     register_file #(
         .XLEN ( XLEN )
@@ -48,21 +48,17 @@ module cpu_core_m import risc_v_pkg::*;
     // =========================================================================
     //  Control & Jump Signals
     // =========================================================================
-    logic  jfid_E;
-    Addr_t jfpc_E;
     logic  jfexe_M;
-    Addr_t jfpc_M;
+    addr_t jfpc_M;
 
     // =========================================================================
     //  Hazard Detection Unit Signals & Instance
     // =========================================================================
     logic stall_pc;
     logic stall_if_id;
-    logic flush_if_id;
     logic flush_id_ex;
     logic flush_ex_mem;
 
-    logic id_jfid;
     logic ex_reg_wr;
     logic mem_reg_wr;
 
@@ -73,19 +69,15 @@ module cpu_core_m import risc_v_pkg::*;
     hazard_detection_unit hazard_unit_inst (
         .id_rs1      ( rs1                  ),
         .id_rs2      ( rs2                  ),
-        .id_opcode   ( id_opcode            ),
-        .ex_jfexe    ( id_controls_E.jf_exe ),
-        .jfid_E      ( jfid_E               ),
+        .jfexe_M     ( jfexe_M              ),
         .ex_reg_wr   ( ex_reg_wr            ),
         .ex_rd       ( rd_E                 ),
-        .jfexe_M     ( jfexe_M              ),
         .mem_reg_wr  ( mem_reg_wr           ),
         .mem_rd      ( rd_M                 ),
         .wb_reg_wr   ( wb_rf_we3            ),
         .wb_rd       ( wb_rd                ),
         .stall_pc    ( stall_pc             ),
         .stall_if_id ( stall_if_id          ),
-        .flush_if_id ( flush_if_id          ),
         .flush_id_ex ( flush_id_ex          ),
         .flush_ex_mem( flush_ex_mem         )
     );
@@ -93,8 +85,8 @@ module cpu_core_m import risc_v_pkg::*;
     // =========================================================================
     //  Fetch Stage (IF) Signals & Instance
     // =========================================================================
-    Addr_t  pc_D;
-    Instr_t instr_D;
+    addr_t  pc_D;
+    instr_t instr_D;
     logic   valid_D;
 
     (* keep_hierarchy = `STAGES_KEEP_HIEARARCHY *)
@@ -103,9 +95,6 @@ module cpu_core_m import risc_v_pkg::*;
         .rst          ( rst         ),
         .stall_pc     ( stall_pc    ),
         .stall_if_id  ( stall_if_id ),
-        .flush_if_id  ( flush_if_id ),
-        .jfid_E       ( jfid_E      ),
-        .jfpc_E       ( jfpc_E      ),
         .jfexe_M      ( jfexe_M     ),
         .jfpc_M       ( jfpc_M      ),
         .imem_addr    ( imem_addr   ),
@@ -118,16 +107,14 @@ module cpu_core_m import risc_v_pkg::*;
     // =========================================================================
     //  Decode Stage (ID) Signals & Instance
     // =========================================================================
-    Addr_t                   id_imm_pc;
-    logic [OPCODE_WIDTH-1:0] id_opcode;
-
-    Addr_t                   pc_E;
-    Data_t                   rd1_E;
-    Data_t                   rd2_E;
-    Data_t                   imm_E;
-    RegAddr_t                rs2_E;
-    RegAddr_t                rd_E;
-    Id_controls_out_t        id_controls_E;
+    addr_t                   pc_E;
+    data_t                   rd1_E;
+    data_t                   rd2_E;
+    data_t                   imm_E;
+    reg_addr_t               rs2_E;
+    reg_addr_t               rd_E;
+    logic [2:0]              funct3_E;
+    id_controls_out_t        id_controls_E;
     logic                    valid_E;
 
     (* keep_hierarchy = `STAGES_KEEP_HIEARARCHY *)
@@ -136,9 +123,6 @@ module cpu_core_m import risc_v_pkg::*;
         .rst           ( rst           ),
         .stall_id_ex   ( 1'b0          ),
         .flush_id_ex   ( flush_id_ex   ),
-        .id_jfid       ( id_jfid       ),
-        .id_imm_pc     ( id_imm_pc     ),
-        .id_opcode     ( id_opcode     ),
         .rs1           ( rs1           ),
         .rs2           ( rs2           ),
         .rd1           ( rf_rd1        ),
@@ -152,22 +136,19 @@ module cpu_core_m import risc_v_pkg::*;
         .imm_E         ( imm_E         ),
         .rs2_E         ( rs2_E         ),
         .rd_E          ( rd_E          ),
+        .funct3_E      ( funct3_E      ),
         .id_controls_E ( id_controls_E ),
-        .jfpc_E        ( jfpc_E        ),
-        .jfid_E        ( jfid_E        ),
         .valid_E       ( valid_E       )
     );
 
     // =========================================================================
     //  Execute Stage (EX) Signals & Instance
     // =========================================================================
-    logic             ex_jfexe;
-
-    Data_t            alu_out_M;
-    Data_t            rd2_M;
-    RegAddr_t         rd_M;
-    Addr_t            pc4_M;
-    Id_controls_out_t id_controls_M;
+    data_t            alu_out_M;
+    data_t            rd2_M;
+    reg_addr_t        rd_M;
+    addr_t            pc4_M;
+    id_controls_out_t id_controls_M;
     logic             valid_M;
 
     (* keep_hierarchy = `STAGES_KEEP_HIEARARCHY *)
@@ -182,9 +163,9 @@ module cpu_core_m import risc_v_pkg::*;
         .imm_E         ( imm_E         ),
         .rs2_E         ( rs2_E         ),
         .rd_E          ( rd_E          ),
+        .funct3_E      ( funct3_E      ),
         .id_controls_E ( id_controls_E ),
         .valid_E       ( valid_E       ),
-        .ex_jfexe      ( ex_jfexe      ),
         .jfexe_M       ( jfexe_M       ),
         .jfpc_M        ( jfpc_M        ),
         .alu_out_M     ( alu_out_M     ),
@@ -198,11 +179,11 @@ module cpu_core_m import risc_v_pkg::*;
     // =========================================================================
     //  Memory Stage (MEM) Signals & Instance
     // =========================================================================
-    Data_t            alu_out_W;
-    Data_t            cpu_rdata_W;
-    RegAddr_t         rd_W;
-    Addr_t            pc4_W;
-    Id_controls_out_t id_controls_W;
+    data_t            alu_out_W;
+    data_t            cpu_rdata_W;
+    reg_addr_t        rd_W;
+    addr_t            pc4_W;
+    id_controls_out_t id_controls_W;
     logic             valid_W;
 
     (* keep_hierarchy = `STAGES_KEEP_HIEARARCHY *)

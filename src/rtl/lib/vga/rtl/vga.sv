@@ -13,8 +13,8 @@ endinterface  //vga_signal
 
 
 interface ram_if #(
-    parameter int ADDR_WIDTH,
-    parameter int DATA_WIDTH
+    parameter int ADDR_WIDTH = 19,
+    parameter int DATA_WIDTH = 8
 );
   logic [ADDR_WIDTH-1:0] addr;
   logic [DATA_WIDTH-1:0] data;

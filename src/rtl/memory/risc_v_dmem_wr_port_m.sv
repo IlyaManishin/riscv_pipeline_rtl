@@ -23,14 +23,14 @@ module risc_v_dmem_wr_port_m import risc_v_pkg::*;
     //---
     input  logic                     dmem_we,
     input  logic [2:0]               funct3,
-    input  ByteAddr_t                byte_addr,
+    input  byte_addr_t               byte_addr,
 
     //---
-    input  Data_t                    data_in,
+    input  data_t                    data_in,
 
     //---
     output logic [DATA_BYTE_NUM-1:0] we,
-    output Data_t                    data_out
+    output data_t                    data_out
 );
 
 //==============================================================================

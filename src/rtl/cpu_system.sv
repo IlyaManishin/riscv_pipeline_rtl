@@ -40,9 +40,6 @@ module cpu_system
     output wire uart_txd
 );
 
-  //timeunit      1ns;
-  //timeprecision 1ps;
-
   //==============================================================================
 
   logic         cpu_clk;
@@ -50,18 +47,18 @@ module cpu_system
   logic         pll_locked;
 
   logic         pixel_clk;
-  Addr_t        imem_addr;
-  Instr_t       instr;
+  addr_t        imem_addr;
+  instr_t       instr;
 
   logic         dmem_ena;
   logic         vram_ena;
   logic         uart_ena;
 
-  ByteDataEna_t dmem_byte_we;
-  Addr_t        dmem_addr;
-  Data_t        dmem_wdata;
-  Data_t        dmem_rdata;
-  Data_t        cpu_rdata;
+  byte_data_ena_t dmem_byte_we;
+  addr_t        dmem_addr;
+  data_t        dmem_wdata;
+  data_t        dmem_rdata;
+  data_t        cpu_rdata;
 
   logic         rst_strobe = 1'b0;
   logic         cpu_rst;
@@ -171,7 +168,7 @@ module cpu_system
   );
 
 
-  Data_t uart_rdata;
+  data_t uart_rdata;
 `ifdef VIDEO_ENABLED
   assign cpu_rdata = dmem_ena ? dmem_rdata :
                        uart_ena ? uart_rdata : 

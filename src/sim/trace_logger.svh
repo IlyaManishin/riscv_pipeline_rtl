@@ -32,8 +32,8 @@ interface cpu_if_t
     input logic clk,
     input logic rst,
     output logic rst_strobe,
-    input risc_v_pkg::Addr_t  iaddr,
-    input risc_v_pkg::Instr_t instr,
+    input risc_v_pkg::addr_t  iaddr,
+    input risc_v_pkg::instr_t instr,
     output string test_name
 );
 endinterface : cpu_if_t
@@ -44,7 +44,7 @@ typedef enum int {
     TEST_RUN  = 0,
     TEST_PASS = 1,
     TEST_FAIL = 2
-} Test_Result_t;
+} test_result_t;
 //=== ALU
 
 //------------------------------------------------------------------------------
@@ -89,9 +89,9 @@ class TraceLogger;
     endfunction : get_reg
 
     //--------------------------------------------------------------------------
-    function Test_Result_t test_stop_condition();
+    function test_result_t test_stop_condition();
         int reg_val = get_reg(`RF_DBG_NUM);
-        return Test_Result_t'(reg_val);
+        return test_result_t'(reg_val);
     endfunction : test_stop_condition
 
     //--------------------------------------------------------------------------
@@ -142,7 +142,7 @@ class TraceLogger;
         string test_file_short_name;
         string test_base_name;
         int test_idx;
-        Test_Result_t test_res;
+        test_result_t test_res;
         integer fd_res;
         int i;
         int pass_test_num;
