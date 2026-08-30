@@ -18,7 +18,8 @@ src/rtl/memory/risc_v_dmem_rd_port_m.sv
 src/rtl/memory/risc_v_dmem_wr_port_m.sv
 
 src/rtl/modules/alu.sv
-src/rtl/modules/branch_unit_m.sv
+src/rtl/modules/br_comparator.sv
+src/rtl/modules/br_unit.sv
 src/rtl/modules/id.sv
 src/rtl/modules/imm_gen.sv
 src/rtl/modules/pc.sv

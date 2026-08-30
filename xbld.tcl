@@ -107,7 +107,8 @@ add_files -fileset sources_1                     \
          $rtlDir/modules/hazard_detection_unit.sv\
          $rtlDir/modules/pc.sv                   \
          $rtlDir/modules/id.sv                   \
-         $rtlDir/modules/branch_unit_m.sv        \
+         $rtlDir/modules/br_comparator.sv        \
+         $rtlDir/modules/br_unit.sv              \
          $rtlDir/memory/imem.sv                  \
          $rtlDir/memory/risc_v_dmem_rd_port_m.sv \
          $rtlDir/memory/risc_v_dmem_wr_port_m.sv \
