@@ -30,19 +30,19 @@
  */
 module imm_gen import risc_v_pkg::*;
 (
-    input  imm_input_t Imm_in,
-    input  imm_type_t  imm_type,
+    input  imm_input_t  Imm_in,
+    input  instr_type_t instr_type,
     output imm_t        imm
 );
 
 
     always_comb begin
-        case (imm_type)
-            IMM_I_TYPE: imm = {{20{Imm_in[24]}}, Imm_in[24:13]};                                               // I-type
-            IMM_S_TYPE: imm = {{20{Imm_in[24]}}, Imm_in[24:18], Imm_in[4:0]};                                  // S-type
-            IMM_B_TYPE: imm = {{19{Imm_in[24]}}, Imm_in[24], Imm_in[0], Imm_in[23:18], Imm_in[4:2], 2'b00};    // B-type
-            IMM_U_TYPE: imm = {Imm_in[24:5], 12'b0};                                                           // U-type
-            IMM_J_TYPE: imm = {{11{Imm_in[24]}}, Imm_in[24], Imm_in[12:5], Imm_in[13], Imm_in[23:15], 2'b00};  // J-type
+        case (instr_type)
+            INSTR_TYPE_I: imm = {{20{Imm_in[24]}}, Imm_in[24:13]};                                               // I-type
+            INSTR_TYPE_S: imm = {{20{Imm_in[24]}}, Imm_in[24:18], Imm_in[4:0]};                                  // S-type
+            INSTR_TYPE_B: imm = {{19{Imm_in[24]}}, Imm_in[24], Imm_in[0], Imm_in[23:18], Imm_in[4:2], 2'b00};    // B-type
+            INSTR_TYPE_U: imm = {Imm_in[24:5], 12'b0};                                                           // U-type
+            INSTR_TYPE_J: imm = {{11{Imm_in[24]}}, Imm_in[24], Imm_in[12:5], Imm_in[13], Imm_in[23:15], 2'b00};  // J-type
 
             // In B and J type fill the last 2 bits with zeros.
 

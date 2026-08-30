@@ -81,9 +81,9 @@ module decode_stage import risc_v_pkg::*;
 
     // --- Immediate Generator ---
     imm_gen imm_gen_inst (
-        .Imm_in   ( ig_imm_input                ),
-        .imm_type ( id_output_controls.imm_type ),
-        .imm      ( imm                         )
+        .Imm_in     ( ig_imm_input                  ),
+        .instr_type ( id_output_controls.instr_type ),
+        .imm        ( imm                           )
     );
 
     // =========================================================================

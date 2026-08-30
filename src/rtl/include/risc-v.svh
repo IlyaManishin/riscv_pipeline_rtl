@@ -133,14 +133,6 @@ typedef enum logic [2:0] {
 `ifdef IMM_GEN_DEFS_ENA
 typedef logic [31:0] imm_t;
 
-typedef enum logic [2:0] {
-        IMM_I_TYPE = 3'b001,
-        IMM_S_TYPE = 3'b010,
-        IMM_B_TYPE = 3'b011,
-        IMM_U_TYPE = 3'b100,
-        IMM_J_TYPE = 3'b101,
-        IMM_NC = 3'bxxx
-    } imm_type_t;
 typedef logic [24:0] imm_input_t;
 `endif
 //=== IMM_GEN section (end)
@@ -165,18 +157,6 @@ typedef struct packed {
     logic [1:0]  ones;                 // [1], [0] bits (should be 'b11 for legal instructions)
 } id_instr_t;
 
-/*
- * Instruction decoder control INPUT signals.
- *
- * Consists of additional input signals, necessary to decode an instruction.
- *   - br_eq : (rd1 == rd2) ? 1 : 0    [from branch comparator]
- *   - br_lt : (rd1 < rd2) ? 1 : 0     [from branch comparator]
- */
-typedef struct packed {
-    logic br_eq;
-    logic br_lt;
-} id_controls_in_t;
-
 
 localparam int WB_SEL_LEN = 2;
 typedef enum logic [WB_SEL_LEN-1:0] {
@@ -193,6 +173,18 @@ typedef struct packed {
 } dmem_sel_t;
 
 
+// instruction type
+localparam int INSTR_TYPE_LEN = 3;
+typedef enum logic [INSTR_TYPE_LEN-1:0] {
+  //  INSTR_TYPE_R     = 3'b000,  <--- Not used
+    INSTR_TYPE_I     = 3'b001,
+    INSTR_TYPE_S     = 3'b010,
+    INSTR_TYPE_B     = 3'b011,
+    INSTR_TYPE_U     = 3'b100,
+    INSTR_TYPE_J     = 3'b101,
+    INSTR_TYPE_ANY   = 3'bxxx
+} instr_type_t;
+
 /*
  * Instruction decoder control OUTPUT signals.
  *
@@ -206,37 +198,25 @@ typedef struct packed {
  *   - pc_sel       next PC is - 0: ALU output, 1: PC+4
  *   - alu_sel      ALU op code: 0: add, 1: sub, 2: and, 3: or, 4: xor, 5: slt, 6: sltu, 7: lui, 8: jalr
  *   - wb_sel       source for write to RF: 0: PC+4, 1: ALU out, 2: shifter out, 3: dmem out
- *   - imm_type     type of instruction: 0: R, 1: I, 2: S, 3: B, 4: U, 5: J
+ *   - instr_type   type of instruction: 0: R, 1: I, 2: S, 3: B, 4: U, 5: J
  *   - jf_exe       jump flag execution: 1 for JALR, 0 otherwise
  *   - alushift_sel alu/shifter select: 1 for shift instructions, 0 otherwise
  */
 typedef struct packed {
-    logic        reg_wr;
-    dmem_sel_t   dmem_sel;
-    logic        a_sel;
-    logic        b_sel;
-    shift_sel_t  sh_sel;
-    logic        br_un;       // branch unsigned    
-    logic        pc_sel;
-    alu_sel_t    alu_sel;
-    wb_sel_t     wb_sel;
-    imm_type_t imm_type;
-    logic        br_unit_sel;    
-    logic        alushift_sel;
+    logic          reg_wr;
+    dmem_sel_t     dmem_sel;
+    logic          a_sel;
+    logic          b_sel;
+    shift_sel_t    sh_sel;
+    logic          br_un;       // branch unsigned    
+    logic          pc_sel;
+    alu_sel_t      alu_sel;
+    wb_sel_t       wb_sel;
+    instr_type_t   instr_type;
+    logic          br_unit_sel;    
+    logic          alushift_sel;
 } id_controls_out_t;
 
-
-// instruction type
-localparam int INSTR_TYPE_LEN = 3;
-typedef enum logic [INSTR_TYPE_LEN-1:0] {
-  //  INSTR_TYPE_R     = 3'b000,  <--- Not used
-    INSTR_TYPE_I     = 3'b001,
-    INSTR_TYPE_S     = 3'b010,
-    INSTR_TYPE_B     = 3'b011,
-    INSTR_TYPE_U     = 3'b100,
-    INSTR_TYPE_J     = 3'b101,
-    INSTR_TYPE_ANY   = 3'bxxx
-} instr_type_t; // similar to imm_type_t, remove this
 
 `ifdef ID_DEFS_ENA
 `endif
