@@ -95,6 +95,7 @@ module cpu_core_m import risc_v_pkg::*;
         .rst          ( rst         ),
         .stall_pc     ( stall_pc    ),
         .stall_if_id  ( stall_if_id ),
+        .flush_if_id  ( 1'b0        ),
         .jfexe_M      ( jfexe_M     ),
         .jfpc_M       ( jfpc_M      ),
         .imem_addr    ( imem_addr   ),
