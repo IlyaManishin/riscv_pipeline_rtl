@@ -36,7 +36,7 @@ module fetch_stage import risc_v_pkg::*;
     addr_t pc_next;
     logic  br_taken;
     addr_t pc_br;
-
+    addr_t pc_D;
 
     // =========================================================================
     //  Branch Target & Jump Multiplexing
@@ -67,6 +67,7 @@ module fetch_stage import risc_v_pkg::*;
         .br_taken ( br_taken ),
         .pc_br    ( pc_br    ),
         .pc_stall ( stall_pc ),
+        .pc_last  ( pc_D     ),
         .pc       ( pc       ),
         .pc_next  ( pc_next  )
     );
@@ -80,11 +81,8 @@ module fetch_stage import risc_v_pkg::*;
     assign instr_D   = instr;
 
     always_ff @(posedge clk) begin
-        if (flush_if_id) begin
+        if (flush_if_id || rst) begin
             valid_D <= 1'b0;
-            pc_D    <= 1'b0;
-        end else if (rst) begin 
-            valid_D <= 1'b1;
             pc_D    <= PC_START_ADDR;
         end else if (!stall_if_id) begin
             valid_D <= 1'b1;
