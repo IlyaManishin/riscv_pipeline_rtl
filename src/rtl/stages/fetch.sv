@@ -58,6 +58,7 @@ module fetch_stage import risc_v_pkg::*;
     // =========================================================================
 
     // --- Program Counter ---
+    (* keep_hierarchy = `PC_KEEP_HIEARARCHY *)
     program_counter #(
         .PC_START_ADDR ( PC_START_ADDR )
     ) pc_inst (

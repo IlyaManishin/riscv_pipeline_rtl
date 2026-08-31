@@ -37,12 +37,12 @@
 //
 //    when defined  "yes" - (* keep_hierarchy = "yes" *)
 //    wnen defined  "no"  - (* keep_hierarchy = "no" *)
-//    default - "no"
 //------------------------------------------------------------------------------
+
 `define SYSTEM_KEEP_HIERARCHY "no"
 `define STAGES_KEEP_HIEARARCHY "no"
 `define HDU_KEEP_HIEARARCHY "no"
-
+`define PC_KEEP_HIEARARCHY "yes"
 
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
@@ -345,3 +345,4 @@ endfunction : disasm
 endpackage : risc_v_pkg
 
 `endif // RISC_V_SVH
+
