@@ -46,8 +46,11 @@ module hazard_detection_unit import risc_v_pkg::*;
         // ===== Data Hazards (RAW) =====
         is_control_hazard = jfexe_M;
 
-        if ((is_ex_hazard || is_mem_hazard || is_wb_hazard) & !is_control_hazard) begin
-            stall_pc    = 1'b1;
+        if ((is_ex_hazard || is_mem_hazard || is_wb_hazard) ) begin
+            if (!is_control_hazard) begin
+                stall_pc = 1'b1;
+            end
+            
             stall_if_id = 1'b1;
             flush_id_ex = 1'b1;
         end
