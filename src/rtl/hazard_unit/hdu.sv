@@ -37,9 +37,9 @@ module hazard_detection_unit import hazard_unit_pkg::*;
         if (is_ex_hazard || is_mem_hazard || is_wb_hazard) begin
             if (!is_control_hazard) begin
                 hdu_controls.stall_pc = 1'b1;
+                hdu_controls.stall_if_id = 1'b1;
             end
             
-            hdu_controls.stall_if_id = 1'b1;
             hdu_controls.flush_id_ex = 1'b1;
         end
     end
