@@ -2,19 +2,19 @@
 
 module hazard_detection_unit import risc_v_pkg::*;
 (
-    input  logic [RF_ADDR_WIDTH-1:0] id_rs1,
-    input  logic [RF_ADDR_WIDTH-1:0] id_rs2,
+    input  reg_addr_t  id_rs1,
+    input  reg_addr_t  id_rs2,
 
     input  logic       jfexe_M,
 
     input  logic       ex_reg_wr,
-    input  logic [RF_ADDR_WIDTH-1:0] ex_rd,
+    input  reg_addr_t  ex_rd,
 
     input  logic       mem_reg_wr,
-    input  logic [RF_ADDR_WIDTH-1:0] mem_rd,
+    input  reg_addr_t  mem_rd,
 
     input  logic       wb_reg_wr,
-    input  logic [RF_ADDR_WIDTH-1:0] wb_rd,
+    input  reg_addr_t  wb_rd,
 
     output logic       stall_pc,
     output logic       stall_if_id,
