@@ -3,12 +3,17 @@ package hazard_unit_pkg;
     import risc_v_pkg::*;
 
     typedef struct packed {
-        logic eq1_E; // Match: rs1 == rd_E
-        logic eq2_E; // Match: rs2 == rd_E
-        logic eq1_M; // Match: rs1 == rd_M
-        logic eq2_M; // Match: rs2 == rd_M
-        logic eq1_W; // Match: rs1 == rd_W
-        logic eq2_W; // Match: rs2 == rd_W
+        // Pure equality checks (no zero checks included)
+        logic eq1_E; // rs1 == rd_E
+        logic eq2_E; // rs2 == rd_E
+        logic eq1_M; // rs1 == rd_M
+        logic eq2_M; // rs2 == rd_M
+        logic eq1_W; // rs1 == rd_W
+        logic eq2_W; // rs2 == rd_W
+        
+        logic rd_E_valid; // rd_E != '0
+        logic rd_M_valid; // rd_M != '0
+        logic rd_W_valid; // rd_W != '0
     } rsi_cmp_t;
 
     typedef struct packed {

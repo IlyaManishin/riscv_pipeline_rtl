@@ -6,23 +6,22 @@ module rsi_comparator import hazard_unit_pkg::*;
     output rsi_cmp_t    rsi_cmp
 );
 
-    logic rs1_valid;
-    logic rs2_valid;
-
     always_comb begin
-        // Precalculate valid non-zero register source flags
-        rs1_valid = (rs_indexes.rs1 != '0);
-        rs2_valid = (rs_indexes.rs2 != '0);
+        // Precalculate valid non-zero destination flags
+        // don't check rs1/rs2 because there is imem net delay
+        rsi_cmp.rd_E_valid = (rs_indexes.rd_E != '0);
+        rsi_cmp.rd_M_valid = (rs_indexes.rd_M != '0);
+        rsi_cmp.rd_W_valid = (rs_indexes.rd_W != '0);
 
-        // Match conditions for rs1 (EX, MEM, WB)
-        rsi_cmp.eq1_E = rs1_valid && (rs_indexes.rs1 == rs_indexes.rd_E);
-        rsi_cmp.eq1_M = rs1_valid && (rs_indexes.rs1 == rs_indexes.rd_M);
-        rsi_cmp.eq1_W = rs1_valid && (rs_indexes.rs1 == rs_indexes.rd_W);
+        // Match conditions for rs1
+        rsi_cmp.eq1_E = (rs_indexes.rs1 == rs_indexes.rd_E);
+        rsi_cmp.eq1_M = (rs_indexes.rs1 == rs_indexes.rd_M);
+        rsi_cmp.eq1_W = (rs_indexes.rs1 == rs_indexes.rd_W);
 
-        // Match conditions for rs2 (EX, MEM, WB)
-        rsi_cmp.eq2_E = rs2_valid && (rs_indexes.rs2 == rs_indexes.rd_E);
-        rsi_cmp.eq2_M = rs2_valid && (rs_indexes.rs2 == rs_indexes.rd_M);
-        rsi_cmp.eq2_W = rs2_valid && (rs_indexes.rs2 == rs_indexes.rd_W);
+        // Match conditions for rs2
+        rsi_cmp.eq2_E = (rs_indexes.rs2 == rs_indexes.rd_E);
+        rsi_cmp.eq2_M = (rs_indexes.rs2 == rs_indexes.rd_M);
+        rsi_cmp.eq2_W = (rs_indexes.rs2 == rs_indexes.rd_W);
     end
 
 endmodule : rsi_comparator
