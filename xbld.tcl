@@ -93,7 +93,7 @@ puts $fh "\`endif"
 close $fh
 
 set include_dir $rtlDir/include
-set include_files $include_dir/risc-v.svh        \
+set include_files "$include_dir/risc-v.svh $rtlDir/hazard_unit/hazard_unit_pkg.svh"  \
 
 add_files -fileset sources_1                     \
          $include_files                          \
@@ -105,6 +105,8 @@ add_files -fileset sources_1                     \
          $rtlDir/stages/memory.sv                \
          $rtlDir/stages/writeback.sv             \
          $rtlDir/modules/hdu.sv                  \
+         $rtlDir/hazard_unit/hdu.sv              \
+         $rtlDir/hazard_unit/rsi_comparator.sv   \
          $rtlDir/modules/pc.sv                   \
          $rtlDir/modules/id.sv                   \
          $rtlDir/modules/br_comparator.sv        \

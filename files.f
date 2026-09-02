@@ -24,13 +24,16 @@ src/rtl/modules/id.sv
 src/rtl/modules/imm_gen.sv
 src/rtl/modules/pc.sv
 src/rtl/modules/shifter_alu.sv
-src/rtl/modules/hdu.sv
 
 src/rtl/stages/fetch.sv
 src/rtl/stages/decode.sv
 src/rtl/stages/execute.sv
 src/rtl/stages/memory.sv
 src/rtl/stages/writeback.sv
+
+src/rtl/hazard_unit/hazard_unit_pkg.svh
+src/rtl/hazard_unit/hdu.sv
+src/rtl/hazard_unit/rsi_comparator.sv
 
 src/rtl/uart_wrapper.sv
 src/rtl/cpu_core.sv
