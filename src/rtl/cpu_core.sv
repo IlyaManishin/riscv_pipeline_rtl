@@ -2,22 +2,22 @@
 
 module cpu_core_m import risc_v_pkg::*;
 (
-    input  logic         clk,
-    input  logic         rst,
+    input  logic       clk,
+    input  logic       rst,
 
     // =========================================================================
     //  Instruction Memory Interface
     // =========================================================================
-    output addr_t        imem_addr,
-    input  instr_t       instr,
+    output addr_t      imem_addr,
+    input  instr_t     instr,
 
     // =========================================================================
     //  Data Memory Interface
     // =========================================================================
-    output addr_t        dmem_addr,
-    output byte_data_ena_t dmem_byte_we,
-    output data_t        dmem_wdata,
-    input  data_t        cpu_rdata
+    output addr_t           dmem_addr,
+    output byte_data_ena_t  dmem_byte_we,
+    output data_t           dmem_wdata,
+    input  data_t           cpu_rdata
 );
 
     // =========================================================================

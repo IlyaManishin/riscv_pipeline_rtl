@@ -23,7 +23,7 @@ module program_counter import risc_v_pkg::*;
     input  addr_t pc_br,
 
     //-----Stall------
-    input  logic  pc_stall,
+    input  logic  stall_pc,
 
     output addr_t pc,
     output addr_t pc_next
@@ -35,7 +35,7 @@ module program_counter import risc_v_pkg::*;
     always_comb begin
         if (rst) begin
             pc_next = PC_START_ADDR;
-        end else if (pc_stall) begin
+        end else if (stall_pc) begin
             pc_next = pc;
         end else if (br_taken) begin
             pc_next = pc_br;
