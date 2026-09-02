@@ -19,4 +19,12 @@ package hazard_unit_pkg;
         reg_addr_t rd_W; // rd from WB stage
     } rs_indexes_t;
 
-endpackage : risc_v_pkg
+    // Output control flags for pipeline stalls and flushes
+    typedef struct packed {
+        logic stall_pc;
+        logic stall_if_id;
+        logic flush_id_ex;
+        logic flush_ex_mem;
+    } hdu_controls_t;
+
+endpackage : hazard_unit_pkg
