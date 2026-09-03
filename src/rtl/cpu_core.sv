@@ -61,6 +61,7 @@ module cpu_core_m import risc_v_pkg::*, hazard_unit_pkg::*;
 
     assign ex_reg_wr  = id_controls_E.reg_wr;
     assign mem_reg_wr = id_controls_M.reg_wr;
+    assign wb_reg_wr  = id_controls_W.reg_wr;
 
     // Bundle source and destination register indices
     assign rs_indexes.rs1  = rs1;
@@ -82,7 +83,7 @@ module cpu_core_m import risc_v_pkg::*, hazard_unit_pkg::*;
         .jfexe_M      ( jfexe_M      ),
         .ex_reg_wr    ( ex_reg_wr    ),
         .mem_reg_wr   ( mem_reg_wr   ),
-        .wb_reg_wr    ( wb_we    ),
+        .wb_reg_wr    ( wb_reg_wr    ),
         .hdu_controls ( hdu_controls )
     );
 
