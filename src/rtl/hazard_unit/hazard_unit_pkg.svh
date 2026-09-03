@@ -24,9 +24,9 @@ package hazard_unit_pkg;
     } hu_reg_indexes_t;
 
     typedef struct packed {
-        data_t wd_E; // wd from EX stage
-        data_t wd_M; // wd from MEM stage
-        data_t wd_W; // wd from WB stage
+        // data_t wd_E;  // wd from EX stage
+        data_t wd_M;  // wd from MEM stage
+        data_t wd_W;  // wd from WB stage
     } hu_write_data_t;
 
     // Output control flags for pipeline stalls and flushes

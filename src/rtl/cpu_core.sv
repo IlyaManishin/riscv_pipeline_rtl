@@ -27,8 +27,8 @@ module cpu_core_m import risc_v_pkg::*, hazard_unit_pkg::*;
     data_t     rf_rd2;
 
     reg_addr_t wb_rd;
-    data_t     wb_wd3;
-    logic      wb_rf_we3;
+    data_t     wb_wd;
+    logic      wb_we;
 
     register_file #(
         .XLEN ( XLEN )
@@ -39,8 +39,8 @@ module cpu_core_m import risc_v_pkg::*, hazard_unit_pkg::*;
         .rsi2 ( rs2       ),
         .rs2  ( rf_rd2    ),
         .rdi  ( wb_rd     ),
-        .rd   ( wb_wd3    ),
-        .we   ( wb_rf_we3 )
+        .rd   ( wb_wd     ),
+        .we   ( wb_we     )
     );
 
     // =========================================================================
@@ -82,7 +82,7 @@ module cpu_core_m import risc_v_pkg::*, hazard_unit_pkg::*;
         .jfexe_M      ( jfexe_M      ),
         .ex_reg_wr    ( ex_reg_wr    ),
         .mem_reg_wr   ( mem_reg_wr   ),
-        .wb_reg_wr    ( wb_rf_we3    ),
+        .wb_reg_wr    ( wb_we    ),
         .hdu_controls ( hdu_controls )
     );
 
@@ -227,8 +227,8 @@ module cpu_core_m import risc_v_pkg::*, hazard_unit_pkg::*;
         .id_controls_W ( id_controls_W ),
         .valid_W       ( valid_W       ),
         .wb_rd         ( wb_rd         ),
-        .wb_wd3        ( wb_wd3        ),
-        .wb_we3        ( wb_rf_we3     )
+        .wb_wd         ( wb_wd         ),
+        .wb_we         ( wb_we         )
     );
 
 endmodule : cpu_core_m

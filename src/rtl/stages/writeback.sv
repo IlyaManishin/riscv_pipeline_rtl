@@ -13,8 +13,8 @@ module writeback_stage import risc_v_pkg::*;
 
 //---------REGISTER FILE WRITE---------
     output reg_addr_t        wb_rd,
-    output data_t            wb_wd3,
-    output logic             wb_we3
+    output data_t            wb_wd,
+    output logic             wb_we
 //-------------------------------------
 );
 
@@ -47,10 +47,10 @@ module writeback_stage import risc_v_pkg::*;
 
     always_comb begin
         case (id_controls_W.wb_sel)
-            WB_PC4_OUT : wb_wd3 = pc4_W;
-            WB_ALU_OUT : wb_wd3 = alu_out_W;
-            WB_DMEM_OUT: wb_wd3 = cpu_port_rdata;
-            default    : wb_wd3 = '0;
+            WB_PC4_OUT : wb_wd = pc4_W;
+            WB_ALU_OUT : wb_wd = alu_out_W;
+            WB_DMEM_OUT: wb_wd = cpu_port_rdata;
+            default    : wb_wd = '0;
         endcase
     end
 
