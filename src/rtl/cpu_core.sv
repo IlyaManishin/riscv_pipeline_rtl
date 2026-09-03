@@ -53,15 +53,13 @@ module cpu_core_m import risc_v_pkg::*, hazard_unit_pkg::*;
     //  Hazard Detection Unit & Register Comparator Integration
     // =========================================================================
     hu_reg_indexes_t   rs_indexes;
+    hu_regs_write_t    hu_regs_write;
     rsi_cmp_t          rsi_cmp;
     hdu_controls_t     hdu_controls;
 
-    logic ex_reg_wr;
-    logic mem_reg_wr;
-
-    assign ex_reg_wr  = id_controls_E.reg_wr;
-    assign mem_reg_wr = id_controls_M.reg_wr;
-    assign wb_reg_wr  = id_controls_W.reg_wr;
+    assign hu_regs_write.reg_wr_E = id_controls_E.reg_wr;
+    assign hu_regs_write.reg_wr_M = id_controls_M.reg_wr;
+    assign hu_regs_write.reg_wr_W = id_controls_W.reg_wr;
 
     // Bundle source and destination register indices
     assign rs_indexes.rs1  = rs1;
@@ -79,14 +77,11 @@ module cpu_core_m import risc_v_pkg::*, hazard_unit_pkg::*;
     // Hazard Detection Unit Instance
     (* keep_hierarchy = `HDU_KEEP_HIEARARCHY *)
     hazard_detection_unit hazard_unit_inst (
-        .rsi_cmp      ( rsi_cmp      ),
-        .jfexe_M      ( jfexe_M      ),
-        .ex_reg_wr    ( ex_reg_wr    ),
-        .mem_reg_wr   ( mem_reg_wr   ),
-        .wb_reg_wr    ( wb_reg_wr    ),
-        .hdu_controls ( hdu_controls )
+        .rsi_cmp       ( rsi_cmp       ),
+        .hu_regs_write ( hu_regs_write ),
+        .jfexe_M       ( jfexe_M       ),
+        .hdu_controls  ( hdu_controls  )
     );
-
     // =========================================================================
     //  Fetch Stage (IF) Instance
     // =========================================================================
