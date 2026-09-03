@@ -52,9 +52,9 @@ module cpu_core_m import risc_v_pkg::*, hazard_unit_pkg::*;
     // =========================================================================
     //  Hazard Detection Unit & Register Comparator Integration
     // =========================================================================
-    rs_indexes_t   rs_indexes;
-    rsi_cmp_t      rsi_cmp;
-    hdu_controls_t hdu_controls;
+    hu_reg_indexes_t   rs_indexes;
+    rsi_cmp_t          rsi_cmp;
+    hdu_controls_t     hdu_controls;
 
     logic ex_reg_wr;
     logic mem_reg_wr;

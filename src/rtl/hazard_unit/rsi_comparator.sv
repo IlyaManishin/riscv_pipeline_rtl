@@ -2,8 +2,8 @@
 
 module rsi_comparator import hazard_unit_pkg::*;
 (
-    input  rs_indexes_t rs_indexes,
-    output rsi_cmp_t    rsi_cmp
+    input  hu_reg_indexes_t rs_indexes,
+    output rsi_cmp_t        rsi_cmp
 );
 
     always_comb begin
