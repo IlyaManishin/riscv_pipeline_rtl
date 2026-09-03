@@ -43,7 +43,7 @@ module writeback_stage import risc_v_pkg::*;
     // =========================================================================
 
     assign wb_rd  = rd_W;
-    assign wb_we3 = id_controls_W.reg_wr;
+    assign wb_we  = id_controls_W.reg_wr;
 
     always_comb begin
         case (id_controls_W.wb_sel)
