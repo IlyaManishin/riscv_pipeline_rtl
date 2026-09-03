@@ -104,7 +104,8 @@ add_files -fileset sources_1                     \
          $rtlDir/stages/execute.sv               \
          $rtlDir/stages/memory.sv                \
          $rtlDir/stages/writeback.sv             \
-         $rtlDir/modules/hdu.sv                  \
+         $rtlDir/hazard_unit/fwd_unit.sv         \
+         $rtlDir/hazard_unit/hazard_unit.sv      \
          $rtlDir/hazard_unit/hdu.sv              \
          $rtlDir/hazard_unit/rsi_comparator.sv   \
          $rtlDir/modules/pc.sv                   \

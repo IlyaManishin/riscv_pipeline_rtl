@@ -52,10 +52,15 @@ module cpu_core_m import risc_v_pkg::*, hazard_unit_pkg::*;
     // =========================================================================
     //  Hazard Detection Unit & Register Comparator Integration
     // =========================================================================
-    hu_reg_indexes_t   rs_indexes;
-    hu_regs_write_t    hu_regs_write;
-    rsi_cmp_t          rsi_cmp;
-    hdu_controls_t     hdu_controls;
+    hu_reg_indexes_t rs_indexes;
+    hu_regs_write_t  hu_regs_write;
+    hu_write_data_t  hu_write_data;
+    rsi_cmp_t        rsi_cmp;
+    hdu_controls_t   hdu_controls;
+    fwd_controls_t   fwd_controls;
+
+    assign hu_write_data.wd_M = alu_out_M;
+    assign hu_write_data.wd_W = wb_wd;
 
     assign hu_regs_write.reg_wr_E = id_controls_E.reg_wr;
     assign hu_regs_write.reg_wr_M = id_controls_M.reg_wr;
@@ -81,6 +86,14 @@ module cpu_core_m import risc_v_pkg::*, hazard_unit_pkg::*;
         .hu_regs_write ( hu_regs_write ),
         .jfexe_M       ( jfexe_M       ),
         .hdu_controls  ( hdu_controls  )
+    );
+
+    // Forwarding Unit Instance
+    fwd_unit fwd_unit_inst (
+        .rsi_cmp       ( rsi_cmp       ),
+        .hu_regs_write ( hu_regs_write ),
+        .hu_write_data ( hu_write_data ),
+        .fwd_controls  ( fwd_controls  )
     );
     // =========================================================================
     //  Fetch Stage (IF) Instance
@@ -128,6 +141,9 @@ module cpu_core_m import risc_v_pkg::*, hazard_unit_pkg::*;
         .rs2           ( rs2                   ),
         .rd1           ( rf_rd1                ),
         .rd2           ( rf_rd2                ),
+        .id_fwd_sel1   ( fwd_controls.id_fwd_sel1 ),
+        .id_fwd_sel2   ( fwd_controls.id_fwd_sel2 ),
+        .id_fwd_wd     ( fwd_controls.id_fwd_wd   ),
         .pc_D          ( pc_D                  ),
         .instr_D       ( instr_D               ),
         .valid_D       ( valid_D               ),

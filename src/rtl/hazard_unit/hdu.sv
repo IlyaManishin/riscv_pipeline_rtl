@@ -23,7 +23,7 @@ module hazard_detection_unit import hazard_unit_pkg::*;
 
     assign is_ex_hazard  = ex_reg_wr  && rsi_cmp.rd_E_valid && (rsi_cmp.eq1_E || rsi_cmp.eq2_E);
     assign is_mem_hazard = mem_reg_wr && rsi_cmp.rd_M_valid && (rsi_cmp.eq1_M || rsi_cmp.eq2_M);
-    assign is_wb_hazard  = wb_reg_wr  && rsi_cmp.rd_W_valid && (rsi_cmp.eq1_W || rsi_cmp.eq2_W);
+    // assign is_wb_hazard  = wb_reg_wr  && rsi_cmp.rd_W_valid && (rsi_cmp.eq1_W || rsi_cmp.eq2_W);
 
     always_comb begin
         hdu_controls = '0;
@@ -37,7 +37,7 @@ module hazard_detection_unit import hazard_unit_pkg::*;
         // ===== Data Hazards (RAW) =====
         is_control_hazard = jfexe_M;
 
-        if (is_ex_hazard || is_mem_hazard || is_wb_hazard) begin
+        if (is_ex_hazard || is_mem_hazard) begin
             if (!is_control_hazard) begin
                 hdu_controls.stall_pc = 1'b1;
                 hdu_controls.stall_if_id = 1'b1;

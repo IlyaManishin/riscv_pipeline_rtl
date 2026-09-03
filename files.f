@@ -31,7 +31,9 @@ src/rtl/stages/execute.sv
 src/rtl/stages/memory.sv
 src/rtl/stages/writeback.sv
 
+src/rtl/hazard_unit/fwd_unit.sv
 src/rtl/hazard_unit/hazard_unit_pkg.svh
+src/rtl/hazard_unit/hazard_unit.sv
 src/rtl/hazard_unit/hdu.sv
 src/rtl/hazard_unit/rsi_comparator.sv
 
