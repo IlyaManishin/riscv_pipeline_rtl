@@ -48,12 +48,6 @@ package hazard_unit_pkg;
     //  Forwarding Selectors & Output Structs
     // =========================================================================
 
-    // Forwarding enable
-    typedef enum logic {
-        FWD_RF    = 1'b0,  // RegFile output
-        FWD_STAGE = 1'b1   // Direct bypass
-    } fwd_sel_t;
-
     // EX stage ALU mux selectors (One-hot encoded)
     typedef enum logic [2:0] {
         FWD_EX_RF  = 3'b100, // Pass Register File / Stage value
@@ -64,13 +58,13 @@ package hazard_unit_pkg;
     // Forwarding unit bundled outputs
     typedef struct packed {
         // --- ID Stage Controls & Data ---
-        fwd_sel_t id_fwd_sel1; // ID rd1 select
-        fwd_sel_t id_fwd_sel2; // ID rd2 select
+        logic     id_fwd_sel1; // ID rd1 select
+        logic     id_fwd_sel2; // ID rd2 select
         data_t    id_fwd_wd;   // ID fwd data from WB
 
         // --- EX Stage Controls & Data ---
-        fwd_sel_t ex_fwd_sel1; // EX fwd alu_in_a select
-        fwd_sel_t ex_fwd_sel2; // EX fwd alu_in_b select
+        logic     ex_fwd_sel1; // EX fwd alu_in_a select
+        logic     ex_fwd_sel2; // EX fwd alu_in_b select
         data_t    ex_fwd_wd1;  // EX fwd alu_in_a data
         data_t    ex_fwd_wd2;  // EX fwd alu_in_b data
     } fwd_controls_t;

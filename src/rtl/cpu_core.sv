@@ -90,6 +90,7 @@ module cpu_core_m import risc_v_pkg::*, hazard_unit_pkg::*;
 
     // Forwarding Unit Instance
     fwd_unit fwd_unit_inst (
+        .clk           ( clk           ),
         .rsi_cmp       ( rsi_cmp       ),
         .hu_regs_write ( hu_regs_write ),
         .hu_write_data ( hu_write_data ),
@@ -174,6 +175,7 @@ module cpu_core_m import risc_v_pkg::*, hazard_unit_pkg::*;
         .rst           ( rst                    ),
         .stall_ex_mem  ( 1'b0                   ),
         .flush_ex_mem  ( hdu_controls.flush_ex_mem ),
+        .fwd_controls  ( fwd_controls           ),
         .pc_E          ( pc_E                   ),
         .rd1_E         ( rd1_E                  ),
         .rd2_E         ( rd2_E                  ),
