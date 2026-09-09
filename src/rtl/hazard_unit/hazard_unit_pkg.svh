@@ -48,11 +48,10 @@ package hazard_unit_pkg;
     //  Forwarding Selectors & Output Structs
     // =========================================================================
 
-    // EX stage ALU mux selectors (One-hot encoded)
-    typedef enum logic [2:0] {
-        FWD_EX_RF  = 3'b100, // Pass Register File / Stage value
-        FWD_EX_MEM = 3'b010, // Pass MEM stage data (wd_M)
-        FWD_EX_WB  = 3'b001  // Pass WB stage data (wd_W)
+    // EX stage forwarding controls for precalculation
+    typedef struct packed {
+        logic fwd_en;     // 1: Enable forwarding to EX stage, 0: Use RF/Stage value
+        logic mem_wb_sel; // 1: Forward MEM stage data (wd_M), 0: Forward WB stage data (wd_W)
     } fwd_ex_sel_t;
 
     // Forwarding unit bundled outputs
