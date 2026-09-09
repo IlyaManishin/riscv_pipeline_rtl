@@ -1,15 +1,14 @@
 `include "risc-v.svh"
 `include "hazard_unit/hazard_unit_pkg.svh"
 
-
 module cpu_core_m import risc_v_pkg::*, hazard_unit_pkg::*;
 (
-    input  logic       clk,
-    input  logic       rst,
+    input  logic            clk,
+    input  logic            rst,
 
     // Instruction Memory Interface
-    output addr_t      imem_addr,
-    input  instr_t     instr,
+    output addr_t           imem_addr,
+    input  instr_t          instr,
 
     // Data Memory Interface
     output addr_t           dmem_addr,
@@ -33,14 +32,14 @@ module cpu_core_m import risc_v_pkg::*, hazard_unit_pkg::*;
     register_file #(
         .XLEN ( XLEN )
     ) rf_inst (
-        .clk  ( clk       ),
-        .rsi1 ( rs1       ),
-        .rs1  ( rf_rd1    ),
-        .rsi2 ( rs2       ),
-        .rs2  ( rf_rd2    ),
-        .rdi  ( wb_rd     ),
-        .rd   ( wb_wd     ),
-        .we   ( wb_we     )
+        .clk  ( clk    ),
+        .rsi1 ( rs1    ),
+        .rs1  ( rf_rd1 ),
+        .rsi2 ( rs2    ),
+        .rs2  ( rf_rd2 ),
+        .rdi  ( wb_rd  ),
+        .rd   ( wb_wd  ),
+        .we   ( wb_we  )
     );
 
     // =========================================================================
@@ -52,50 +51,51 @@ module cpu_core_m import risc_v_pkg::*, hazard_unit_pkg::*;
     // =========================================================================
     //  Hazard Detection Unit & Register Comparator Integration
     // =========================================================================
-    hu_reg_indexes_t rs_indexes;
-    hu_regs_write_t  hu_regs_write;
-    hu_write_data_t  hu_write_data;
-    rsi_cmp_t        rsi_cmp;
-    hdu_controls_t   hdu_controls;
-    fwd_controls_t   fwd_controls;
+    hu_reg_idxs_t  rs_idxs;
+    hu_regs_wr_t   hu_regs_wr;
+    hu_wd_t        hu_wd;
+    rsi_cmp_t      rsi_cmp;
+    hdu_controls_t hdu_controls;
+    fwd_controls_t fwd_controls;
 
-    assign hu_write_data.wd_M = alu_out_M;
-    assign hu_write_data.wd_W = wb_wd;
+    assign hu_wd.wd_M = alu_out_M;
+    assign hu_wd.wd_W = wb_wd;
 
-    assign hu_regs_write.reg_wr_E = id_controls_E.reg_wr;
-    assign hu_regs_write.reg_wr_M = id_controls_M.reg_wr;
-    assign hu_regs_write.reg_wr_W = id_controls_W.reg_wr;
+    assign hu_regs_wr.reg_wr_E = id_controls_E.reg_wr;
+    assign hu_regs_wr.reg_wr_M = id_controls_M.reg_wr;
+    assign hu_regs_wr.reg_wr_W = id_controls_W.reg_wr;
 
     // Bundle source and destination register indices
-    assign rs_indexes.rs1  = rs1;
-    assign rs_indexes.rs2  = rs2;
-    assign rs_indexes.rd_E = rd_E;
-    assign rs_indexes.rd_M = rd_M;
-    assign rs_indexes.rd_W = wb_rd;
+    assign rs_idxs.rs1  = rs1;
+    assign rs_idxs.rs2  = rs2;
+    assign rs_idxs.rd_E = rd_E;
+    assign rs_idxs.rd_M = rd_M;
+    assign rs_idxs.rd_W = wb_rd;
 
     // Register Comparator Instance
     rsi_comparator rsi_comp_inst (
-        .rs_indexes ( rs_indexes ),
-        .rsi_cmp    ( rsi_cmp    )
+        .rs_idxs ( rs_idxs ),
+        .rsi_cmp ( rsi_cmp )
     );
 
     // Hazard Detection Unit Instance
     (* keep_hierarchy = `HDU_KEEP_HIEARARCHY *)
     hazard_detection_unit hazard_unit_inst (
-        .rsi_cmp       ( rsi_cmp       ),
-        .hu_regs_write ( hu_regs_write ),
-        .jfexe_M       ( jfexe_M       ),
-        .hdu_controls  ( hdu_controls  )
+        .rsi_cmp      ( rsi_cmp      ),
+        .hu_regs_wr   ( hu_regs_wr   ),
+        .jfexe_M      ( jfexe_M      ),
+        .hdu_controls ( hdu_controls )
     );
 
     // Forwarding Unit Instance
     fwd_unit fwd_unit_inst (
-        .clk           ( clk           ),
-        .rsi_cmp       ( rsi_cmp       ),
-        .hu_regs_write ( hu_regs_write ),
-        .hu_write_data ( hu_write_data ),
-        .fwd_controls  ( fwd_controls  )
+        .clk          ( clk          ),
+        .rsi_cmp      ( rsi_cmp      ),
+        .hu_regs_wr   ( hu_regs_wr   ),
+        .hu_wd        ( hu_wd        ),
+        .fwd_controls ( fwd_controls )
     );
+
     // =========================================================================
     //  Fetch Stage (IF) Instance
     // =========================================================================
@@ -105,58 +105,58 @@ module cpu_core_m import risc_v_pkg::*, hazard_unit_pkg::*;
 
     (* keep_hierarchy = `STAGES_KEEP_HIEARARCHY *)
     fetch_stage fetch_stage_inst (
-        .clk          ( clk                   ),
-        .rst          ( rst                   ),
-        .stall_pc     ( hdu_controls.stall_pc ),
-        .stall_if_id  ( hdu_controls.stall_if_id ),
-        .flush_if_id  ( 1'b0                  ),
-        .jfexe_M      ( jfexe_M               ),
-        .jfpc_M       ( jfpc_M                ),
-        .imem_addr    ( imem_addr             ),
-        .instr        ( instr                 ),
-        .pc_D         ( pc_D                  ),
-        .instr_D      ( instr_D               ),
-        .valid_D      ( valid_D               )
+        .clk         ( clk                   ),
+        .rst         ( rst                   ),
+        .stall_pc    ( hdu_controls.stall_pc ),
+        .stall_if_id ( hdu_controls.stall_if_id ),
+        .flush_if_id ( 1'b0                  ),
+        .jfexe_M     ( jfexe_M               ),
+        .jfpc_M      ( jfpc_M                ),
+        .imem_addr   ( imem_addr             ),
+        .instr       ( instr                 ),
+        .pc_D        ( pc_D                  ),
+        .instr_D     ( instr_D               ),
+        .valid_D     ( valid_D               )
     );
 
     // =========================================================================
     //  Decode Stage (ID) Instance
     // =========================================================================
-    addr_t                   pc_E;
-    data_t                   rd1_E;
-    data_t                   rd2_E;
-    data_t                   imm_E;
-    reg_addr_t               rs2_E;
-    reg_addr_t               rd_E;
-    logic [2:0]              funct3_E;
-    id_controls_out_t        id_controls_E;
-    logic                    valid_E;
+    addr_t            pc_E;
+    data_t            rd1_E;
+    data_t            rd2_E;
+    data_t            imm_E;
+    reg_addr_t        rs2_E;
+    reg_addr_t        rd_E;
+    logic [2:0]       funct3_E;
+    id_controls_out_t id_controls_E;
+    logic             valid_E;
 
     (* keep_hierarchy = `STAGES_KEEP_HIEARARCHY *)
     decode_stage decode_stage_inst (
-        .clk           ( clk                   ),
-        .rst           ( rst                   ),
-        .stall_id_ex   ( 1'b0                  ),
+        .clk           ( clk                    ),
+        .rst           ( rst                    ),
+        .stall_id_ex   ( 1'b0                   ),
         .flush_id_ex   ( hdu_controls.flush_id_ex ),
-        .rs1           ( rs1                   ),
-        .rs2           ( rs2                   ),
-        .rd1           ( rf_rd1                ),
-        .rd2           ( rf_rd2                ),
+        .rs1           ( rs1                    ),
+        .rs2           ( rs2                    ),
+        .rd1           ( rf_rd1                 ),
+        .rd2           ( rf_rd2                 ),
         .id_fwd_sel1   ( fwd_controls.id_fwd_sel1 ),
         .id_fwd_sel2   ( fwd_controls.id_fwd_sel2 ),
-        .id_fwd_wd     ( fwd_controls.id_fwd_wd   ),
-        .pc_D          ( pc_D                  ),
-        .instr_D       ( instr_D               ),
-        .valid_D       ( valid_D               ),
-        .pc_E          ( pc_E                  ),
-        .rd1_E         ( rd1_E                 ),
-        .rd2_E         ( rd2_E                 ),
-        .imm_E         ( imm_E                 ),
-        .rs2_E         ( rs2_E                 ),
-        .rd_E          ( rd_E                  ),
-        .funct3_E      ( funct3_E              ),
-        .id_controls_E ( id_controls_E         ),
-        .valid_E       ( valid_E               )
+        .id_fwd_wd     ( fwd_controls.id_fwd_wd ),
+        .pc_D          ( pc_D                   ),
+        .instr_D       ( instr_D                ),
+        .valid_D       ( valid_D                ),
+        .pc_E          ( pc_E                   ),
+        .rd1_E         ( rd1_E                  ),
+        .rd2_E         ( rd2_E                  ),
+        .imm_E         ( imm_E                  ),
+        .rs2_E         ( rs2_E                  ),
+        .rd_E          ( rd_E                   ),
+        .funct3_E      ( funct3_E               ),
+        .id_controls_E ( id_controls_E          ),
+        .valid_E       ( valid_E                )
     );
 
     // =========================================================================

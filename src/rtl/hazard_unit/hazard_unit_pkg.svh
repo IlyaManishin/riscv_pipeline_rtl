@@ -25,7 +25,7 @@ package hazard_unit_pkg;
         reg_addr_t rd_E; // rd from EX stage
         reg_addr_t rd_M; // rd from MEM stage
         reg_addr_t rd_W; // rd from WB stage
-    } hu_reg_indexes_t;
+    } hu_reg_idxs_t;
 
 
     // =========================================================================
@@ -36,12 +36,12 @@ package hazard_unit_pkg;
         logic reg_wr_E;  // from EX stage
         logic reg_wr_M;  // from MEM stage
         logic reg_wr_W;  // from WB stage
-    } hu_regs_write_t;
+    } hu_regs_wr_t;
 
     typedef struct packed {
         data_t wd_M;  // wd from MEM stage
         data_t wd_W;  // wd from WB stage
-    } hu_write_data_t;
+    } hu_wd_t;
 
 
     // =========================================================================
@@ -58,15 +58,15 @@ package hazard_unit_pkg;
     // Forwarding unit bundled outputs
     typedef struct packed {
         // --- ID Stage Controls & Data ---
-        logic     id_fwd_sel1; // ID rd1 select
-        logic     id_fwd_sel2; // ID rd2 select
-        data_t    id_fwd_wd;   // ID fwd data from WB
+        logic  id_fwd_sel1; // ID rd1 select
+        logic  id_fwd_sel2; // ID rd2 select
+        data_t id_fwd_wd;   // ID fwd data from WB
 
         // --- EX Stage Controls & Data ---
-        logic     ex_fwd_sel1; // EX fwd alu_in_a select
-        logic     ex_fwd_sel2; // EX fwd alu_in_b select
-        data_t    ex_fwd_wd1;  // EX fwd alu_in_a data
-        data_t    ex_fwd_wd2;  // EX fwd alu_in_b data
+        logic  ex_fwd_sel1; // EX fwd alu_in_a select
+        logic  ex_fwd_sel2; // EX fwd alu_in_b select
+        data_t ex_fwd_wd1;  // EX fwd alu_in_a data
+        data_t ex_fwd_wd2;  // EX fwd alu_in_b data
     } fwd_controls_t;
 
 
