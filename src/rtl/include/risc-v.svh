@@ -42,6 +42,7 @@
 `define SYSTEM_KEEP_HIERARCHY "no"
 `define STAGES_KEEP_HIEARARCHY "no"
 `define HDU_KEEP_HIEARARCHY "no"
+`define HU_KEEP_HIEARARCHY "no"
 `define PC_KEEP_HIEARARCHY "no"
 
 //------------------------------------------------------------------------------

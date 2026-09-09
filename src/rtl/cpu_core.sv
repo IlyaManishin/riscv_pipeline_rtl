@@ -49,50 +49,39 @@ module cpu_core_m import risc_v_pkg::*, hazard_unit_pkg::*;
     addr_t jfpc_M;
 
     // =========================================================================
-    //  Hazard Detection Unit & Register Comparator Integration
+    //  Hazard Unit Instance
     // =========================================================================
     hu_reg_idxs_t  rs_idxs;
     hu_regs_wr_t   hu_regs_wr;
     hu_wd_t        hu_wd;
-    rsi_cmp_t      rsi_cmp;
     hdu_controls_t hdu_controls;
     fwd_controls_t fwd_controls;
 
-    assign hu_wd.wd_M = alu_out_M;
-    assign hu_wd.wd_W = wb_wd;
-
-    assign hu_regs_wr.reg_wr_E = id_controls_E.reg_wr;
-    assign hu_regs_wr.reg_wr_M = id_controls_M.reg_wr;
-    assign hu_regs_wr.reg_wr_W = id_controls_W.reg_wr;
-
-    // Bundle source and destination register indices
+    // Register Address Indexes
     assign rs_idxs.rs1  = rs1;
     assign rs_idxs.rs2  = rs2;
     assign rs_idxs.rd_E = rd_E;
     assign rs_idxs.rd_M = rd_M;
     assign rs_idxs.rd_W = wb_rd;
 
-    // Register Comparator Instance
-    rsi_comparator rsi_comp_inst (
-        .rs_idxs ( rs_idxs ),
-        .rsi_cmp ( rsi_cmp )
-    );
+    // Register Write Enables
+    assign hu_regs_wr.reg_wr_E = id_controls_E.reg_wr;
+    assign hu_regs_wr.reg_wr_M = id_controls_M.reg_wr;
+    assign hu_regs_wr.reg_wr_W = id_controls_W.reg_wr;
 
-    // Hazard Detection Unit Instance
-    (* keep_hierarchy = `HDU_KEEP_HIEARARCHY *)
-    hazard_detection_unit hazard_unit_inst (
-        .rsi_cmp      ( rsi_cmp      ),
-        .hu_regs_wr   ( hu_regs_wr   ),
-        .jfexe_M      ( jfexe_M      ),
-        .hdu_controls ( hdu_controls )
-    );
+    // Forwarding Data Sources
+    assign hu_wd.wd_M = alu_out_M;
+    assign hu_wd.wd_W = wb_wd;
 
-    // Forwarding Unit Instance
-    fwd_unit fwd_unit_inst (
+    // Top Hazard Unit Instance
+    (* keep_hierarchy = `HU_KEEP_HIEARARCHY *)
+    hazard_unit hazard_unit_inst (
         .clk          ( clk          ),
-        .rsi_cmp      ( rsi_cmp      ),
+        .rs_idxs      ( rs_idxs      ),
         .hu_regs_wr   ( hu_regs_wr   ),
         .hu_wd        ( hu_wd        ),
+        .jfexe_M      ( jfexe_M      ),
+        .hdu_controls ( hdu_controls ),
         .fwd_controls ( fwd_controls )
     );
 
