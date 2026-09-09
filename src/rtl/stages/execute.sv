@@ -12,7 +12,7 @@ module execute_stage import risc_v_pkg::*, hazard_unit_pkg::*;
 //------------------------------------
 
 //----------FORWARDING WIRES----------
-    input  fwd_controls_t      fwd_controls,
+    input  fwd_ex_controls_t   fwd_ex,
 //------------------------------------
 
 //----------INPUT REGISTERS-----------
@@ -64,8 +64,8 @@ module execute_stage import risc_v_pkg::*, hazard_unit_pkg::*;
     // =========================================================================
     //  Forwarding Data Multiplexing
     // =========================================================================
-    assign bypassed_rd1_E = fwd_controls.ex_fwd_sel1 ? fwd_controls.ex_fwd_wd1 : rd1_E;
-    assign bypassed_rd2_E = fwd_controls.ex_fwd_sel2 ? fwd_controls.ex_fwd_wd2 : rd2_E;
+    assign bypassed_rd1_E = fwd_ex.fwd_en1 ? fwd_ex.wd1 : rd1_E;
+    assign bypassed_rd2_E = fwd_ex.fwd_en2 ? fwd_ex.wd2 : rd2_E;
 
     // =========================================================================
     //  ALU Operand Multiplexing & Control

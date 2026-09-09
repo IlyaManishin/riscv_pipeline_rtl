@@ -20,9 +20,7 @@ module decode_stage import risc_v_pkg::*, hazard_unit_pkg::*;
 //--------------------------------------
 
 //---------FORWARDING WIRES-------------
-    input  logic               id_fwd_sel1,
-    input  logic               id_fwd_sel2,
-    input  data_t              id_fwd_wd,
+    input  fwd_id_controls_t   fwd_id,
 //--------------------------------------
 
 //---------INPUT REGISTERS--------------
@@ -78,8 +76,8 @@ module decode_stage import risc_v_pkg::*, hazard_unit_pkg::*;
     // =========================================================================
     //  Forwarding Multiplexers (WB -> ID Bypass)
     // =========================================================================
-    assign bypassed_rd1 = id_fwd_sel1 ? id_fwd_wd : rd1;
-    assign bypassed_rd2 = id_fwd_sel2 ? id_fwd_wd : rd2;
+    assign bypassed_rd1 = fwd_id.fwd_en1 ? fwd_id.wd : rd1;
+    assign bypassed_rd2 = fwd_id.fwd_en2 ? fwd_id.wd : rd2;
 
     // =========================================================================
     //  Submodules Instantiations

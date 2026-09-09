@@ -54,18 +54,25 @@ package hazard_unit_pkg;
         logic mem_wb_sel; // 1: Forward MEM stage data (wd_M), 0: Forward WB stage data (wd_W)
     } fwd_ex_sel_t;
 
-    // Forwarding unit bundled outputs
+    // ID Stage Forwarding Controls
     typedef struct packed {
-        // --- ID Stage Controls & Data ---
-        logic  id_fwd_sel1; // ID rd1 select
-        logic  id_fwd_sel2; // ID rd2 select
-        data_t id_fwd_wd;   // ID fwd data from WB
+        logic  fwd_en1; // ID rd1 enable
+        logic  fwd_en2; // ID rd2 enable
+        data_t wd;      // ID fwd data from WB
+    } fwd_id_controls_t;
 
-        // --- EX Stage Controls & Data ---
-        logic  ex_fwd_sel1; // EX fwd alu_in_a select
-        logic  ex_fwd_sel2; // EX fwd alu_in_b select
-        data_t ex_fwd_wd1;  // EX fwd alu_in_a data
-        data_t ex_fwd_wd2;  // EX fwd alu_in_b data
+    // EX Stage Forwarding Controls
+    typedef struct packed {
+        logic  fwd_en1; // EX fwd alu_in_a enable
+        logic  fwd_en2; // EX fwd alu_in_b enable
+        data_t wd1;     // EX fwd alu_in_a data
+        data_t wd2;     // EX fwd alu_in_b data
+    } fwd_ex_controls_t;
+
+    // Combined Forwarding Output struct
+    typedef struct packed {
+        fwd_id_controls_t id;
+        fwd_ex_controls_t ex;
     } fwd_controls_t;
 
 

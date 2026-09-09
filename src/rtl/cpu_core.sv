@@ -142,9 +142,7 @@ module cpu_core_m import risc_v_pkg::*, hazard_unit_pkg::*;
         .rs2           ( rs2                    ),
         .rd1           ( rf_rd1                 ),
         .rd2           ( rf_rd2                 ),
-        .id_fwd_sel1   ( fwd_controls.id_fwd_sel1 ),
-        .id_fwd_sel2   ( fwd_controls.id_fwd_sel2 ),
-        .id_fwd_wd     ( fwd_controls.id_fwd_wd ),
+        .fwd_id        ( fwd_controls.id        ),
         .pc_D          ( pc_D                   ),
         .instr_D       ( instr_D                ),
         .valid_D       ( valid_D                ),
@@ -175,7 +173,7 @@ module cpu_core_m import risc_v_pkg::*, hazard_unit_pkg::*;
         .rst           ( rst                    ),
         .stall_ex_mem  ( 1'b0                   ),
         .flush_ex_mem  ( hdu_controls.flush_ex_mem ),
-        .fwd_controls  ( fwd_controls           ),
+        .fwd_ex        ( fwd_controls.ex        ),
         .pc_E          ( pc_E                   ),
         .rd1_E         ( rd1_E                  ),
         .rd2_E         ( rd2_E                  ),
@@ -194,7 +192,6 @@ module cpu_core_m import risc_v_pkg::*, hazard_unit_pkg::*;
         .id_controls_M ( id_controls_M          ),
         .valid_M       ( valid_M                )
     );
-
     // =========================================================================
     //  Memory Stage (MEM) Instance
     // =========================================================================

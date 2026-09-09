@@ -43,10 +43,12 @@ module fwd_unit import risc_v_pkg::*, hazard_unit_pkg::*;
     // =====================================================================
     //  ID Stage Forwarding (WB -> ID)
     // =====================================================================
+    fwd_id_controls_t fwd_id;
+
     always_comb begin
-        fwd_controls.id_fwd_sel1 = fwd_id_eq1;
-        fwd_controls.id_fwd_sel2 = fwd_id_eq2;
-        fwd_controls.id_fwd_wd   = hu_wd.wd_W;
+        fwd_id.fwd_en1 = fwd_id_eq1;
+        fwd_id.fwd_en2 = fwd_id_eq2;
+        fwd_id.wd      = hu_wd.wd_W;
     end
 
     // =====================================================================
@@ -80,12 +82,20 @@ module fwd_unit import risc_v_pkg::*, hazard_unit_pkg::*;
     // =====================================================================
     //  EX Stage Forwarding Output Muxing
     // =====================================================================
-    always_comb begin
-        fwd_controls.ex_fwd_sel1 = ex_sel1_reg.fwd_en;
-        fwd_controls.ex_fwd_wd1  = ex_sel1_reg.mem_wb_sel ? hu_wd.wd_M : hu_wd.wd_W;
+    fwd_ex_controls_t fwd_ex;
 
-        fwd_controls.ex_fwd_sel2 = ex_sel2_reg.fwd_en;
-        fwd_controls.ex_fwd_wd2  = ex_sel2_reg.mem_wb_sel ? hu_wd.wd_M : hu_wd.wd_W;
+    always_comb begin
+        fwd_ex.fwd_en1 = ex_sel1_reg.fwd_en;
+        fwd_ex.wd1     = ex_sel1_reg.mem_wb_sel ? hu_wd.wd_M : hu_wd.wd_W;
+
+        fwd_ex.fwd_en2 = ex_sel2_reg.fwd_en;
+        fwd_ex.wd2     = ex_sel2_reg.mem_wb_sel ? hu_wd.wd_M : hu_wd.wd_W;
     end
+
+    // =====================================================================
+    //  Total Struct Assembly
+    // =====================================================================
+    assign fwd_controls.id = fwd_id;
+    assign fwd_controls.ex = fwd_ex;
 
 endmodule : fwd_unit
