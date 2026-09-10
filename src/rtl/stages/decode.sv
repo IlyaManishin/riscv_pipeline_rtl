@@ -38,6 +38,7 @@ module decode_stage import risc_v_pkg::*, hazard_unit_pkg::*;
     output reg_addr_t          rd_E,
     output logic [2:0]         funct3_E,
     output id_controls_out_t   id_controls_E,
+    output logic               dmem_read_E,
     output logic               valid_E
 //--------------------------------------
 );
@@ -52,11 +53,13 @@ module decode_stage import risc_v_pkg::*, hazard_unit_pkg::*;
     id_instr_t        id_instr;
     id_controls_out_t id_output_controls;
     logic             id_illegal;
+    logic             id_dmem_read;
 
     imm_input_t       ig_imm_input;
 
     data_t            bypassed_rd1;
     data_t            bypassed_rd2;
+
 
 
     // =========================================================================
@@ -100,6 +103,8 @@ module decode_stage import risc_v_pkg::*, hazard_unit_pkg::*;
     // =========================================================================
     //  ID / EX Pipeline Registers
     // =========================================================================
+    assign id_dmem_read = id_output_controls.reg_wr && (id_output_controls.wb_sel == WB_DMEM_OUT || id_output_controls.wb_sel == WB_PC4_OUT);
+
     always_ff @(posedge clk) begin
         if (rst || flush_id_ex || !valid_D) begin
             pc_E          <= '0;
@@ -110,6 +115,7 @@ module decode_stage import risc_v_pkg::*, hazard_unit_pkg::*;
             rd_E          <= '0;
             funct3_E      <= '0;
             id_controls_E <= '0;
+            dmem_read_E   <= 1'b0;
             valid_E       <= 1'b0;
         end else if (!stall_id_ex) begin
             pc_E          <= pc_D;
@@ -120,6 +126,7 @@ module decode_stage import risc_v_pkg::*, hazard_unit_pkg::*;
             rd_E          <= rd;
             funct3_E      <= id_instr.funct3;
             id_controls_E <= id_output_controls;
+            dmem_read_E   <= id_dmem_read;
             valid_E       <= valid_D;
         end
     end

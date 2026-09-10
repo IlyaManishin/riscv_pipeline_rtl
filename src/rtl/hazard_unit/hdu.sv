@@ -5,10 +5,15 @@ module hazard_detection_unit import hazard_unit_pkg::*;
     input  rsi_cmp_t      rsi_cmp,
     input  hu_regs_wr_t   hu_regs_wr,
     input  logic          jfexe_M,
+    input  logic          dmem_read_E,
 
     output hdu_controls_t hdu_controls
 );
 
+    // =========================================================================
+    //  Internal Signals 
+    // =========================================================================
+    
     logic is_control_hazard;
     logic is_ex_hazard;
     logic is_mem_hazard;
@@ -21,7 +26,12 @@ module hazard_detection_unit import hazard_unit_pkg::*;
     assign mem_reg_wr = hu_regs_wr.reg_wr_M;
     assign wb_reg_wr  = hu_regs_wr.reg_wr_W;
 
-    assign is_ex_hazard  = ex_reg_wr && rsi_cmp.rd_E_valid && (rsi_cmp.eq1_E || rsi_cmp.eq2_E);
+
+    // =========================================================================
+    //  Hazards Processing   
+    // =========================================================================
+
+    assign is_ex_hazard  = dmem_read_E && rsi_cmp.rd_E_valid && (rsi_cmp.eq1_E || rsi_cmp.eq2_E);
     // assign is_mem_hazard = mem_reg_wr && rsi_cmp.rd_M_valid && (rsi_cmp.eq1_M || rsi_cmp.eq2_M);
     assign is_mem_hazard = '0;
     // assign is_wb_hazard  = wb_reg_wr  && rsi_cmp.rd_W_valid && (rsi_cmp.eq1_W || rsi_cmp.eq2_W);
@@ -36,7 +46,7 @@ module hazard_detection_unit import hazard_unit_pkg::*;
             hdu_controls.flush_ex_mem = 1'b1;
         end
 
-        // ===== Data Hazards (RAW) =====
+        // ===== Data Hazards (Load-Use Stall) =====
         is_control_hazard = jfexe_M;
 
         if (is_ex_hazard || is_mem_hazard) begin

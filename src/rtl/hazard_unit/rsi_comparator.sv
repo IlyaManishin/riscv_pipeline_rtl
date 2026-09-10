@@ -8,7 +8,7 @@ module rsi_comparator import hazard_unit_pkg::*;
 
     always_comb begin
         // Precalculate valid non-zero destination flags
-        // don't check rs1/rs2 because there is imem net delay
+        // Don't check rs1/rs2 because there is imem net delay
         rsi_cmp.rd_E_valid = (rs_idxs.rd_E != '0);
         rsi_cmp.rd_M_valid = (rs_idxs.rd_M != '0);
         rsi_cmp.rd_W_valid = (rs_idxs.rd_W != '0);

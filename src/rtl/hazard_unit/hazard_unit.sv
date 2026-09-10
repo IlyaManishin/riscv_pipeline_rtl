@@ -10,8 +10,9 @@ module hazard_unit import risc_v_pkg::*, hazard_unit_pkg::*;
     input  hu_regs_wr_t     hu_regs_wr,
     input  hu_wd_t          hu_wd,
 
-    // Control/Branch Inputs
+    // Control/Branch & Stage Flags
     input  logic            jfexe_M,
+    input  logic            dmem_read_E,
 
     // Top Hazard & Forwarding Outputs
     output hdu_controls_t   hdu_controls,
@@ -19,13 +20,10 @@ module hazard_unit import risc_v_pkg::*, hazard_unit_pkg::*;
 );
 
     // =========================================================================
-    //  Internal Signals
-    // =========================================================================
-    rsi_cmp_t rsi_cmp;
-
-    // =========================================================================
     //  Submodule Instantiations
     // =========================================================================
+
+    rsi_cmp_t rsi_cmp;
 
     // Register Comparator Instance
     rsi_comparator rsi_comp_inst (
@@ -39,6 +37,7 @@ module hazard_unit import risc_v_pkg::*, hazard_unit_pkg::*;
         .rsi_cmp      ( rsi_cmp      ),
         .hu_regs_wr   ( hu_regs_wr   ),
         .jfexe_M      ( jfexe_M      ),
+        .dmem_read_E  ( dmem_read_E  ),
         .hdu_controls ( hdu_controls )
     );
 

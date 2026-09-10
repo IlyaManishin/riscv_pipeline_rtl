@@ -54,6 +54,7 @@ module cpu_core_m import risc_v_pkg::*, hazard_unit_pkg::*;
     hu_reg_idxs_t  rs_idxs;
     hu_regs_wr_t   hu_regs_wr;
     hu_wd_t        hu_wd;
+    logic          dmem_read_E;
     hdu_controls_t hdu_controls;
     fwd_controls_t fwd_controls;
 
@@ -81,10 +82,11 @@ module cpu_core_m import risc_v_pkg::*, hazard_unit_pkg::*;
         .hu_regs_wr   ( hu_regs_wr   ),
         .hu_wd        ( hu_wd        ),
         .jfexe_M      ( jfexe_M      ),
+        .dmem_read_E  ( dmem_read_E  ),
         .hdu_controls ( hdu_controls ),
         .fwd_controls ( fwd_controls )
     );
-
+    
     // =========================================================================
     //  Fetch Stage (IF) Instance
     // =========================================================================
@@ -143,6 +145,7 @@ module cpu_core_m import risc_v_pkg::*, hazard_unit_pkg::*;
         .rd_E          ( rd_E                   ),
         .funct3_E      ( funct3_E               ),
         .id_controls_E ( id_controls_E          ),
+        .dmem_read_E   ( dmem_read_E            ),
         .valid_E       ( valid_E                )
     );
 
