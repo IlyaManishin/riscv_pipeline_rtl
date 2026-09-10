@@ -187,21 +187,19 @@ typedef enum logic [INSTR_TYPE_LEN-1:0] {
 } instr_type_t;
 
 /*
- * Instruction decoder control OUTPUT signals.
- *
- * Output control signals:
- *   - reg_wr       write to RF - 0: disabled, 1: enabled
- *   - dmem_sel     DMEM operation type: dmem_we (1 bit) + funct3 (3 bits)
- *   - a_sel        first operand for ALU - 0: PC, 1: rd1
- *   - b_sel        second operand for ALU - 0: imm, 1: rd2
- *   - sh_sel       type of shift - 3'b100: SLL, 3'b010: SRL, 3'b001: SRA
- *   - br_un        type of branch comparison - 0: signed, 1: unsigned
- *   - pc_sel       next PC is - 0: ALU output, 1: PC+4
- *   - alu_sel      ALU op code: 0: add, 1: sub, 2: and, 3: or, 4: xor, 5: slt, 6: sltu, 7: lui, 8: jalr
- *   - wb_sel       source for write to RF: 0: PC+4, 1: ALU out, 2: shifter out, 3: dmem out
- *   - instr_type   type of instruction: 0: R, 1: I, 2: S, 3: B, 4: U, 5: J
- *   - jf_exe       jump flag execution: 1 for JALR, 0 otherwise
- *   - alushift_sel alu/shifter select: 1 for shift instructions, 0 otherwise
+ * Instruction decoder control output signals:
+ *   - reg_wr       Write enable for Reg File (0: disable, 1: enable)
+ *   - dmem_sel     Data memory access config: dmem_we (1 bit) + funct3 (3 bits)
+ *   - a_sel        ALU operand A source (0: PC, 1: rd1)
+ *   - b_sel        ALU operand B source (0: imm, 1: rd2)
+ *   - sh_sel       Shift operation type (shift_sel_t enum)
+ *   - br_un        Branch comparison type (0: signed, 1: unsigned)
+ *   - pc_sel       Next PC source (0: ALU out, 1: PC+4)
+ *   - alu_sel      ALU operation type (alu_sel_t enum)
+ *   - wb_sel       Writeback source to RF (wb_sel_t enum)
+ *   - instr_type   Decoded instruction format (instr_type_t enum)
+ *   - br_unit_sel  Branch unit enable signal
+ *   - alushift_sel Result selector (0: ALU, 1: Shifter)
  */
 typedef struct packed {
     logic          reg_wr;
@@ -209,7 +207,7 @@ typedef struct packed {
     logic          a_sel;
     logic          b_sel;
     shift_sel_t    sh_sel;
-    logic          br_un;       // branch unsigned    
+    logic          br_un;
     logic          pc_sel;
     alu_sel_t      alu_sel;
     wb_sel_t       wb_sel;
