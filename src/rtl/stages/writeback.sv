@@ -6,7 +6,6 @@ module writeback_stage import risc_v_pkg::*;
     input  data_t            alu_out_W,
     input  data_t            cpu_rdata_W,
     input  reg_addr_t        rd_W,
-    input  addr_t            pc4_W,
     input  id_controls_out_t id_controls_W,
     input  logic             valid_W,
 //-------------------------------------
@@ -23,6 +22,7 @@ module writeback_stage import risc_v_pkg::*;
     // =========================================================================
 
     data_t cpu_port_rdata;
+    byte_addr_t dmem_byte_off;
     assign dmem_byte_off = alu_out_W[1:0];
 
     // =========================================================================
@@ -32,7 +32,7 @@ module writeback_stage import risc_v_pkg::*;
     // --- Data Memory Read Port ---
     risc_v_dmem_rd_port_m dmem_rd_port_inst (
         .funct3    ( id_controls_W.dmem_sel.funct3 ),
-        .byte_addr ( alu_out_W[1:0]                ),
+        .byte_addr ( dmem_byte_off                 ),
         .data_in   ( cpu_rdata_W                   ),
         .data_out  ( cpu_port_rdata                )
     );
@@ -47,7 +47,7 @@ module writeback_stage import risc_v_pkg::*;
 
     always_comb begin
         case (id_controls_W.wb_sel)
-            WB_PC4_OUT : wb_wd = pc4_W;
+            WB_PC4_OUT,
             WB_ALU_OUT : wb_wd = alu_out_W;
             WB_DMEM_OUT: wb_wd = cpu_port_rdata;
             default    : wb_wd = '0;

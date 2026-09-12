@@ -155,7 +155,6 @@ module cpu_core_m import risc_v_pkg::*, hazard_unit_pkg::*;
     data_t            alu_out_M;
     data_t            rd2_M;
     reg_addr_t        rd_M;
-    addr_t            pc4_M;
     id_controls_out_t id_controls_M;
     logic             valid_M;
 
@@ -180,17 +179,16 @@ module cpu_core_m import risc_v_pkg::*, hazard_unit_pkg::*;
         .alu_out_M     ( alu_out_M              ),
         .rd2_M         ( rd2_M                  ),
         .rd_M          ( rd_M                   ),
-        .pc4_M         ( pc4_M                  ),
         .id_controls_M ( id_controls_M          ),
         .valid_M       ( valid_M                )
     );
+
     // =========================================================================
     //  Memory Stage (MEM) Instance
     // =========================================================================
     data_t            alu_out_W;
     data_t            cpu_rdata_W;
     reg_addr_t        rd_W;
-    addr_t            pc4_W;
     id_controls_out_t id_controls_W;
     logic             valid_W;
 
@@ -203,7 +201,6 @@ module cpu_core_m import risc_v_pkg::*, hazard_unit_pkg::*;
         .alu_out_M     ( alu_out_M     ),
         .rd2_M         ( rd2_M         ),
         .rd_M          ( rd_M          ),
-        .pc4_M         ( pc4_M         ),
         .id_controls_M ( id_controls_M ),
         .valid_M       ( valid_M       ),
         .dmem_addr     ( dmem_addr     ),
@@ -213,7 +210,6 @@ module cpu_core_m import risc_v_pkg::*, hazard_unit_pkg::*;
         .alu_out_W     ( alu_out_W     ),
         .cpu_rdata_W   ( cpu_rdata_W   ),
         .rd_W          ( rd_W          ),
-        .pc4_W         ( pc4_W         ),
         .id_controls_W ( id_controls_W ),
         .valid_W       ( valid_W       )
     );
@@ -226,7 +222,6 @@ module cpu_core_m import risc_v_pkg::*, hazard_unit_pkg::*;
         .alu_out_W     ( alu_out_W     ),
         .cpu_rdata_W   ( cpu_rdata_W   ),
         .rd_W          ( rd_W          ),
-        .pc4_W         ( pc4_W         ),
         .id_controls_W ( id_controls_W ),
         .valid_W       ( valid_W       ),
         .wb_rd         ( wb_rd         ),

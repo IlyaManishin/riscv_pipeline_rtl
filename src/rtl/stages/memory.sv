@@ -14,7 +14,6 @@ module memory_stage import risc_v_pkg::*;
     input  data_t              alu_out_M,
     input  data_t              rd2_M,
     input  reg_addr_t          rd_M,
-    input  addr_t              pc4_M,
     input  id_controls_out_t   id_controls_M,
     input  logic               valid_M,
 //----------------------------------------
@@ -30,7 +29,6 @@ module memory_stage import risc_v_pkg::*;
     output data_t              alu_out_W,
     output data_t              cpu_rdata_W,
     output reg_addr_t          rd_W,
-    output addr_t              pc4_W,
     output id_controls_out_t   id_controls_W,
     output logic               valid_W
 //----------------------------------------
@@ -73,13 +71,11 @@ module memory_stage import risc_v_pkg::*;
         if (rst || flush_mem_wb) begin
             alu_out_W     <= '0;
             rd_W          <= '0;
-            pc4_W         <= '0;
             id_controls_W <= '0;
             valid_W       <= 1'b0;
         end else if (!stall_mem_wb) begin
             alu_out_W     <= alu_out_M;
             rd_W          <= rd_M;
-            pc4_W         <= pc4_M;
             id_controls_W <= id_controls_M;
             valid_W       <= valid_M;
         end

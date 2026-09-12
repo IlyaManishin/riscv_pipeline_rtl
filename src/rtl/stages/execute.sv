@@ -36,7 +36,6 @@ module execute_stage import risc_v_pkg::*, hazard_unit_pkg::*;
     output data_t              alu_out_M,
     output data_t              rd2_M,
     output reg_addr_t          rd_M,
-    output addr_t              pc4_M,
     output id_controls_out_t   id_controls_M,
     output logic               valid_M
 //------------------------------------
@@ -50,10 +49,12 @@ module execute_stage import risc_v_pkg::*, hazard_unit_pkg::*;
 
     data_t        alu_in_a;
     data_t        alu_in_b;
+    shift_shamt_t shift_shamt;
+
     data_t        alu_res;
     data_t        shifter_out;
+    data_t        alushift_res;
     data_t        alu_out;
-    shift_shamt_t shift_shamt;
     addr_t        pc4_E;
 
     logic         br_unit_res;
@@ -74,9 +75,13 @@ module execute_stage import risc_v_pkg::*, hazard_unit_pkg::*;
     assign alu_in_b    = id_controls_E.b_sel ? bypassed_rd2_E : imm_E;
     assign shift_shamt = id_controls_E.b_sel ? bypassed_rd2_E[4:0] : rs2_E[4:0];
 
-    assign pc4_E       = pc_E + 32'd4;
-    assign alu_out     = id_controls_E.alushift_sel ? shifter_out : alu_res;
+    assign pc4_E        = pc_E + 32'd4;
+    assign alushift_res = id_controls_E.alushift_sel ? shifter_out : alu_res;
 
+    assign alu_out      = id_controls_E.wb_sel == WB_PC4_OUT && id_controls_E.reg_wr ? pc4_E : alushift_res;
+    // assign alu_out      = alushift_res;
+
+    
     // =========================================================================
     //  Submodules Instantiations
     // =========================================================================
@@ -127,7 +132,6 @@ module execute_stage import risc_v_pkg::*, hazard_unit_pkg::*;
             alu_out_M     <= '0;
             rd2_M         <= '0;
             rd_M          <= '0;
-            pc4_M         <= '0;
             id_controls_M <= '0;
             valid_M       <= 1'b0;
             jfexe_M       <= 1'b0;
@@ -136,7 +140,6 @@ module execute_stage import risc_v_pkg::*, hazard_unit_pkg::*;
             alu_out_M     <= alu_out;
             rd2_M         <= bypassed_rd2_E;
             rd_M          <= rd_E;
-            pc4_M         <= pc4_E;
             id_controls_M <= id_controls_E;
             valid_M       <= valid_E;
             jfexe_M       <= ex_jfexe;
