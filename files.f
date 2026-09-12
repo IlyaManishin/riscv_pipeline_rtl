@@ -14,8 +14,8 @@ src/rtl/lib/rst_m.sv
 
 src/rtl/memory/imem.sv
 src/rtl/memory/register_file.sv
-src/rtl/memory/risc_v_dmem_rd_port_m.sv
-src/rtl/memory/risc_v_dmem_wr_port_m.sv
+src/rtl/memory/dmem_rd_port_m.sv
+src/rtl/memory/dmem_wr_port_m.sv
 
 src/rtl/modules/alu.sv
 src/rtl/modules/br_comparator.sv
@@ -24,13 +24,18 @@ src/rtl/modules/id.sv
 src/rtl/modules/imm_gen.sv
 src/rtl/modules/pc.sv
 src/rtl/modules/shifter_alu.sv
-src/rtl/modules/hdu.sv
 
 src/rtl/stages/fetch.sv
 src/rtl/stages/decode.sv
 src/rtl/stages/execute.sv
 src/rtl/stages/memory.sv
 src/rtl/stages/writeback.sv
+
+src/rtl/hazard_unit/fwd_unit.sv
+src/rtl/hazard_unit/hazard_unit_pkg.svh
+src/rtl/hazard_unit/hazard_unit.sv
+src/rtl/hazard_unit/hdu.sv
+src/rtl/hazard_unit/rsi_comparator.sv
 
 src/rtl/uart_wrapper.sv
 src/rtl/cpu_core.sv

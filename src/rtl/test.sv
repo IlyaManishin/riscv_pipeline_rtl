@@ -1,9 +1,0 @@
-module name #(
-
-) (
-
-);
-
-if ()
-    
-endmodule

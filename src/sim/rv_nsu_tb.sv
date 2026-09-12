@@ -7,9 +7,8 @@
 //------------------------------------------------------------------------------
 
 `include "tb.svh"
-//`include "sha3_256.svh"
 `include "trace_logger.svh"
-`include "risc-v.svh"
+`include "risc_v_sim.svh"
 `include "video_config.svh"
 
 `define TRACE_LOGGER_ENA
@@ -19,6 +18,7 @@
 //******************************************************************************
 module rv_nsu_tb
   import tb_pkg::*;
+  import risc_v_sim_pkg::*;
 ();
 
   timeunit 1ns; timeprecision 1ps;
@@ -55,7 +55,7 @@ module rv_nsu_tb
   parameter int MAX_INSTR_NUM = 200;
 
   string test_name;
-  risc_v_pkg::str_t str_test_name;
+  str_t str_test_name;
 
   cpu_if_t cpu_if (
       .clk       (cpu_system_duv.cpu_clk),
@@ -66,7 +66,7 @@ module rv_nsu_tb
       .test_name (test_name)
   );
 
-  assign str_test_name = risc_v_pkg::string2str(test_name);
+  assign str_test_name = string2str(test_name);
 
   initial begin
     static TraceLogger tl = new(cpu_if, MAX_INSTR_NUM, STANDALONE_TEST);

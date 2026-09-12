@@ -1,0 +1,67 @@
+`include "risc_v.svh"
+
+module hazard_detection_unit import hazard_unit_pkg::*;
+(
+    input  rsi_cmp_t      rsi_cmp,
+    input  hu_regs_wr_t   hu_regs_wr,
+    input  logic          jfexe_M,
+    input  logic          dmem_read_E,
+    input  logic          dmem_read_M,
+
+    output hdu_controls_t hdu_controls
+);
+
+    // =========================================================================
+    //  Internal Signals 
+    // =========================================================================
+    
+    logic is_control_hazard;
+    logic is_ex_hazard;
+    logic is_mem_hazard;
+    logic is_wb_hazard;
+    logic ex_reg_wr;
+    logic mem_reg_wr;
+    logic wb_reg_wr;
+    
+    assign ex_reg_wr  = hu_regs_wr.reg_wr_E;
+    assign mem_reg_wr = hu_regs_wr.reg_wr_M;
+    assign wb_reg_wr  = hu_regs_wr.reg_wr_W;
+
+
+    // =========================================================================
+    //  Hazards Processing   
+    // =========================================================================
+
+    assign is_ex_hazard  = dmem_read_E && rsi_cmp.rd_E_valid && (rsi_cmp.eq1_E || rsi_cmp.eq2_E);
+
+`ifdef USE_DMEM_WB_EX_FORWARDING
+    // Memory load data is available at WB stage via forwarding, so no 2nd stall is needed
+    assign is_mem_hazard = 1'b0;
+`else
+    // Memory hazard requires an extra stall when WB->EX load forwarding is disabled
+    assign is_mem_hazard = dmem_read_M && rsi_cmp.rd_M_valid && (rsi_cmp.eq1_M || rsi_cmp.eq2_M);
+`endif
+
+    always_comb begin
+        hdu_controls = '0;
+
+        // ===== Control Hazards =====
+        if (jfexe_M) begin
+            hdu_controls.flush_id_ex  = 1'b1;
+            hdu_controls.flush_ex_mem = 1'b1;
+        end
+
+        // ===== Data Hazards (Load-Use Stall) =====
+        is_control_hazard = jfexe_M;
+
+        if (is_ex_hazard || is_mem_hazard) begin
+            if (!is_control_hazard) begin
+                hdu_controls.stall_pc    = 1'b1;
+                hdu_controls.stall_if_id = 1'b1;
+            end
+            
+            hdu_controls.flush_id_ex = 1'b1;
+        end
+    end
+
+endmodule : hazard_detection_unit

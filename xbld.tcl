@@ -93,7 +93,7 @@ puts $fh "\`endif"
 close $fh
 
 set include_dir $rtlDir/include
-set include_files $include_dir/risc-v.svh        \
+set include_files "$include_dir/risc_v.svh $include_dir/risc_v_sim.svh $rtlDir/hazard_unit/hazard_unit_pkg.svh"  \
 
 add_files -fileset sources_1                     \
          $include_files                          \
@@ -104,14 +104,17 @@ add_files -fileset sources_1                     \
          $rtlDir/stages/execute.sv               \
          $rtlDir/stages/memory.sv                \
          $rtlDir/stages/writeback.sv             \
-         $rtlDir/modules/hdu.sv                  \
+         $rtlDir/hazard_unit/fwd_unit.sv         \
+         $rtlDir/hazard_unit/hazard_unit.sv      \
+         $rtlDir/hazard_unit/hdu.sv              \
+         $rtlDir/hazard_unit/rsi_comparator.sv   \
          $rtlDir/modules/pc.sv                   \
          $rtlDir/modules/id.sv                   \
          $rtlDir/modules/br_comparator.sv        \
          $rtlDir/modules/br_unit.sv              \
          $rtlDir/memory/imem.sv                  \
-         $rtlDir/memory/risc_v_dmem_rd_port_m.sv \
-         $rtlDir/memory/risc_v_dmem_wr_port_m.sv \
+         $rtlDir/memory/dmem_rd_port_m.sv        \
+         $rtlDir/memory/dmem_wr_port_m.sv        \
          $rtlDir/modules/imm_gen.sv              \
          $rtlDir/memory/register_file.sv         \
          $rtlDir/modules/alu.sv                  \
@@ -186,7 +189,7 @@ if $build_pll_ip {
     puts "  PLL Clock: $ip_pll_clk MHz"
     puts "  TIME_BASE: $time_base_ns ns"
 
-    set svh_file "$rtlDir/include/risc-v.svh"
+    set svh_file "$rtlDir/include/risc_v.svh"
     if {[file exists $svh_file]} {
         set fp [open $svh_file r]
         set content [read $fp]

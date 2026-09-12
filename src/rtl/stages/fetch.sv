@@ -1,4 +1,4 @@
-`include "risc-v.svh"
+`include "risc_v.svh"
 
 module fetch_stage import risc_v_pkg::*;
 (
@@ -65,7 +65,7 @@ module fetch_stage import risc_v_pkg::*;
         .rst      ( rst      ),
         .br_taken ( br_taken ),
         .pc_br    ( pc_br    ),
-        .pc_stall ( stall_pc ),
+        .stall_pc ( stall_pc ),
         .pc       ( pc       ),
         .pc_next  ( pc_next  )
     );

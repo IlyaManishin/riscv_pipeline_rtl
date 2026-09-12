@@ -1,6 +1,7 @@
-`include "risc-v.svh"
+`include "risc_v.svh"
+`include "hazard_unit/hazard_unit_pkg.svh"
 
-module decode_stage import risc_v_pkg::*;
+module decode_stage import risc_v_pkg::*, hazard_unit_pkg::*;
 (
     input  logic               clk,
     input  logic               rst,
@@ -18,6 +19,10 @@ module decode_stage import risc_v_pkg::*;
     input  data_t              rd2,
 //--------------------------------------
 
+//---------FORWARDING WIRES-------------
+    input  fwd_id_controls_t   fwd_id,
+//--------------------------------------
+
 //---------INPUT REGISTERS--------------
     input  addr_t              pc_D,
     input  instr_t             instr_D,
@@ -33,9 +38,9 @@ module decode_stage import risc_v_pkg::*;
     output reg_addr_t          rd_E,
     output logic [2:0]         funct3_E,
     output id_controls_out_t   id_controls_E,
+    output logic               dmem_read_E,
     output logic               valid_E
 //--------------------------------------
-
 );
 
     // =========================================================================
@@ -48,14 +53,17 @@ module decode_stage import risc_v_pkg::*;
     id_instr_t        id_instr;
     id_controls_out_t id_output_controls;
     logic             id_illegal;
+    logic             id_dmem_read;
 
     imm_input_t       ig_imm_input;
+
+    data_t            bypassed_rd1;
+    data_t            bypassed_rd2;
 
 
     // =========================================================================
     //  Instruction Decoding & Field Extraction
     // =========================================================================
-
     assign rs1 = instr_D[19:15];
     assign rs2 = instr_D[24:20];
     assign rd  = instr_D[11:7];
@@ -67,6 +75,11 @@ module decode_stage import risc_v_pkg::*;
     assign id_instr.opcode = instr_D[6:2];
     assign id_instr.ones   = instr_D[1:0];
 
+    // =========================================================================
+    //  Forwarding Multiplexers (WB -> ID Bypass)
+    // =========================================================================
+    assign bypassed_rd1 = fwd_id.fwd_en1 ? fwd_id.wd : rd1;
+    assign bypassed_rd2 = fwd_id.fwd_en2 ? fwd_id.wd : rd2;
 
     // =========================================================================
     //  Submodules Instantiations
@@ -89,6 +102,8 @@ module decode_stage import risc_v_pkg::*;
     // =========================================================================
     //  ID / EX Pipeline Registers
     // =========================================================================
+    assign id_dmem_read = id_output_controls.reg_wr && id_output_controls.alu_dmem_sel;
+
     always_ff @(posedge clk) begin
         if (rst || flush_id_ex || !valid_D) begin
             pc_E          <= '0;
@@ -99,16 +114,18 @@ module decode_stage import risc_v_pkg::*;
             rd_E          <= '0;
             funct3_E      <= '0;
             id_controls_E <= '0;
+            dmem_read_E   <= 1'b0;
             valid_E       <= 1'b0;
         end else if (!stall_id_ex) begin
             pc_E          <= pc_D;
-            rd1_E         <= rd1;
-            rd2_E         <= rd2;
+            rd1_E         <= bypassed_rd1;
+            rd2_E         <= bypassed_rd2;
             imm_E         <= imm;
             rs2_E         <= rs2;
             rd_E          <= rd;
             funct3_E      <= id_instr.funct3;
             id_controls_E <= id_output_controls;
+            dmem_read_E   <= id_dmem_read;
             valid_E       <= valid_D;
         end
     end

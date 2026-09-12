@@ -8,7 +8,7 @@
 //                 - hardware platform (development board) for standalone RISC-V processor test
 //------------------------------------------------------------------------------
 
-`include "risc-v.svh"
+`include "risc_v.svh"
 `include "mem_init_path.svh"
 `include "video_config.svh"
 //******************************************************************************
@@ -16,7 +16,7 @@
 module cpu_system
   import risc_v_pkg::*;
 (
-    //--------------------------------------------------------------------------
+  //--------------------------------------------------------------------------
 `ifdef CFG_NAME_BASYS_3
     output logic [`LED_NUM-1:0] led,
 `endif
