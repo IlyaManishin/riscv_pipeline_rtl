@@ -93,7 +93,7 @@ puts $fh "\`endif"
 close $fh
 
 set include_dir $rtlDir/include
-set include_files "$include_dir/risc-v.svh $rtlDir/hazard_unit/hazard_unit_pkg.svh"  \
+set include_files "$include_dir/risc_v.svh $include_dir/risc_v_sim.svh $rtlDir/hazard_unit/hazard_unit_pkg.svh"  \
 
 add_files -fileset sources_1                     \
          $include_files                          \
