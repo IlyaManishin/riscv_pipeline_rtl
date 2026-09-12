@@ -1,4 +1,4 @@
-`include "risc-v.svh"
+`include "risc_v.svh"
 `include "hazard_unit/hazard_unit_pkg.svh"
 
 module execute_stage import risc_v_pkg::*, hazard_unit_pkg::*;

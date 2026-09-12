@@ -1,4 +1,4 @@
-`include "risc-v.svh"
+`include "risc_v.svh"
 
 module alu_m import risc_v_pkg::*;
                #(

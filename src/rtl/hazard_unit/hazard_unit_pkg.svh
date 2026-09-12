@@ -5,8 +5,10 @@
 // Enables full WB->EX forwarding for dmem loads (uses full wb_wd instead of alu_out_W only)
 // This define decreases CPI and ruins timings. 
 
-`define USE_DMEM_WB_EX_FORWARDING
+// `define USE_DMEM_WB_EX_FORWARDING
 
+`ifndef HAZARD_UNIT_PKG_SVH
+`define HAZARD_UNIT_PKG_SVH
 
 package hazard_unit_pkg;
 
@@ -100,3 +102,5 @@ package hazard_unit_pkg;
     } hdu_controls_t;
 
 endpackage : hazard_unit_pkg
+
+`endif // HAZARD_UNIT_PKG_SVH

@@ -1,4 +1,4 @@
-`include "risc-v.svh"
+`include "risc_v.svh"
 
 `define set_default_signals                                                                                              \
     output_controls = { 1'b0, 4'b0000, 1'bx, 1'bx, SHIFT_ANY, 1'bx, 1'b1, ALU_ANY, WB_ANY, INSTR_TYPE_ANY, 1'b0, 1'b0 }; \

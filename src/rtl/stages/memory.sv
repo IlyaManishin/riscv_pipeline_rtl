@@ -1,4 +1,4 @@
-`include "risc-v.svh"
+`include "risc_v.svh"
 
 module memory_stage import risc_v_pkg::*;
 (

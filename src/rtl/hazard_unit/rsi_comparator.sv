@@ -1,4 +1,4 @@
-`include "risc-v.svh"
+`include "risc_v.svh"
 
 module rsi_comparator import hazard_unit_pkg::*;
 (

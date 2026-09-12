@@ -8,7 +8,7 @@
 //                 - hardware platform (development board) for standalone RISC-V processor test
 //------------------------------------------------------------------------------
 
-`include "risc-v.svh"
+`include "risc_v.svh"
 `include "mem_init_path.svh"
 `include "video_config.svh"
 //******************************************************************************

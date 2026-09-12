@@ -189,7 +189,7 @@ if $build_pll_ip {
     puts "  PLL Clock: $ip_pll_clk MHz"
     puts "  TIME_BASE: $time_base_ns ns"
 
-    set svh_file "$rtlDir/include/risc-v.svh"
+    set svh_file "$rtlDir/include/risc_v.svh"
     if {[file exists $svh_file]} {
         set fp [open $svh_file r]
         set content [read $fp]

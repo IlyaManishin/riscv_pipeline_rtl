@@ -1,4 +1,4 @@
-`include "risc-v.svh"
+`include "risc_v.svh"
 
 module uart_mmio_wrapper import risc_v_pkg::*;
         #(  

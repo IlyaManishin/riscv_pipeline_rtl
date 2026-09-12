@@ -1,14 +1,14 @@
 //------------------------------------------------------------------------------
 // project:        RISC-V (SberLab Novosibirsk State University)                                                    
-// package:        
-//                                                                              
 // description:    
 //------------------------------------------------------------------------------
 
 `ifndef TRAVE_LOGGER_SVH
 `define TRAVE_LOGGER_SVH
 
-`include "risc-v.svh"
+`include "risc_v.svh"
+`include "risc_v_sim.svh"
+
 
 //******************************************************************************
 //******************************************************************************
@@ -22,9 +22,8 @@
 `define RF_OBJ_NAME   $root.rv_nsu_tb.cpu_system_duv.cpu.rf_inst.regFile
 `define RF_DBG_NUM    31
 
-string TEST_DIR = "/home/mashina/Documents/projects/riscv_pipeline_rtl/prg/uBench/hex"; // TODO: use tcl generated names
-string TEST_LST = "ub.lst";                                                             // TODO: use tcl generated names
-
+string TEST_DIR = "/home/mashina/Documents/projects/riscv_pipeline_rtl/prg/uBench/hex"; 
+string TEST_LST = "ub.lst";                                                             
 
 //------------------------------------------------------------------------------
 interface cpu_if_t
@@ -45,7 +44,6 @@ typedef enum int {
     TEST_PASS = 1,
     TEST_FAIL = 2
 } test_result_t;
-//=== ALU
 
 //------------------------------------------------------------------------------
 class TraceLogger;
@@ -185,7 +183,7 @@ class TraceLogger;
                     if(!cpu_vif.rst) begin
                         instr_cnt++;
                         //--- TODO: make function
-                        $fwrite(fd_res,"%t %6d %8x %8x \"%s\"", $realtime, instr_cnt, cpu_vif.iaddr, cpu_vif.instr, risc_v_pkg::disasm(cpu_vif.instr));
+                        $fwrite(fd_res,"%t %6d %8x %8x \"%s\"", $realtime, instr_cnt, cpu_vif.iaddr, cpu_vif.instr, risc_v_sim_pkg::disasm(cpu_vif.instr));
                         for(i = 0; i < NREGS; i++) begin
                             $fwrite(fd_res,", %8x", get_reg(i));
                         end

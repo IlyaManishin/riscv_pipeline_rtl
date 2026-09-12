@@ -1,4 +1,4 @@
-`include "risc-v.svh"
+`include "risc_v.svh"
 `include "hazard_unit/hazard_unit_pkg.svh"
 
 module fwd_unit import risc_v_pkg::*, hazard_unit_pkg::*;
@@ -95,7 +95,7 @@ module fwd_unit import risc_v_pkg::*, hazard_unit_pkg::*;
         fwd_ex.wd2 = ex_sel2_reg.mem_wb_sel ? hu_wd.wd_M : hu_wd.wd_W;
 `else
         // Partial WB->EX forwarding (only ALU result via alu_out_W)
-        
+
         fwd_ex.wd1 = ex_sel1_reg.mem_wb_sel ? hu_wd.wd_M : hu_wd.alu_out_W;
         fwd_ex.wd2 = ex_sel2_reg.mem_wb_sel ? hu_wd.wd_M : hu_wd.alu_out_W;
 `endif

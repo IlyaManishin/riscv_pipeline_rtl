@@ -1,4 +1,4 @@
-`include "risc-v.svh"
+`include "risc_v.svh"
 //------------------------------------------------------------------------------
 //  project:       RISC-V (SberLab Novosibirsk State University)
 //

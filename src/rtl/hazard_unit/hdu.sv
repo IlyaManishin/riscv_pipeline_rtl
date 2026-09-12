@@ -1,4 +1,4 @@
-`include "risc-v.svh"
+`include "risc_v.svh"
 
 module hazard_detection_unit import hazard_unit_pkg::*;
 (
