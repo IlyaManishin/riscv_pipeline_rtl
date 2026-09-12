@@ -51,7 +51,7 @@ module memory_stage import risc_v_pkg::*;
     // =========================================================================
 
     // --- Data Memory Write Port ---
-    risc_v_dmem_wr_port_m dmem_wr_port_inst (
+    dmem_wr_port_m dmem_wr_port_inst (
         .dmem_we   ( dmem_we                   ),
         .funct3    ( id_controls_M.dmem_sel.funct3 ),
         .byte_addr ( dmem_byte_off             ),

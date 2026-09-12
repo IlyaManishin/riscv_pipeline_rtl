@@ -113,8 +113,8 @@ add_files -fileset sources_1                     \
          $rtlDir/modules/br_comparator.sv        \
          $rtlDir/modules/br_unit.sv              \
          $rtlDir/memory/imem.sv                  \
-         $rtlDir/memory/risc_v_dmem_rd_port_m.sv \
-         $rtlDir/memory/risc_v_dmem_wr_port_m.sv \
+         $rtlDir/memory/dmem_rd_port_m.sv        \
+         $rtlDir/memory/dmem_wr_port_m.sv        \
          $rtlDir/modules/imm_gen.sv              \
          $rtlDir/memory/register_file.sv         \
          $rtlDir/modules/alu.sv                  \

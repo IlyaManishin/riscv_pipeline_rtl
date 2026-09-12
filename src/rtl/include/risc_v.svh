@@ -222,3 +222,4 @@ typedef enum logic[1:0] {
 endpackage : risc_v_pkg
 
 `endif // RISC_V_SVH
+

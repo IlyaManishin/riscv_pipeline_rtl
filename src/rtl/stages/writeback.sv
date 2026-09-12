@@ -30,7 +30,7 @@ module writeback_stage import risc_v_pkg::*;
     // =========================================================================
 
     // --- Data Memory Read Port ---
-    risc_v_dmem_rd_port_m dmem_rd_port_inst (
+    dmem_rd_port_m dmem_rd_port_inst (
         .funct3    ( id_controls_W.dmem_sel.funct3 ),
         .byte_addr ( dmem_byte_off                 ),
         .data_in   ( cpu_rdata_W                   ),

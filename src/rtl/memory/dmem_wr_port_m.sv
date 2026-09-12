@@ -3,7 +3,7 @@
 //------------------------------------------------------------------------------
 //  project:       RISC-V (SberLab Novosibirsk State University)
 //
-//  module:        risc_v_dmem_wr_port_m
+//  module:        dmem_wr_port_m
 //
 //  description:   Data memory write port — generates byte write enables
 //                 and aligned write data for store operations:
@@ -15,7 +15,7 @@
 
 //******************************************************************************
 //******************************************************************************
-module risc_v_dmem_wr_port_m import risc_v_pkg::*;
+module dmem_wr_port_m import risc_v_pkg::*;
                 #(
                     parameter ENDIANNESS = "LITTLE"
                 )
@@ -63,4 +63,4 @@ always_comb begin
     end
 end
 
-endmodule : risc_v_dmem_wr_port_m
+endmodule : dmem_wr_port_m

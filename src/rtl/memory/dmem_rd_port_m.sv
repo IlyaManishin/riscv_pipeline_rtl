@@ -2,7 +2,7 @@
 //------------------------------------------------------------------------------
 //  project:       RISC-V (SberLab Novosibirsk State University)
 //
-//  modules:       risc_v_dmem_rd_port_m
+//  modules:       dmem_rd_port_m
 //                 dmem_rd_port_sign_gen_m
 //
 //  description:   Data memory read port — byte/halfword/word selection
@@ -49,7 +49,7 @@ endmodule : dmem_rd_port_sign_gen_m
 
 //******************************************************************************
 //******************************************************************************
-module risc_v_dmem_rd_port_m import risc_v_pkg::*;
+module dmem_rd_port_m import risc_v_pkg::*;
                 #(
                     parameter ENDIANNESS = "LITTLE"
                 )
@@ -120,4 +120,4 @@ always_comb begin
     endcase
 end
 
-endmodule : risc_v_dmem_rd_port_m
+endmodule : dmem_rd_port_m
