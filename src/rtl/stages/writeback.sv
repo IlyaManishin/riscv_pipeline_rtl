@@ -42,16 +42,10 @@ module writeback_stage import risc_v_pkg::*;
     //  Writeback Control & Multiplexing
     // =========================================================================
 
-    assign wb_rd  = rd_W;
-    assign wb_we  = id_controls_W.reg_wr;
+    assign wb_rd = rd_W;
+    assign wb_we = id_controls_W.reg_wr;
 
-    always_comb begin
-        case (id_controls_W.wb_sel)
-            WB_PC4_OUT,
-            WB_ALU_OUT : wb_wd = alu_out_W;
-            WB_DMEM_OUT: wb_wd = cpu_port_rdata;
-            default    : wb_wd = '0;
-        endcase
-    end
+    // Writeback data
+    assign wb_wd = id_controls_W.alu_dmem_sel ? cpu_port_rdata : alu_out_W;
 
 endmodule : writeback_stage

@@ -80,10 +80,8 @@ module execute_stage import risc_v_pkg::*, hazard_unit_pkg::*;
     assign pc4_E        = pc_E + 32'd4;
     assign alushift_res = id_controls_E.alushift_sel ? shifter_out : alu_res;
 
-    assign alu_out      = id_controls_E.wb_sel == WB_PC4_OUT && id_controls_E.reg_wr ? pc4_E : alushift_res;
-    // assign alu_out      = alushift_res;
+    assign alu_out      = id_controls_E.alu_pc4_sel ? pc4_E : alushift_res;
 
-    
     // =========================================================================
     //  Submodules Instantiations
     // =========================================================================

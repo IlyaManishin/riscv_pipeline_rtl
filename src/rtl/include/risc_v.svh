@@ -134,15 +134,6 @@ typedef struct packed {
 } id_instr_t;
 
 
-localparam int WB_SEL_LEN = 2;
-typedef enum logic [WB_SEL_LEN-1:0] {
-    WB_PC4_OUT     = 2'b00,
-    WB_ALU_OUT     = 2'b01,
-    WB_DMEM_OUT    = 2'b10,
-    WB_ANY         = 2'bxx 
-} wb_sel_t;
-
-
 typedef struct packed {
     logic       dmem_we;
     logic [2:0] funct3;
@@ -171,7 +162,8 @@ typedef enum logic [INSTR_TYPE_LEN-1:0] {
  *   - br_un        Branch comparison type (0: signed, 1: unsigned)
  *   - pc_sel       Next PC source (0: ALU out, 1: PC+4)
  *   - alu_sel      ALU operation type (alu_sel_t enum)
- *   - wb_sel       Writeback source to RF (wb_sel_t enum)
+ *   - alu_pc4_sel  Select PC+4 as stage result (0: ALU/Shifter out, 1: PC+4)
+ *   - alu_dmem_sel Select DMEM data for Writeback (0: EX result, 1: DMEM read data)
  *   - instr_type   Decoded instruction format (instr_type_t enum)
  *   - br_unit_sel  Branch unit enable signal
  *   - alushift_sel Result selector (0: ALU, 1: Shifter)
@@ -185,12 +177,12 @@ typedef struct packed {
     logic          br_un;
     logic          pc_sel;
     alu_sel_t      alu_sel;
-    wb_sel_t       wb_sel;
+    logic          alu_pc4_sel;
+    logic          alu_dmem_sel;
     instr_type_t   instr_type;
     logic          br_unit_sel;    
     logic          alushift_sel;
 } id_controls_out_t;
-
 
 `ifdef ID_DEFS_ENA
 `endif

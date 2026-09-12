@@ -102,9 +102,7 @@ module decode_stage import risc_v_pkg::*, hazard_unit_pkg::*;
     // =========================================================================
     //  ID / EX Pipeline Registers
     // =========================================================================
-    assign id_dmem_read = id_output_controls.reg_wr && (id_output_controls.wb_sel == WB_DMEM_OUT);
-    // assign id_dmem_read = id_output_controls.reg_wr && (id_output_controls.wb_sel == WB_DMEM_OUT || id_output_controls.wb_sel == WB_PC4_OUT);
-
+    assign id_dmem_read = id_output_controls.reg_wr && id_output_controls.alu_dmem_sel;
 
     always_ff @(posedge clk) begin
         if (rst || flush_id_ex || !valid_D) begin
