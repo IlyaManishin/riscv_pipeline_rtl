@@ -1,7 +1,11 @@
 // =========================================================================
 //  HU Behavior Defines
 // =========================================================================
-`define USE_WB_EX_FORWARDING
+
+// Enables full WB->EX forwarding for dmem loads (uses full wb_wd instead of alu_out_W only)
+// This define decreases CPI and ruins timings. 
+
+`define USE_DMEM_WB_EX_FORWARDING
 
 
 package hazard_unit_pkg;

@@ -33,8 +33,14 @@ module hazard_detection_unit import hazard_unit_pkg::*;
     // =========================================================================
 
     assign is_ex_hazard  = dmem_read_E && rsi_cmp.rd_E_valid && (rsi_cmp.eq1_E || rsi_cmp.eq2_E);
-    // assign is_mem_hazard = mem_reg_wr && rsi_cmp.rd_M_valid && (rsi_cmp.eq1_M || rsi_cmp.eq2_M);
+
+`ifdef USE_DMEM_WB_EX_FORWARDING
+    // Memory load data is available at WB stage via forwarding, so no 2nd stall is needed
+    assign is_mem_hazard = 1'b0;
+`else
+    // Memory hazard requires an extra stall when WB->EX load forwarding is disabled
     assign is_mem_hazard = dmem_read_M && rsi_cmp.rd_M_valid && (rsi_cmp.eq1_M || rsi_cmp.eq2_M);
+`endif
 
     always_comb begin
         hdu_controls = '0;
