@@ -13,6 +13,7 @@ module hazard_unit import risc_v_pkg::*, hazard_unit_pkg::*;
     // Control/Branch & Stage Flags
     input  logic            jfexe_M,
     input  logic            dmem_read_E,
+    input  logic            dmem_read_M,
 
     // Top Hazard & Forwarding Outputs
     output hdu_controls_t   hdu_controls,
@@ -38,6 +39,7 @@ module hazard_unit import risc_v_pkg::*, hazard_unit_pkg::*;
         .hu_regs_wr   ( hu_regs_wr   ),
         .jfexe_M      ( jfexe_M      ),
         .dmem_read_E  ( dmem_read_E  ),
+        .dmem_read_M  ( dmem_read_M  ),
         .hdu_controls ( hdu_controls )
     );
 

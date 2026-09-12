@@ -45,8 +45,9 @@ package hazard_unit_pkg;
     } hu_regs_wr_t;
 
     typedef struct packed {
-        data_t wd_M;  // wd from MEM stage
-        data_t wd_W;  // wd from WB stage
+        data_t wd_M;        // wd from MEM stage
+        data_t wd_W;        // wd from WB stage
+        data_t alu_out_W;   // alu_out from WB stage (for partial WB->EX forwarding)
     } hu_wd_t;
 
 

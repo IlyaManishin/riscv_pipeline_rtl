@@ -86,12 +86,12 @@ module fwd_unit import risc_v_pkg::*, hazard_unit_pkg::*;
 
     always_comb begin
         fwd_ex.fwd_en1 = ex_sel1_reg.fwd_en;
-        fwd_ex.wd1     = ex_sel1_reg.mem_wb_sel ? hu_wd.wd_M : hu_wd.wd_W;
+        fwd_ex.wd1     = ex_sel1_reg.mem_wb_sel ? hu_wd.wd_M : hu_wd.alu_out_W;
         // fwd_ex.wd1     = ex_sel1_reg.mem_wb_sel ? hu_wd.wd_M : hu_wd.wd_M;
         
 
         fwd_ex.fwd_en2 = ex_sel2_reg.fwd_en;
-        fwd_ex.wd2     = ex_sel2_reg.mem_wb_sel ? hu_wd.wd_M : hu_wd.wd_W;
+        fwd_ex.wd2     = ex_sel2_reg.mem_wb_sel ? hu_wd.wd_M : hu_wd.alu_out_W;
         // fwd_ex.wd2     = ex_sel2_reg.mem_wb_sel ? hu_wd.wd_M : hu_wd.wd_M;
 
     end

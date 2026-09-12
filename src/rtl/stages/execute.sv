@@ -24,6 +24,7 @@ module execute_stage import risc_v_pkg::*, hazard_unit_pkg::*;
     input  reg_addr_t          rd_E,
     input  logic [2:0]         funct3_E,
     input  id_controls_out_t   id_controls_E,
+    input  logic               dmem_read_E,
     input  logic               valid_E,
 //------------------------------------
 
@@ -37,6 +38,7 @@ module execute_stage import risc_v_pkg::*, hazard_unit_pkg::*;
     output data_t              rd2_M,
     output reg_addr_t          rd_M,
     output id_controls_out_t   id_controls_M,
+    output logic               dmem_read_M,
     output logic               valid_M
 //------------------------------------
 );
@@ -133,6 +135,7 @@ module execute_stage import risc_v_pkg::*, hazard_unit_pkg::*;
             rd2_M         <= '0;
             rd_M          <= '0;
             id_controls_M <= '0;
+            dmem_read_M   <= 1'b0;
             valid_M       <= 1'b0;
             jfexe_M       <= 1'b0;
             jfpc_M        <= '0;
@@ -141,6 +144,7 @@ module execute_stage import risc_v_pkg::*, hazard_unit_pkg::*;
             rd2_M         <= bypassed_rd2_E;
             rd_M          <= rd_E;
             id_controls_M <= id_controls_E;
+            dmem_read_M   <= dmem_read_E;
             valid_M       <= valid_E;
             jfexe_M       <= ex_jfexe;
             jfpc_M        <= ex_jfpc;

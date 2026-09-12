@@ -71,8 +71,9 @@ module cpu_core_m import risc_v_pkg::*, hazard_unit_pkg::*;
     assign hu_regs_wr.reg_wr_W = id_controls_W.reg_wr;
 
     // Forwarding Data Sources
-    assign hu_wd.wd_M = alu_out_M;
-    assign hu_wd.wd_W = wb_wd;
+    assign hu_wd.wd_M          = alu_out_M;
+    assign hu_wd.wd_W          = wb_wd;
+    assign hu_wd.alu_out_W     = alu_out_W;
 
     // Top Hazard Unit Instance
     (* keep_hierarchy = `HU_KEEP_HIEARARCHY *)
@@ -83,6 +84,7 @@ module cpu_core_m import risc_v_pkg::*, hazard_unit_pkg::*;
         .hu_wd        ( hu_wd        ),
         .jfexe_M      ( jfexe_M      ),
         .dmem_read_E  ( dmem_read_E  ),
+        .dmem_read_M  ( dmem_read_M  ),
         .hdu_controls ( hdu_controls ),
         .fwd_controls ( fwd_controls )
     );
@@ -173,6 +175,8 @@ module cpu_core_m import risc_v_pkg::*, hazard_unit_pkg::*;
         .rd_E          ( rd_E                   ),
         .funct3_E      ( funct3_E               ),
         .id_controls_E ( id_controls_E          ),
+        .dmem_read_E   ( dmem_read_E            ),
+        .dmem_read_M   ( dmem_read_M            ),
         .valid_E       ( valid_E                ),
         .jfexe_M       ( jfexe_M                ),
         .jfpc_M        ( jfpc_M                 ),
